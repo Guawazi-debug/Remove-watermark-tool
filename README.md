@@ -53,9 +53,15 @@
    git clone git@github.com:Guawazi-debug/Remove-watermark-tool.git
    ```
 
-2. 在微信开发者工具中导入项目目录
+2. 复制配置文件并填入你的 AppID
+   ```bash
+   cp project.config.json.example project.config.json
+   ```
+   打开 `project.config.json`，将 `appid` 字段的值 `your-appid-here` 替换为你自己的微信小程序 AppID。
 
-3. 开始开发和调试
+3. 在微信开发者工具中导入项目目录
+
+4. 开始开发和调试
 
 ### 接口配置
 
