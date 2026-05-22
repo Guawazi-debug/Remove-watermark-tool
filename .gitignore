@@ -5,9 +5,5 @@ node_modules/
 *.swo
 .DS_Store
 Thumbs.db
-project.private.config.json
-project.private.config.json
-project.private.config.json
-project.private.config.json
-project.private.config.json
+project.config.json
 project.private.config.json
