@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 开发工具
 
 - **微信开发者工具**：本项目无法通过命令行构建/运行，必须使用[微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)导入项目进行开发和调试
-- **AppID**：`wx42c7e1df978d6a72`（见 project.config.json）
+- **AppID**：在 project.config.json 中配置（需自行填入，不要提交到公开仓库）
 - **ESLint**：已配置 .eslintrc.js，规则较宽松，主要声明了 wx/App/Page/Component 等小程序全局变量
 
 ## 项目结构
