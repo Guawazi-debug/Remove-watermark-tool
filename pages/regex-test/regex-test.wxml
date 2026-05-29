@@ -1,0 +1,43 @@
+<!--pages/regex-test/regex-test.wxml-->
+<navigation-bar title="正则测试" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <view class="input-section">
+    <text class="input-label">正则表达式</text>
+    <view class="regex-row">
+      <input class="regex-input" placeholder="输入正则表达式" value="{{pattern}}" bindinput="onPatternChange" />
+      <input class="flags-input" placeholder="标志" value="{{flags}}" bindinput="onFlagsChange" />
+    </view>
+    <view class="error-msg" wx:if="{{errorMsg}}"><text>{{errorMsg}}</text></view>
+  </view>
+
+  <view class="input-section">
+    <text class="input-label">测试文本</text>
+    <view class="textarea-wrapper">
+      <textarea class="input-textarea" placeholder="输入测试文本..." value="{{testText}}" bindinput="onTestTextChange" maxlength="-1" />
+    </view>
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onPaste"><text>粘贴</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+    </view>
+  </view>
+
+  <view class="result-section" wx:if="{{matches.length > 0}}">
+    <text class="result-title">匹配结果 ({{matches.length}} 个)</text>
+    <view class="match-list">
+      <view class="match-item" wx:for="{{matches}}" wx:key="index">
+        <text class="match-index">#{{index + 1}}</text>
+        <text class="match-value" selectable>{{item.value}}</text>
+        <text class="match-pos">位置: {{item.index}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{pattern && testText && matches.length === 0 && !errorMsg}}">
+    <text class="empty-text">无匹配结果</text>
+  </view>
+
+</scroll-view>

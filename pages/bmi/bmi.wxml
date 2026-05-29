@@ -1,0 +1,33 @@
+<!--pages/bmi/bmi.wxml-->
+<navigation-bar title="BMI 计算" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="section">
+    <text class="label">身高 (cm)</text>
+    <input class="input" type="digit" placeholder="输入身高" value="{{height}}" bindinput="onHeightChange" />
+    <text class="label">体重 (kg)</text>
+    <input class="input" type="digit" placeholder="输入体重" value="{{weight}}" bindinput="onWeightChange" />
+    <view class="btn-row">
+      <view class="btn btn--primary" bindtap="onCalc"><text>计算 BMI</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+    </view>
+  </view>
+  <view class="section result-section" wx:if="{{result}}">
+    <text class="label">BMI 结果</text>
+    <view class="bmi-main">
+      <text class="bmi-value" style="color: {{result.color}};">{{result.bmi}}</text>
+      <text class="bmi-level" style="color: {{result.color}};">{{result.level}}</text>
+    </view>
+    <view class="bmi-range">
+      <text class="range-label">健康体重范围</text>
+      <text class="range-value">{{result.range}}</text>
+    </view>
+    <view class="bmi-scale">
+      <view class="scale-item" style="background: #0984e3;"><text>偏瘦</text><text>&lt;18.5</text></view>
+      <view class="scale-item" style="background: #00b894;"><text>正常</text><text>18.5-24</text></view>
+      <view class="scale-item" style="background: #fdcb6e;"><text>偏胖</text><text>24-28</text></view>
+      <view class="scale-item" style="background: #e74c3c;"><text>肥胖</text><text>&gt;28</text></view>
+    </view>
+  </view>
+</scroll-view>

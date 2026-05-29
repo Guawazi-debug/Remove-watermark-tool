@@ -1,0 +1,43 @@
+<!--pages/url-encode/url-encode.wxml-->
+<navigation-bar title="URL 编解码" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <view class="mode-section">
+    <view class="mode-tabs">
+      <view class="mode-tab {{mode === 'encode' ? 'mode-tab--active' : ''}}" data-mode="encode" bindtap="onModeChange"><text>编码</text></view>
+      <view class="mode-tab {{mode === 'decode' ? 'mode-tab--active' : ''}}" data-mode="decode" bindtap="onModeChange"><text>解码</text></view>
+    </view>
+  </view>
+
+  <view class="input-section">
+    <text class="input-label">{{mode === 'encode' ? '输入原文' : '输入编码后的 URL'}}</text>
+    <view class="textarea-wrapper">
+      <textarea class="input-textarea" placeholder="请输入内容..." value="{{inputText}}" bindinput="onInputChange" maxlength="-1" />
+    </view>
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onPaste"><text>粘贴</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+    </view>
+    <view class="btn-row" style="margin-top: 16rpx;">
+      <view class="btn btn--primary" bindtap="onConvert"><text>转换</text></view>
+    </view>
+    <view class="error-msg" wx:if="{{errorMsg}}"><text>{{errorMsg}}</text></view>
+  </view>
+
+  <view class="result-section" wx:if="{{outputText}}">
+    <view class="result-header">
+      <text class="result-title">转换结果</text>
+      <view class="result-actions">
+        <view class="action-btn" bindtap="onSwap"><text>互换</text></view>
+        <view class="action-btn action-btn--primary" bindtap="onCopy"><text>复制</text></view>
+      </view>
+    </view>
+    <view class="result-content">
+      <text selectable>{{outputText}}</text>
+    </view>
+  </view>
+
+</scroll-view>

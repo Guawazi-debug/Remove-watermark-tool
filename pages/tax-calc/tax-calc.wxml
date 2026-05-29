@@ -1,0 +1,78 @@
+<navigation-bar title="个税计算" back="{{true}}" homeButton="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="section">
+    <view class="notice-banner">
+      <text class="notice-banner__text">{{estimateNotice}}</text>
+    </view>
+    <text class="label">税前月薪（元）</text>
+    <input class="input" type="digit" placeholder="例如 15000" value="{{salary}}" bindinput="onSalaryChange" />
+
+    <text class="label">参照城市</text>
+    <picker mode="selector" range="{{provinces}}" range-key="name" value="{{provinceIndex}}" bindchange="onProvinceChange">
+      <view class="picker-btn">
+        <text>{{currentProvince.name || '请选择城市'}}</text>
+        <text class="picker-icon">选择</text>
+      </view>
+    </picker>
+
+    <text class="label">五险一金</text>
+    <view class="insurance-toggle">
+      <switch checked="{{autoInsurance}}" bindchange="onAutoInsuranceChange" />
+      <text class="toggle-text">按城市比例自动估算</text>
+    </view>
+
+    <view class="insurance-info" wx:if="{{autoInsurance && currentProvince}}">
+      <text class="info-text">养老 {{currentProvince.pension}}% + 医疗 {{currentProvince.medical}}% + 失业 {{currentProvince.unemployment}}% + 公积金 {{currentProvince.housing}}%</text>
+      <text class="info-text">当前合计比例：{{currentProvince.pension + currentProvince.medical + currentProvince.unemployment + currentProvince.housing}}%</text>
+    </view>
+
+    <view wx:if="{{!autoInsurance}}">
+      <input class="input" type="digit" placeholder="输入五险一金金额" value="{{customInsurance}}" bindinput="onCustomInsuranceChange" />
+    </view>
+
+    <view class="btn-row">
+      <view class="btn btn--primary" bindtap="onCalc"><text>计算个税</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+    </view>
+  </view>
+
+  <view class="section result-section" wx:if="{{result}}">
+    <text class="label">计算结果（{{result.provinceName}}）</text>
+
+    <view class="result-main">
+      <view class="main-item">
+        <text class="main-label">税后收入</text>
+        <text class="main-value green">¥ {{result.afterTax}}</text>
+      </view>
+    </view>
+
+    <view class="result-grid">
+      <view class="result-item">
+        <text class="result-label">税前月薪</text>
+        <text class="result-value">¥ {{result.salary}}</text>
+      </view>
+      <view class="result-item">
+        <text class="result-label">五险一金</text>
+        <text class="result-value">¥ {{result.insurance}}</text>
+      </view>
+      <view class="result-item">
+        <text class="result-label">应纳税所得额</text>
+        <text class="result-value">¥ {{result.taxBase}}</text>
+      </view>
+      <view class="result-item">
+        <text class="result-label">适用税率</text>
+        <text class="result-value">{{result.level}}</text>
+      </view>
+      <view class="result-item highlight">
+        <text class="result-label">应缴个税</text>
+        <text class="result-value red">¥ {{result.tax}}</text>
+      </view>
+      <view class="result-item highlight">
+        <text class="result-label">速算扣除数</text>
+        <text class="result-value">¥ {{result.quickDeduction}}</text>
+      </view>
+    </view>
+  </view>
+</scroll-view>

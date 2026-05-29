@@ -1,0 +1,64 @@
+<!--pages/date-calc/date-calc.wxml-->
+<navigation-bar title="日期计算" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="section">
+    <view class="mode-tabs">
+      <view class="mode-tab {{mode === 'diff' ? 'active' : ''}}" data-mode="diff" bindtap="onModeChange"><text>日期差</text></view>
+      <view class="mode-tab {{mode === 'add' ? 'active' : ''}}" data-mode="add" bindtap="onModeChange"><text>日期推算</text></view>
+    </view>
+  </view>
+
+  <!-- 日期差模式 -->
+  <view class="section" wx:if="{{mode === 'diff'}}">
+    <text class="label">起始日期</text>
+    <view class="date-row">
+      <picker mode="date" value="{{date1}}" bindchange="onDate1Change">
+        <view class="date-picker">
+          <text class="date-text">{{date1 || '请选择日期'}}</text>
+          <text class="date-icon">📅</text>
+        </view>
+      </picker>
+      <view class="today-btn" catchtap="onToday1"><text>今天</text></view>
+    </view>
+
+    <text class="label">结束日期</text>
+    <view class="date-row">
+      <picker mode="date" value="{{date2}}" bindchange="onDate2Change">
+        <view class="date-picker">
+          <text class="date-text">{{date2 || '请选择日期'}}</text>
+          <text class="date-icon">📅</text>
+        </view>
+      </picker>
+      <view class="today-btn" catchtap="onToday2"><text>今天</text></view>
+    </view>
+
+    <view class="btn btn--primary" bindtap="onCalc"><text>计算日期差</text></view>
+  </view>
+
+  <!-- 日期推算模式 -->
+  <view class="section" wx:if="{{mode === 'add'}}">
+    <text class="label">起始日期</text>
+    <view class="date-row">
+      <picker mode="date" value="{{date1}}" bindchange="onDate1Change">
+        <view class="date-picker">
+          <text class="date-text">{{date1 || '请选择日期'}}</text>
+          <text class="date-icon">📅</text>
+        </view>
+      </picker>
+      <view class="today-btn" catchtap="onToday1"><text>今天</text></view>
+    </view>
+
+    <text class="label">天数（正数往后，负数往前）</text>
+    <input class="input" type="number" value="{{days}}" bindinput="onDaysChange" placeholder="如: 30" />
+
+    <view class="btn btn--primary" bindtap="onCalc"><text>推算日期</text></view>
+  </view>
+
+  <!-- 结果 -->
+  <view class="section result-section" wx:if="{{result}}">
+    <text class="label">计算结果</text>
+    <view class="result-box"><text class="result-value">{{result}}</text></view>
+  </view>
+</scroll-view>

@@ -1,0 +1,41 @@
+<!--pages/json-diff/json-diff.wxml-->
+<navigation-bar title="JSON 对比" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="input-section">
+    <view class="input-col">
+      <view class="input-header"><text class="label">JSON A</text><text class="paste-btn" bindtap="onPaste1">粘贴</text></view>
+      <view class="textarea-wrapper"><textarea class="textarea" placeholder="输入 JSON..." value="{{json1}}" bindinput="onJson1Change" maxlength="-1" /></view>
+    </view>
+    <view class="input-col">
+      <view class="input-header"><text class="label">JSON B</text><text class="paste-btn" bindtap="onPaste2">粘贴</text></view>
+      <view class="textarea-wrapper"><textarea class="textarea" placeholder="输入 JSON..." value="{{json2}}" bindinput="onJson2Change" maxlength="-1" /></view>
+    </view>
+  </view>
+  <view class="action-row">
+    <view class="btn btn--primary" bindtap="onCompare"><text>对比</text></view>
+    <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+  </view>
+  <view class="section" wx:if="{{diffResult.length > 0}}">
+    <text class="label">发现 {{diffResult.length}} 处差异</text>
+    <view class="diff-list">
+      <view class="diff-item {{item.type}}" wx:for="{{diffResult}}" wx:key="path">
+        <text class="diff-path">{{item.path}}</text>
+        <text class="diff-type" wx:if="{{item.type === 'added'}}">+ 新增</text>
+        <text class="diff-type" wx:if="{{item.type === 'removed'}}">- 删除</text>
+        <text class="diff-type" wx:if="{{item.type === 'changed'}}">≠ 变更</text>
+        <text class="diff-value" wx:if="{{item.type === 'added'}}">{{item.value}}</text>
+        <text class="diff-value" wx:if="{{item.type === 'removed'}}">{{item.value}}</text>
+        <view wx:if="{{item.type === 'changed'}}">
+          <text class="diff-old">{{item.value1}}</text>
+          <text class="diff-arrow">→</text>
+          <text class="diff-new">{{item.value2}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="section" wx:if="{{diffResult.length === 0 && json1 && json2}}">
+    <text class="label" style="color: #00b894;">两个 JSON 完全相同</text>
+  </view>
+</scroll-view>

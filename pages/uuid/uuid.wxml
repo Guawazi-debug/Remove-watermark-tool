@@ -1,0 +1,29 @@
+<navigation-bar title="UUID 生成" back="{{true}}" homeButton="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="input-section">
+    <text class="input-label">生成数量</text>
+    <view class="input-row">
+      <input class="count-input" type="number" placeholder="1 ~ 50" value="{{count}}" bindinput="onCountChange" />
+      <view class="btn btn--primary" bindtap="onGenerate"><text>生成</text></view>
+    </view>
+  </view>
+
+  <view class="result-section" wx:if="{{uuids.length > 0}}">
+    <view class="result-header">
+      <text class="result-title">生成结果（{{uuids.length}} 个）</text>
+      <view class="result-actions">
+        <view class="action-btn" bindtap="onClear"><text>清空</text></view>
+        <view class="action-btn action-btn--primary" bindtap="onCopyAll"><text>全部复制</text></view>
+      </view>
+    </view>
+    <view class="uuid-list">
+      <view class="uuid-item" wx:for="{{uuids}}" wx:key="index" data-uuid="{{item}}" bindtap="onCopyOne">
+        <text class="uuid-text" selectable>{{item}}</text>
+        <text class="uuid-copy">复制</text>
+      </view>
+    </view>
+  </view>
+</scroll-view>

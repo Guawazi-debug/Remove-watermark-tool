@@ -1,106 +1,127 @@
-<!--pages/index/index.wxml-->
-<navigation-bar title="视频解析" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<navigation-bar title="工具小栈" back="{{false}}" color="#241b16" background="#F8F3EC"></navigation-bar>
 
-<scroll-view class="page-root" scroll-y enable-flex>
+<scroll-view class="page-root index-page" scroll-y enable-flex>
+  <view class="hero-panel">
+    <view class="hero-kicker">Mini Program Toolbox</view>
+    <text class="hero-title">把高频小工具，做成一套顺手的工作台。</text>
+    <text class="hero-desc">搜索、最近使用、分类浏览三条路径并行，减少来回翻找。</text>
 
-  <!-- 头部区域 -->
-  <view class="hero-section">
-    <view class="hero-icon">
-      <text class="hero-icon__text">▶</text>
+    <view class="hero-search">
+      <text class="hero-search__label">查找工具</text>
+      <view class="hero-search__box">
+        <text class="hero-search__icon">FIND</text>
+        <input
+          class="hero-search__input"
+          placeholder="例如：时间戳、JSON、贷款、正则"
+          placeholder-class="hero-search__placeholder"
+          value="{{searchKeyword}}"
+          bindinput="onSearchInput"
+        />
+        <view class="hero-search__clear" wx:if="{{searchKeyword}}" bindtap="onSearchClear">
+          <text>清除</text>
+        </view>
+      </view>
     </view>
-    <text class="hero-title">视频解析工具</text>
-    <text class="hero-desc">支持主流短视频平台视频解析下载</text>
+
+    <view class="hero-summary">
+      <view class="hero-summary__item" wx:for="{{categorySummary}}" wx:key="id">
+        <text class="hero-summary__name">{{item.name}}</text>
+        <text class="hero-summary__count" style="color: {{item.accent}};">{{item.count}} 项</text>
+      </view>
+    </view>
   </view>
 
-  <!-- 输入区域 -->
-  <view class="input-section">
-    <view class="input-wrapper">
-      <input
-        class="url-input"
-        placeholder="粘贴视频链接"
-        placeholder-class="placeholder-style"
-        value="{{inputUrl}}"
-        bindinput="onInputChange"
-        confirm-type="done"
-        bindconfirm="onParse"
+  <view class="section-block" wx:if="{{recentTools.length > 0}}">
+    <view class="section-head">
+      <view>
+        <text class="section-title">最近使用</text>
+        <text class="section-subtitle">保留你最近打开的工具入口</text>
+      </view>
+    </view>
+    <scroll-view class="recent-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="recent-row">
+        <view
+          class="recent-chip"
+          wx:for="{{recentTools}}"
+          wx:key="id"
+          data-page="{{item.page}}"
+          data-tool-id="{{item.id}}"
+          bindtap="onToolTap"
+          style="border-color: {{item.color}}33;"
+        >
+          <text class="recent-chip__name">{{item.name}}</text>
+          <text class="recent-chip__meta">{{item.categoryName}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="section-block">
+    <view class="section-head">
+      <view>
+        <text class="section-title">优先入口</text>
+        <text class="section-subtitle">覆盖解析、格式化、哈希、时间处理等高频任务</text>
+      </view>
+    </view>
+    <view class="featured-grid">
+      <tool-card
+        wx:for="{{featuredTools}}"
+        wx:key="id"
+        wx:for-item="tool"
+        tool-id="{{tool.id}}"
+        icon="{{tool.icon}}"
+        name="{{tool.name}}"
+        desc="{{tool.desc}}"
+        badge="{{tool.badge}}"
+        category="{{tool.categoryName}}"
+        color="{{tool.color}}"
+        data-page="{{tool.page}}"
+        data-tool-id="{{tool.id}}"
+        bindtap="onToolTap"
       />
-      <view class="clear-btn" wx:if="{{inputUrl}}" bindtap="onClear">
-        <text>✕</text>
-      </view>
-    </view>
-
-    <view class="btn-row">
-      <view class="btn btn--secondary" bindtap="onPaste">
-        <text>粘贴链接</text>
-      </view>
-      <view class="btn btn--primary {{loading ? 'btn--disabled' : ''}}" bindtap="onParse">
-        <text>{{loading ? '解析中...' : '开始解析'}}</text>
-      </view>
-    </view>
-
-    <!-- 错误提示 -->
-    <view class="error-msg" wx:if="{{errorMsg}}">
-      <text>{{errorMsg}}</text>
     </view>
   </view>
 
-  <!-- 使用说明 -->
-  <view class="guide-section" wx:if="{{!result && !loading}}">
-    <view class="guide-item">
-      <view class="guide-step">1</view>
-      <text class="guide-text">复制视频分享链接</text>
+  <view class="section-block">
+    <view class="section-head">
+      <view>
+        <text class="section-title">{{searchKeyword ? '搜索结果' : '全部工具'}}</text>
+        <text class="section-subtitle">{{searchKeyword ? '按名称、描述和关键词过滤' : '按能力域分组浏览'}}</text>
+      </view>
     </view>
-    <view class="guide-item">
-      <view class="guide-step">2</view>
-      <text class="guide-text">粘贴到输入框并解析</text>
-    </view>
-    <view class="guide-item">
-      <view class="guide-step">3</view>
-      <text class="guide-text">下载视频到手机相册</text>
-    </view>
-  </view>
 
-  <!-- 加载状态 -->
-  <view class="loading-section" wx:if="{{loading}}">
-    <view class="loading-spinner"></view>
-    <text class="loading-text">正在解析视频...</text>
-  </view>
-
-  <!-- 解析结果 -->
-  <view class="result-section" wx:if="{{result && !loading}}">
-    <view class="result-card">
-      <!-- 视频播放器 -->
-      <video
-        wx:if="{{result.video}}"
-        id="videoPlayer"
-        class="result-video"
-        src="{{result.video}}"
-        poster="{{result.cover}}"
-        controls
-        show-fullscreen-btn
-        show-play-btn
-        show-center-play-btn
-        enable-progress-gesture
-        show-mute-btn
-        object-fit="contain"
-        bindtap="onVideoTap"
-        bindfullscreenchange="onFullscreenChange"
-      ></video>
-
-      <!-- 视频信息 -->
-      <view class="result-info">
-        <view class="result-title" wx:if="{{result.title}}">
-          <text>{{result.title}}</text>
+    <view class="category-stack" wx:if="{{filteredCategories.length > 0}}">
+      <view class="category-card" wx:for="{{filteredCategories}}" wx:key="id">
+        <view class="category-card__head">
+          <view>
+            <text class="category-card__title">{{item.name}}</text>
+            <text class="category-card__desc">{{item.description}}</text>
+          </view>
+          <text class="category-card__count">{{item.tools.length}} 项</text>
         </view>
-      </view>
-
-      <!-- 操作按钮 -->
-      <view class="btn-row result-btns">
-        <view class="btn btn--download" bindtap="onDownload">
-          <text>保存到相册</text>
+        <view class="category-card__grid">
+          <tool-card
+            wx:for="{{item.tools}}"
+            wx:key="id"
+            wx:for-item="tool"
+            tool-id="{{tool.id}}"
+            icon="{{tool.icon}}"
+            name="{{tool.name}}"
+            desc="{{tool.desc}}"
+            badge="{{tool.badge}}"
+            category="{{item.name}}"
+            color="{{tool.color}}"
+            data-page="{{tool.page}}"
+            data-tool-id="{{tool.id}}"
+            bindtap="onToolTap"
+          />
         </view>
       </view>
     </view>
-  </view>
 
+    <view class="empty-state" wx:else>
+      <text class="empty-state__title">没有找到匹配工具</text>
+      <text class="empty-state__desc">试试换一个关键词，比如“日期”、“编码”或“JSON”。</text>
+    </view>
+  </view>
 </scroll-view>

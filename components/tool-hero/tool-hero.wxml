@@ -1,0 +1,16 @@
+<view class="tool-hero" wx:if="{{tool}}">
+  <view
+    class="tool-hero__icon-shell"
+    style="background: linear-gradient(135deg, {{tool.color}}22, {{tool.color}}08); border-color: {{tool.color}}44;"
+  >
+    <tool-icon icon-id="{{tool.id}}"></tool-icon>
+  </view>
+  <view class="tool-hero__body">
+    <view class="tool-hero__chips">
+      <text class="tool-hero__chip">{{tool.categoryName}}</text>
+      <text class="tool-hero__chip tool-hero__chip--accent" wx:if="{{tool.badge}}">{{tool.badge}}</text>
+    </view>
+    <text class="tool-hero__title">{{tool.name}}</text>
+    <text class="tool-hero__desc">{{tool.desc}}</text>
+  </view>
+</view>

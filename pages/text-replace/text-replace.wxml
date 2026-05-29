@@ -1,0 +1,35 @@
+<!--pages/text-replace/text-replace.wxml-->
+<navigation-bar title="文本替换" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="section">
+    <text class="label">输入文本</text>
+    <view class="textarea-wrapper"><textarea class="textarea" placeholder="输入文本..." value="{{inputText}}" bindinput="onInputChange" maxlength="-1" /></view>
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onPaste"><text>粘贴</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+    </view>
+  </view>
+  <view class="section">
+    <view class="input-group">
+      <view class="input-item">
+        <text class="label">查找</text>
+        <input class="input" value="{{findText}}" bindinput="onFindChange" />
+      </view>
+      <view class="input-item">
+        <text class="label">替换为</text>
+        <input class="input" value="{{replaceText}}" bindinput="onReplaceChange" />
+      </view>
+    </view>
+    <view class="btn btn--primary" bindtap="onReplace"><text>替换</text></view>
+  </view>
+  <view class="section" wx:if="{{result}}">
+    <view class="result-header">
+      <text class="result-title">替换结果</text>
+      <text class="result-info">替换了 {{replaceCount}} 处</text>
+    </view>
+    <view class="result-content"><text selectable>{{result}}</text></view>
+    <view class="btn btn--secondary" bindtap="onCopy"><text>复制结果</text></view>
+  </view>
+</scroll-view>

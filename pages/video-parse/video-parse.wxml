@@ -1,0 +1,135 @@
+<!--pages/video-parse/video-parse.wxml-->
+<navigation-bar title="视频解析" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <!-- 输入区域 -->
+  <view class="input-section">
+    <view class="service-hint">
+      <text class="service-hint__text">{{serviceHint}}</text>
+    </view>
+    <view class="input-wrapper">
+      <input
+        class="url-input"
+        placeholder="粘贴视频链接"
+        placeholder-class="placeholder-style"
+        value="{{inputUrl}}"
+        bindinput="onInputChange"
+        confirm-type="done"
+        bindconfirm="onParse"
+      />
+      <view class="clear-btn" wx:if="{{inputUrl}}" bindtap="onClear">
+        <text>✕</text>
+      </view>
+    </view>
+
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onPaste">
+        <text>粘贴链接</text>
+      </view>
+      <view class="btn btn--primary {{loading ? 'btn--disabled' : ''}}" bindtap="onParse">
+        <text>{{loading ? '解析中...' : '开始解析'}}</text>
+      </view>
+    </view>
+
+    <!-- 错误提示 -->
+    <view class="error-msg" wx:if="{{errorMsg}}">
+      <text>{{errorMsg}}</text>
+    </view>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="guide-section" wx:if="{{!hasResolvedResult && !loading}}">
+    <view class="guide-item">
+      <view class="guide-step">1</view>
+      <text class="guide-text">复制视频分享链接</text>
+    </view>
+    <view class="guide-item">
+      <view class="guide-step">2</view>
+      <text class="guide-text">粘贴到输入框并解析</text>
+    </view>
+    <view class="guide-item">
+      <view class="guide-step">3</view>
+      <text class="guide-text">下载视频到手机相册</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-section" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在解析视频...</text>
+  </view>
+
+  <!-- 解析结果 -->
+  <view class="result-section" wx:if="{{hasResolvedResult && result && !loading}}">
+    <view class="result-card">
+      <view class="result-status" wx:if="{{parseSuccessText}}">
+        <text class="result-status__label">状态</text>
+        <text class="result-status__divider">·</text>
+        <text class="result-status__value">{{parseSuccessText}}</text>
+      </view>
+
+      <!-- 视频播放器 -->
+      <video
+        wx:if="{{result.video}}"
+        id="videoPlayer"
+        class="result-video"
+        src="{{result.video}}"
+        poster="{{result.cover}}"
+        controls
+        show-fullscreen-btn
+        show-play-btn
+        show-center-play-btn
+        enable-progress-gesture
+        show-mute-btn
+        object-fit="contain"
+        bindtap="onVideoTap"
+        bindfullscreenchange="onFullscreenChange"
+      ></video>
+
+      <!-- 视频信息 -->
+      <view class="result-info">
+        <view class="result-title" wx:if="{{result.title}}">
+          <text>{{result.title}}</text>
+        </view>
+        <view class="link-card" wx:if="{{result.playUrl || result.video}}">
+          <text class="link-card__label">在线播放地址</text>
+          <text class="link-card__value" selectable>{{result.playUrl || result.video}}</text>
+          <view class="link-card__action" bindtap="onCopyPlayUrl">
+            <text>复制播放地址</text>
+          </view>
+        </view>
+        <view class="link-card" wx:if="{{result.downloadUrl}}">
+          <text class="link-card__label">下载地址</text>
+          <text class="link-card__value" selectable>{{result.downloadUrl}}</text>
+          <view class="link-card__action" bindtap="onCopyDownloadUrl">
+            <text>复制下载地址</text>
+          </view>
+        </view>
+        <view class="link-card" wx:if="{{result.onlineUrl}}">
+          <text class="link-card__label">在线页面地址</text>
+          <text class="link-card__value" selectable>{{result.onlineUrl}}</text>
+        </view>
+        <view class="result-fallback" wx:if="{{!result.video}}">
+          <text class="result-fallback__text">当前返回结果未提供可播放视频地址，但你仍可以尝试使用下方按钮处理。</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="btn-row result-btns">
+        <view class="btn btn--download {{!result.video || isDownloading ? 'btn--disabled' : ''}}" bindtap="onDownload">
+          <text>保存到相册</text>
+        </view>
+      </view>
+      <view class="download-progress" wx:if="{{isDownloading}}">
+        <view class="download-progress__track">
+          <view class="download-progress__bar" style="width: {{downloadProgress}}%;"></view>
+        </view>
+        <text class="download-progress__text">{{downloadStatusText}}</text>
+      </view>
+    </view>
+  </view>
+
+</scroll-view>

@@ -1,0 +1,13 @@
+<view class="tool-card" catchtap="onTap" hover-class="tool-card--hover">
+  <view class="tool-card__top">
+    <view class="tool-card__icon" style="background: linear-gradient(135deg, {{color}}22, {{color}}08); border-color: {{color}}44;">
+      <tool-icon icon-id="{{toolId}}"></tool-icon>
+    </view>
+    <view class="tool-card__badges">
+      <text class="tool-card__category">{{category}}</text>
+      <text class="tool-card__badge" wx:if="{{badge}}">{{badge}}</text>
+    </view>
+  </view>
+  <text class="tool-card__name">{{name}}</text>
+  <text class="tool-card__desc">{{desc}}</text>
+</view>

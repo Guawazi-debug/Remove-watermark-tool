@@ -1,0 +1,85 @@
+/* pages/json-parse/json-parse.wxss */
+
+/* ===== 输入区域 ===== */
+.input-section {
+  margin: 24rpx 32rpx 0;
+}
+
+.input-header {
+  margin-bottom: 16rpx;
+}
+
+.input-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.textarea-wrapper {
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(74, 144, 217, 0.1);
+  padding: 24rpx;
+  border: 2rpx solid #e8f0fe;
+}
+
+.json-textarea {
+  width: 100%;
+  height: 200rpx;
+  font-size: 26rpx;
+  color: #333;
+  font-family: monospace;
+  line-height: 1.5;
+  overflow-y: auto;
+}
+
+.placeholder-style {
+  color: #c0c0c0;
+}
+
+/* ===== 结果区域 ===== */
+.result-section {
+  margin: 32rpx 32rpx 0;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.result-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.result-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.result-time {
+  font-size: 22rpx;
+  color: #8e8e93;
+}
+
+.result-actions {
+  display: flex;
+  gap: 12rpx;
+}
+
+.action-btn {
+  padding: 8rpx 24rpx;
+  border-radius: 8rpx;
+  background: #f0f0f0;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.action-btn--primary {
+  background: linear-gradient(135deg, #4a90d9, #6c5ce7);
+  color: #fff;
+}

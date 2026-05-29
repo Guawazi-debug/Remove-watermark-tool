@@ -1,0 +1,101 @@
+<!--pages/text-diff/text-diff.wxml-->
+<navigation-bar title="文本对比" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <!-- 输入区域 -->
+  <view class="input-section">
+    <view class="input-col">
+      <view class="input-header">
+        <text class="input-label">文本 A</text>
+        <view class="paste-btn" bindtap="onPaste1"><text>粘贴</text></view>
+      </view>
+      <view class="textarea-wrapper">
+        <textarea class="input-textarea" placeholder="输入文本 A..." value="{{text1}}" bindinput="onText1Change" maxlength="-1" />
+      </view>
+    </view>
+    <view class="input-col">
+      <view class="input-header">
+        <text class="input-label">文本 B</text>
+        <view class="paste-btn" bindtap="onPaste2"><text>粘贴</text></view>
+      </view>
+      <view class="textarea-wrapper">
+        <textarea class="input-textarea" placeholder="输入文本 B..." value="{{text2}}" bindinput="onText2Change" maxlength="-1" />
+      </view>
+    </view>
+  </view>
+
+  <view class="action-row">
+    <view class="btn btn--primary" bindtap="onCompare"><text>开始对比</text></view>
+    <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+  </view>
+
+  <!-- 统计报告 -->
+  <view class="stats-section" wx:if="{{hasResult && stats}}">
+    <text class="stats-title">对比报告</text>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.chars1}}</text>
+        <text class="stat-label">文本A字数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.chars2}}</text>
+        <text class="stat-label">文本B字数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.diffLines}}</text>
+        <text class="stat-label">差异行数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.diffChars}}</text>
+        <text class="stat-label">差异字符</text>
+      </view>
+    </view>
+    <view class="stats-summary">
+      <text wx:if="{{diffCount === 0}}">两段文本完全相同</text>
+      <text wx:else>文本A共{{stats.lines1}}行，文本B共{{stats.lines2}}行，发现{{stats.diffLines}}处行差异，共{{stats.diffChars}}个字符不同</text>
+    </view>
+  </view>
+
+  <!-- 结果区域 -->
+  <view class="result-section" wx:if="{{hasResult}}">
+    <view class="result-header">
+      <text class="result-summary" wx:if="{{diffCount === 0}}">完全相同</text>
+      <text class="result-summary result-summary--diff" wx:else>{{diffCount}} 处差异</text>
+      <view class="locate-btn" wx:if="{{diffCount > 0}}" bindtap="onLocateDiff">
+        <text>定位差异</text>
+      </view>
+    </view>
+
+    <scroll-view scroll-y class="diff-scroll" scroll-into-view="{{scrollToLine}}">
+      <view class="diff-table">
+        <view class="diff-row diff-row--header">
+          <text class="diff-line-num">行</text>
+          <text class="diff-col-header">文本 A</text>
+          <text class="diff-col-header">文本 B</text>
+        </view>
+        <view
+          wx:for="{{diffLines}}"
+          wx:key="line"
+          id="line-{{item.line}}"
+          class="diff-row {{item.isDiff ? 'diff-row--diff' : ''}}"
+        >
+          <text class="diff-line-num">{{item.line}}</text>
+          <view class="diff-cell">
+            <block wx:for="{{item.chars1}}" wx:key="index" wx:for-item="ch">
+              <text class="{{ch.isDiff ? 'char-diff' : ''}}">{{ch.text}}</text>
+            </block>
+          </view>
+          <view class="diff-cell">
+            <block wx:for="{{item.chars2}}" wx:key="index" wx:for-item="ch">
+              <text class="{{ch.isDiff ? 'char-diff' : ''}}">{{ch.text}}</text>
+            </block>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+</scroll-view>

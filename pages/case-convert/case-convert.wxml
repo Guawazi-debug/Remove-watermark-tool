@@ -1,0 +1,41 @@
+<!--pages/case-convert/case-convert.wxml-->
+<navigation-bar title="大小写转换" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <view class="input-section">
+    <text class="input-label">输入文本</text>
+    <view class="textarea-wrapper">
+      <textarea class="input-textarea" placeholder="请输入文本..." value="{{inputText}}" bindinput="onInputChange" maxlength="-1" />
+    </view>
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onPaste"><text>粘贴</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+    </view>
+  </view>
+
+  <view class="action-section">
+    <view class="action-grid">
+      <view class="action-item" bindtap="onUpperCase"><text>全部大写</text></view>
+      <view class="action-item" bindtap="onLowerCase"><text>全部小写</text></view>
+      <view class="action-item" bindtap="onCapitalize"><text>首字母大写</text></view>
+      <view class="action-item" bindtap="onToggleCase"><text>大小写反转</text></view>
+    </view>
+  </view>
+
+  <view class="result-section" wx:if="{{outputText}}">
+    <view class="result-header">
+      <text class="result-title">转换结果</text>
+      <view class="result-actions">
+        <view class="action-btn" bindtap="onSwap"><text>互换</text></view>
+        <view class="action-btn action-btn--primary" bindtap="onCopy"><text>复制</text></view>
+      </view>
+    </view>
+    <view class="result-content">
+      <text selectable>{{outputText}}</text>
+    </view>
+  </view>
+
+</scroll-view>

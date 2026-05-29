@@ -1,0 +1,20 @@
+<!--pages/text-dedup/text-dedup.wxml-->
+<navigation-bar title="文本去重" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="section">
+    <text class="label">输入文本（每行一条）</text>
+    <view class="textarea-wrapper"><textarea class="textarea" placeholder="输入文本..." value="{{inputText}}" bindinput="onInputChange" maxlength="-1" /></view>
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onPaste"><text>粘贴</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+      <view class="btn btn--primary" bindtap="onDedup"><text>去重</text></view>
+    </view>
+  </view>
+  <view class="section" wx:if="{{result}}">
+    <text class="label">去重结果：{{beforeCount}} 行 → {{afterCount}} 行，去除 {{beforeCount - afterCount}} 条</text>
+    <view class="result-content"><text selectable>{{result}}</text></view>
+    <view class="btn btn--secondary" bindtap="onCopy"><text>复制结果</text></view>
+  </view>
+</scroll-view>

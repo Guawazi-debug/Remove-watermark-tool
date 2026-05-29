@@ -1,0 +1,27 @@
+<!--pages/code-format/code-format.wxml-->
+<navigation-bar title="代码格式化" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="section">
+    <view class="mode-tabs">
+      <view class="mode-tab {{mode === 'js' ? 'active' : ''}}" data-mode="js" bindtap="onModeChange"><text>JS</text></view>
+      <view class="mode-tab {{mode === 'json' ? 'active' : ''}}" data-mode="json" bindtap="onModeChange"><text>JSON</text></view>
+      <view class="mode-tab {{mode === 'css' ? 'active' : ''}}" data-mode="css" bindtap="onModeChange"><text>CSS</text></view>
+    </view>
+    <text class="label">输入代码</text>
+    <view class="textarea-wrapper"><textarea class="textarea" placeholder="粘贴代码..." value="{{inputCode}}" bindinput="onInputChange" maxlength="-1" /></view>
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onPaste"><text>粘贴</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+      <view class="btn btn--primary" bindtap="onFormat"><text>格式化</text></view>
+    </view>
+  </view>
+  <view class="section" wx:if="{{outputCode}}">
+    <view class="result-header">
+      <text class="label">格式化结果</text>
+      <view class="action-btn" bindtap="onCopy"><text>复制</text></view>
+    </view>
+    <view class="result-content"><text selectable>{{outputCode}}</text></view>
+  </view>
+</scroll-view>

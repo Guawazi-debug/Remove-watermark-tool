@@ -1,0 +1,73 @@
+.tool-card {
+  min-height: 248rpx;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 246, 239, 0.98));
+  border: 2rpx solid rgba(54, 43, 38, 0.06);
+  border-radius: 28rpx;
+  padding: 28rpx;
+  box-shadow: 0 16rpx 36rpx rgba(54, 43, 38, 0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.tool-card--hover {
+  transform: translateY(-4rpx) scale(0.985);
+  opacity: 0.92;
+  box-shadow: 0 12rpx 24rpx rgba(54, 43, 38, 0.1);
+}
+
+.tool-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.tool-card__icon {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid transparent;
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.4);
+}
+
+.tool-card__badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10rpx;
+}
+
+.tool-card__category,
+.tool-card__badge {
+  font-size: 20rpx;
+  line-height: 1;
+  padding: 10rpx 14rpx;
+  border-radius: 999rpx;
+}
+
+.tool-card__category {
+  background: rgba(54, 43, 38, 0.05);
+  color: #5f564d;
+}
+
+.tool-card__badge {
+  background: #8f3d2e;
+  color: #fff8f0;
+}
+
+.tool-card__name {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #201914;
+  margin-bottom: 10rpx;
+}
+
+.tool-card__desc {
+  font-size: 24rpx;
+  line-height: 1.55;
+  color: #695d52;
+}

@@ -1,0 +1,22 @@
+module.exports = [
+  { id: 'beijing', name: '北京', pension: 8, medical: 2, unemployment: 0.5, housing: 12 },
+  { id: 'shanghai', name: '上海', pension: 8, medical: 2, unemployment: 0.5, housing: 7 },
+  { id: 'guangzhou', name: '广州', pension: 8, medical: 2, unemployment: 0.5, housing: 5 },
+  { id: 'shenzhen', name: '深圳', pension: 8, medical: 2, unemployment: 0.5, housing: 5 },
+  { id: 'hangzhou', name: '杭州', pension: 8, medical: 2, unemployment: 0.5, housing: 12 },
+  { id: 'chengdu', name: '成都', pension: 8, medical: 2, unemployment: 0.5, housing: 6 },
+  { id: 'wuhan', name: '武汉', pension: 8, medical: 2, unemployment: 0.5, housing: 8 },
+  { id: 'nanjing', name: '南京', pension: 8, medical: 2, unemployment: 0.5, housing: 8 },
+  { id: 'suzhou', name: '苏州', pension: 8, medical: 2, unemployment: 0.5, housing: 8 },
+  { id: 'tianjin', name: '天津', pension: 8, medical: 2, unemployment: 0.5, housing: 11 },
+  { id: 'chongqing', name: '重庆', pension: 8, medical: 2, unemployment: 0.5, housing: 6 },
+  { id: 'xian', name: '西安', pension: 8, medical: 2, unemployment: 0.5, housing: 5 },
+  { id: 'changsha', name: '长沙', pension: 8, medical: 2, unemployment: 0.5, housing: 8 },
+  { id: 'zhengzhou', name: '郑州', pension: 8, medical: 2, unemployment: 0.5, housing: 8 },
+  { id: 'dongguan', name: '东莞', pension: 8, medical: 2, unemployment: 0.5, housing: 5 },
+  { id: 'foshan', name: '佛山', pension: 8, medical: 2, unemployment: 0.5, housing: 5 },
+  { id: 'xiamen', name: '厦门', pension: 8, medical: 2, unemployment: 0.5, housing: 12 },
+  { id: 'kunming', name: '昆明', pension: 8, medical: 2, unemployment: 0.5, housing: 10 },
+  { id: 'hefei', name: '合肥', pension: 8, medical: 2, unemployment: 0.5, housing: 8 },
+  { id: 'dalian', name: '大连', pension: 8, medical: 2, unemployment: 0.5, housing: 12 }
+]

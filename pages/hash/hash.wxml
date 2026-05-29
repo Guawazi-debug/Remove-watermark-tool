@@ -1,0 +1,46 @@
+<!--pages/hash/hash.wxml-->
+<navigation-bar title="MD5/SHA 哈希" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <view class="input-section">
+    <text class="input-label">输入文本</text>
+    <view class="textarea-wrapper">
+      <textarea class="input-textarea" placeholder="请输入要计算哈希的文本..." value="{{inputText}}" bindinput="onInputChange" maxlength="-1" />
+    </view>
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onPaste"><text>粘贴</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+    </view>
+    <view class="btn-row" style="margin-top: 16rpx;">
+      <view class="btn btn--primary" bindtap="onCalc"><text>计算哈希</text></view>
+    </view>
+  </view>
+
+  <view class="result-section" wx:if="{{results.md5}}">
+    <view class="hash-item">
+      <view class="hash-header">
+        <text class="hash-label">MD5</text>
+        <view class="hash-copy" data-value="{{results.md5}}" bindtap="onCopy"><text>复制</text></view>
+      </view>
+      <text class="hash-value" selectable>{{results.md5}}</text>
+    </view>
+    <view class="hash-item">
+      <view class="hash-header">
+        <text class="hash-label">SHA1</text>
+        <view class="hash-copy" data-value="{{results.sha1}}" bindtap="onCopy"><text>复制</text></view>
+      </view>
+      <text class="hash-value" selectable>{{results.sha1}}</text>
+    </view>
+    <view class="hash-item">
+      <view class="hash-header">
+        <text class="hash-label">SHA256</text>
+        <view class="hash-copy" data-value="{{results.sha256}}" bindtap="onCopy"><text>复制</text></view>
+      </view>
+      <text class="hash-value" selectable>{{results.sha256}}</text>
+    </view>
+  </view>
+
+</scroll-view>

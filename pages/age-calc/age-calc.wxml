@@ -1,0 +1,46 @@
+<navigation-bar title="年龄计算" back="{{true}}" homeButton="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="section">
+    <text class="label">出生日期</text>
+    <view class="date-row">
+      <picker mode="date" value="{{birthday}}" bindchange="onBirthdayChange">
+        <view class="date-picker">
+          <text class="date-text">{{birthday || '请选择出生日期'}}</text>
+          <text class="date-icon">DATE</text>
+        </view>
+      </picker>
+    </view>
+    <view class="btn-row">
+      <view class="btn btn--primary" bindtap="onCalc"><text>计算年龄</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+    </view>
+  </view>
+
+  <view class="section result-section" wx:if="{{result}}">
+    <text class="label">年龄结果</text>
+    <view class="age-main">
+      <text class="age-number">{{result.years}}</text>
+      <text class="age-unit">岁</text>
+      <text class="age-number">{{result.months}}</text>
+      <text class="age-unit">个月</text>
+      <text class="age-number">{{result.days}}</text>
+      <text class="age-unit">天</text>
+    </view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <text class="stat-value">{{result.totalDays}}</text>
+        <text class="stat-label">累计天数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{result.totalWeeks}}</text>
+        <text class="stat-label">累计周数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{result.nextBirthday}}</text>
+        <text class="stat-label">距下次生日</text>
+      </view>
+    </view>
+  </view>
+</scroll-view>

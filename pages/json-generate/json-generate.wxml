@@ -1,0 +1,73 @@
+<!--pages/json-generate/json-generate.wxml-->
+<navigation-bar title="JSON 生成" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <!-- 模式选择 -->
+  <view class="mode-section">
+    <text class="section-label">转换模式</text>
+    <view class="mode-tabs">
+      <view
+        wx:for="{{modes}}"
+        wx:key="id"
+        class="mode-tab {{mode === item.id ? 'mode-tab--active' : ''}}"
+        data-mode="{{item.id}}"
+        bindtap="onModeChange"
+      >
+        <text class="mode-tab__name">{{item.name}}</text>
+        <text class="mode-tab__desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-section">
+    <view class="input-header">
+      <text class="input-label">输入文本内容</text>
+    </view>
+    <view class="textarea-wrapper">
+      <textarea
+        class="json-textarea"
+        placeholder="{{mode === 'keyvalue' ? '每行一个键值对，如: name=张三' : '每行一个值，如: 张三'}}"
+        placeholder-class="placeholder-style"
+        value="{{inputText}}"
+        bindinput="onInputChange"
+        maxlength="-1"
+      />
+    </view>
+
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onPaste">
+        <text>粘贴</text>
+      </view>
+      <view class="btn btn--secondary" bindtap="onClear">
+        <text>清空</text>
+      </view>
+    </view>
+
+    <view class="btn-row" style="margin-top: 16rpx;">
+      <view class="btn btn--primary" bindtap="onGenerate">
+        <text>生成 JSON</text>
+      </view>
+    </view>
+
+    <!-- 错误提示 -->
+    <view class="error-msg" wx:if="{{errorMsg}}">
+      <text>{{errorMsg}}</text>
+    </view>
+  </view>
+
+  <!-- 生成结果 -->
+  <view class="result-section" wx:if="{{showResult}}">
+    <view class="result-header">
+      <text class="result-title">生成结果</text>
+      <view class="action-btn action-btn--primary" bindtap="onCopyResult">
+        <text>复制</text>
+      </view>
+    </view>
+    <json-viewer json="{{generatedJson}}" />
+  </view>
+
+</scroll-view>

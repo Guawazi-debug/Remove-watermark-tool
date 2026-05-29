@@ -1,0 +1,5 @@
+.tool-icon {
+  width: 56rpx;
+  height: 56rpx;
+  display: block;
+}

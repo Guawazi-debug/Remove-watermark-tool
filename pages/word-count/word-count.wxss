@@ -1,0 +1,9 @@
+/* pages/word-count/word-count.wxss */
+.input-section { margin: 24rpx 32rpx 0; }
+.textarea-wrapper { background: #fff; border-radius: 16rpx; padding: 24rpx; border: 2rpx solid #e8f0fe; }
+.input-textarea { width: 100%; height: 240rpx; font-size: 26rpx; color: #333; line-height: 1.5; overflow-y: auto; }
+.stats-section { margin: 32rpx 32rpx 0; }
+.stats-grid { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.stat-item { width: calc(33.33% - 11rpx); background: #fff; border-radius: 16rpx; padding: 24rpx; display: flex; flex-direction: column; align-items: center; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06); }
+.stat-value { font-size: 40rpx; font-weight: 700; color: #4a90d9; margin-bottom: 8rpx; }
+.stat-label { font-size: 22rpx; color: #8e8e93; }

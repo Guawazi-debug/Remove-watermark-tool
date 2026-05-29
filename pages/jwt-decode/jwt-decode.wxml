@@ -1,0 +1,33 @@
+<!--pages/jwt-decode/jwt-decode.wxml-->
+<navigation-bar title="JWT 解析" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <view class="input-section">
+    <text class="input-label">输入 JWT Token</text>
+    <view class="textarea-wrapper">
+      <textarea class="input-textarea" placeholder="粘贴 JWT Token..." value="{{inputText}}" bindinput="onInputChange" maxlength="-1" />
+    </view>
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onPaste"><text>粘贴</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+    </view>
+    <view class="btn-row" style="margin-top: 16rpx;">
+      <view class="btn btn--primary" bindtap="onDecode"><text>解析</text></view>
+    </view>
+    <view class="error-msg" wx:if="{{errorMsg}}"><text>{{errorMsg}}</text></view>
+  </view>
+
+  <view class="result-section" wx:if="{{header}}">
+    <text class="result-title">Header</text>
+    <json-viewer json="{{header}}" />
+  </view>
+
+  <view class="result-section" wx:if="{{payload}}">
+    <text class="result-title">Payload</text>
+    <json-viewer json="{{payload}}" />
+  </view>
+
+</scroll-view>

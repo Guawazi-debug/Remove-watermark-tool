@@ -1,0 +1,8 @@
+.section { margin: 24rpx 32rpx 0; background: #fff; border-radius: 16rpx; padding: 24rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06); }
+.label { font-size: 26rpx; font-weight: 600; color: #1a1a2e; margin-bottom: 12rpx; display: block; }
+.input { height: 80rpx; background: #f5f6fa; border-radius: 10rpx; padding: 0 20rpx; font-size: 28rpx; font-family: monospace; }
+.result-list { margin-top: 12rpx; }
+.result-item { display: flex; align-items: center; padding: 16rpx; background: #f5f6fa; border-radius: 8rpx; margin-bottom: 8rpx; }
+.result-label { width: 80rpx; font-size: 24rpx; color: #8e8e93; font-weight: 600; }
+.result-value { flex: 1; font-size: 28rpx; color: #1a1a2e; font-family: monospace; }
+.copy-btn { font-size: 22rpx; color: #4a90d9; }

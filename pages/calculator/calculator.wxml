@@ -1,0 +1,47 @@
+<!--pages/calculator/calculator.wxml-->
+<navigation-bar title="计算器" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <view class="display-section">
+    <text class="helper-text">{{helperText}}</text>
+    <text class="expression">{{inputExpr}}</text>
+    <text class="display-value" wx:if="{{display}}">= {{display}}</text>
+    <view class="copy-btn" bindtap="onCopy"><text>复制</text></view>
+  </view>
+
+  <view class="keypad">
+    <view class="key-row">
+      <view class="key key--func" bindtap="onClear"><text>C</text></view>
+      <view class="key key--func" bindtap="onLeftParen"><text>(</text></view>
+      <view class="key key--func" bindtap="onRightParen"><text>)</text></view>
+      <view class="key key--op" data-op="/" bindtap="onOperator"><text>/</text></view>
+    </view>
+    <view class="key-row">
+      <view class="key" data-num="7" bindtap="onNumber"><text>7</text></view>
+      <view class="key" data-num="8" bindtap="onNumber"><text>8</text></view>
+      <view class="key" data-num="9" bindtap="onNumber"><text>9</text></view>
+      <view class="key key--op" data-op="*" bindtap="onOperator"><text>*</text></view>
+    </view>
+    <view class="key-row">
+      <view class="key" data-num="4" bindtap="onNumber"><text>4</text></view>
+      <view class="key" data-num="5" bindtap="onNumber"><text>5</text></view>
+      <view class="key" data-num="6" bindtap="onNumber"><text>6</text></view>
+      <view class="key key--op" data-op="-" bindtap="onOperator"><text>-</text></view>
+    </view>
+    <view class="key-row">
+      <view class="key" data-num="1" bindtap="onNumber"><text>1</text></view>
+      <view class="key" data-num="2" bindtap="onNumber"><text>2</text></view>
+      <view class="key" data-num="3" bindtap="onNumber"><text>3</text></view>
+      <view class="key key--op" data-op="+" bindtap="onOperator"><text>+</text></view>
+    </view>
+    <view class="key-row">
+      <view class="key key--wide" data-num="0" bindtap="onNumber"><text>0</text></view>
+      <view class="key" data-num="." bindtap="onNumber"><text>.</text></view>
+      <view class="key key--eq" bindtap="onEqual"><text>=</text></view>
+    </view>
+  </view>
+
+</scroll-view>

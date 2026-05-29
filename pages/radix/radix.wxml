@@ -1,0 +1,76 @@
+<!--pages/radix/radix.wxml-->
+<navigation-bar title="进制转换" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <!-- 数字转进制 -->
+  <view class="section">
+    <text class="section-title">数字 → 进制</text>
+    <view class="input-row">
+      <input class="text-input" type="number" placeholder="输入十进制数字" value="{{decInput}}" bindinput="onDecInputChange" />
+      <view class="btn btn--primary btn--small" bindtap="onToConvert"><text>转换</text></view>
+    </view>
+    <view class="result-list" wx:if="{{toResults}}">
+      <view class="result-item" data-value="{{toResults.bin}}" bindtap="onCopy">
+        <text class="result-label">二进制</text>
+        <text class="result-value" selectable>{{toResults.bin}}</text>
+        <text class="result-copy">复制</text>
+      </view>
+      <view class="result-item" data-value="{{toResults.oct}}" bindtap="onCopy">
+        <text class="result-label">八进制</text>
+        <text class="result-value" selectable>{{toResults.oct}}</text>
+        <text class="result-copy">复制</text>
+      </view>
+      <view class="result-item" data-value="{{toResults.hex}}" bindtap="onCopy">
+        <text class="result-label">十六进制</text>
+        <text class="result-value" selectable>{{toResults.hex}}</text>
+        <text class="result-copy">复制</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="divider"></view>
+
+  <!-- 进制转数字 -->
+  <view class="section">
+    <text class="section-title">进制 → 数字</text>
+    <view class="base-tabs">
+      <view class="base-tab {{fromBase === 2 ? 'base-tab--active' : ''}}" data-base="2" bindtap="onFromBaseChange"><text>二进制</text></view>
+      <view class="base-tab {{fromBase === 8 ? 'base-tab--active' : ''}}" data-base="8" bindtap="onFromBaseChange"><text>八进制</text></view>
+      <view class="base-tab {{fromBase === 16 ? 'base-tab--active' : ''}}" data-base="16" bindtap="onFromBaseChange"><text>十六进制</text></view>
+    </view>
+    <view class="input-row">
+      <input class="text-input" placeholder="输入进制数值" value="{{fromInput}}" bindinput="onFromInputChange" />
+      <view class="btn btn--primary btn--small" bindtap="onFromConvert"><text>转换</text></view>
+    </view>
+    <view class="result-list" wx:if="{{fromResults}}">
+      <view class="result-item" data-value="{{fromResults.dec}}" bindtap="onCopy">
+        <text class="result-label">十进制</text>
+        <text class="result-value" selectable>{{fromResults.dec}}</text>
+        <text class="result-copy">复制</text>
+      </view>
+      <view class="result-item" data-value="{{fromResults.bin}}" bindtap="onCopy">
+        <text class="result-label">二进制</text>
+        <text class="result-value" selectable>{{fromResults.bin}}</text>
+        <text class="result-copy">复制</text>
+      </view>
+      <view class="result-item" data-value="{{fromResults.oct}}" bindtap="onCopy">
+        <text class="result-label">八进制</text>
+        <text class="result-value" selectable>{{fromResults.oct}}</text>
+        <text class="result-copy">复制</text>
+      </view>
+      <view class="result-item" data-value="{{fromResults.hex}}" bindtap="onCopy">
+        <text class="result-label">十六进制</text>
+        <text class="result-value" selectable>{{fromResults.hex}}</text>
+        <text class="result-copy">复制</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="btn-row" style="margin: 32rpx;">
+    <view class="btn btn--secondary" bindtap="onClear"><text>清空全部</text></view>
+  </view>
+
+</scroll-view>

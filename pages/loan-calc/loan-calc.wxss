@@ -1,0 +1,11 @@
+.section { margin: 24rpx 32rpx 0; background: #fff; border-radius: 16rpx; padding: 24rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06); }
+.label { font-size: 26rpx; font-weight: 600; color: #1a1a2e; margin-bottom: 12rpx; display: block; }
+.input { height: 80rpx; background: #f5f6fa; border-radius: 10rpx; padding: 0 20rpx; font-size: 28rpx; margin-bottom: 16rpx; }
+.result-section { background: linear-gradient(135deg, #f8f9fa, #e9ecef); }
+.result-main { text-align: center; padding: 24rpx 0; background: #fff; border-radius: 12rpx; margin-bottom: 16rpx; }
+.result-label { font-size: 22rpx; color: #999; display: block; margin-bottom: 8rpx; }
+.result-value { font-size: 28rpx; font-weight: 600; color: #1a1a2e; }
+.result-value.main { font-size: 40rpx; color: #4a90d9; }
+.result-value.red { color: #e74c3c; }
+.result-grid { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.result-item { width: calc(50% - 6rpx); background: #fff; border-radius: 12rpx; padding: 16rpx; }

@@ -1,0 +1,200 @@
+/* pages/video-parse/video-parse.wxss */
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 24rpx;
+}
+
+.url-input {
+  flex: 1;
+  height: 96rpx;
+  font-size: 28rpx;
+  color: #241b16;
+}
+
+.placeholder-style {
+  color: #9a8f87;
+}
+
+.clear-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a78f82;
+  font-size: 28rpx;
+}
+
+/* ===== 使用说明 ===== */
+.guide-section {
+  margin: 24rpx 24rpx 0;
+  padding: 28rpx 24rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.74);
+  border: 2rpx solid rgba(93, 66, 50, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.guide-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.guide-step {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8f3d2e, #c27a4a);
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.guide-text {
+  font-size: 26rpx;
+  color: #4a3f38;
+}
+
+/* ===== 解析结果 ===== */
+.result-card {
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 24rpx;
+  overflow: hidden;
+  border: 2rpx solid rgba(93, 66, 50, 0.06);
+}
+
+.result-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10rpx;
+  margin: 24rpx 24rpx 0;
+  padding: 12rpx 18rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, rgba(45, 99, 133, 0.12), rgba(194, 122, 74, 0.12));
+  border: 2rpx solid rgba(45, 99, 133, 0.08);
+  align-self: center;
+}
+
+.result-status__label {
+  color: #2d6385;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.result-status__divider {
+  color: #8a7c74;
+  font-size: 20rpx;
+}
+
+.result-status__value {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #241b16;
+}
+
+.result-video {
+  width: 100%;
+  height: 400rpx;
+  display: block;
+}
+
+.result-btns {
+  padding: 0 24rpx 24rpx;
+  margin: 0;
+}
+
+.download-progress {
+  padding: 0 24rpx 24rpx;
+}
+
+.download-progress__track {
+  height: 14rpx;
+  border-radius: 999rpx;
+  background: rgba(45, 99, 133, 0.12);
+  overflow: hidden;
+}
+
+.download-progress__bar {
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #2f8f67, #39aa78);
+}
+
+.download-progress__text {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: #4a3f38;
+  text-align: center;
+}
+
+.result-info {
+  padding: 24rpx;
+}
+
+.result-title {
+  font-size: 30rpx;
+  color: #241b16;
+  font-weight: 500;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.result-fallback {
+  margin-top: 14rpx;
+  padding: 16rpx 18rpx;
+  border-radius: 18rpx;
+  background: rgba(45, 99, 133, 0.08);
+}
+
+.result-fallback__text {
+  font-size: 22rpx;
+  line-height: 1.7;
+  color: #4a3f38;
+}
+
+.link-card {
+  margin-top: 16rpx;
+  padding: 18rpx 18rpx 16rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.88);
+  border: 2rpx solid rgba(93, 66, 50, 0.06);
+}
+
+.link-card__label {
+  display: block;
+  font-size: 22rpx;
+  color: #8a7c74;
+  margin-bottom: 10rpx;
+}
+
+.link-card__value {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #241b16;
+  word-break: break-all;
+}
+
+.link-card__action {
+  display: inline-flex;
+  margin-top: 14rpx;
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(45, 99, 133, 0.12);
+  color: #2d6385;
+  font-size: 22rpx;
+}

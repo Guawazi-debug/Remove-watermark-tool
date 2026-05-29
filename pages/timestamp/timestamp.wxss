@@ -1,0 +1,19 @@
+/* pages/timestamp/timestamp.wxss */
+.current-section { margin: 24rpx 32rpx 0; background: #fff; border-radius: 16rpx; padding: 24rpx; display: flex; flex-direction: column; gap: 8rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06); }
+.current-label { font-size: 24rpx; color: #8e8e93; }
+.current-value { font-size: 28rpx; color: #1a1a2e; font-family: monospace; }
+.mode-section { margin: 24rpx 32rpx 0; }
+.mode-tabs { display: flex; gap: 16rpx; }
+.mode-tab { flex: 1; height: 80rpx; background: #fff; border-radius: 12rpx; display: flex; align-items: center; justify-content: center; font-size: 26rpx; color: #666; border: 2rpx solid #e8f0fe; }
+.mode-tab--active { background: linear-gradient(135deg, #4a90d9, #6c5ce7); color: #fff; border-color: transparent; }
+.input-section { margin: 24rpx 32rpx 0; }
+.input-label { font-size: 28rpx; font-weight: 600; color: #1a1a2e; margin-bottom: 12rpx; display: block; }
+.input-row { display: flex; gap: 16rpx; }
+.text-input { flex: 1; height: 88rpx; background: #fff; border-radius: 12rpx; padding: 0 24rpx; font-size: 28rpx; border: 2rpx solid #e8f0fe; font-family: monospace; }
+.use-btn { height: 88rpx; padding: 0 24rpx; background: #f0f0f0; border-radius: 12rpx; display: flex; align-items: center; font-size: 26rpx; color: #4a90d9; }
+.action-row { margin: 24rpx 32rpx 0; display: flex; gap: 16rpx; }
+.action-row .btn { flex: 1; }
+.result-section { margin: 32rpx 32rpx 0; }
+.result-label { font-size: 28rpx; font-weight: 600; color: #1a1a2e; margin-bottom: 12rpx; display: block; }
+.result-content { background: #fff; border-radius: 16rpx; padding: 24rpx; border: 2rpx solid #e8f0fe; font-size: 32rpx; color: #4a90d9; font-family: monospace; text-align: center; }
+.btn--copy { margin-top: 16rpx; }

@@ -1,0 +1,59 @@
+<!--pages/color-convert/color-convert.wxml-->
+<navigation-bar title="颜色转换" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <view class="preview-section">
+    <view class="preview-box" style="background: {{previewColor}};"></view>
+    <text class="preview-text">{{hex}}</text>
+  </view>
+
+  <view class="format-section">
+    <text class="section-title">HEX</text>
+    <view class="input-row">
+      <input class="text-input" value="{{hex}}" bindinput="onHexChange" />
+      <view class="copy-btn" data-value="{{hex}}" bindtap="onCopy"><text>复制</text></view>
+    </view>
+  </view>
+
+  <view class="format-section">
+    <text class="section-title">RGB</text>
+    <view class="rgb-row">
+      <view class="rgb-item">
+        <text class="rgb-label">R</text>
+        <input class="rgb-input" type="number" value="{{r}}" bindinput="onRChange" />
+      </view>
+      <view class="rgb-item">
+        <text class="rgb-label">G</text>
+        <input class="rgb-input" type="number" value="{{g}}" bindinput="onGChange" />
+      </view>
+      <view class="rgb-item">
+        <text class="rgb-label">B</text>
+        <input class="rgb-input" type="number" value="{{b}}" bindinput="onBChange" />
+      </view>
+    </view>
+    <view class="copy-btn" data-value="rgb({{r}}, {{g}}, {{b}})" bindtap="onCopy"><text>复制 RGB</text></view>
+  </view>
+
+  <view class="format-section">
+    <text class="section-title">HSL</text>
+    <view class="rgb-row">
+      <view class="rgb-item">
+        <text class="rgb-label">H</text>
+        <input class="rgb-input" type="number" value="{{h}}" bindinput="onHChange" />
+      </view>
+      <view class="rgb-item">
+        <text class="rgb-label">S</text>
+        <input class="rgb-input" type="number" value="{{s}}" bindinput="onSChange" />
+      </view>
+      <view class="rgb-item">
+        <text class="rgb-label">L</text>
+        <input class="rgb-input" type="number" value="{{l}}" bindinput="onLChange" />
+      </view>
+    </view>
+    <view class="copy-btn" data-value="hsl({{h}}, {{s}}%, {{l}}%)" bindtap="onCopy"><text>复制 HSL</text></view>
+  </view>
+
+</scroll-view>

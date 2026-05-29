@@ -1,0 +1,17 @@
+<view class="json-viewer">
+  <scroll-view scroll-x class="json-scroll">
+    <view class="json-content">
+      <view class="json-line" wx:for="{{lines}}" wx:key="num">
+        <text class="json-line-num">{{item.num}}</text>
+        <view class="json-line-content">
+          <text
+            wx:for="{{item.segments}}"
+            wx:key="index"
+            wx:for-item="seg"
+            class="json-segment json-{{seg.type}}"
+          >{{seg.text}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

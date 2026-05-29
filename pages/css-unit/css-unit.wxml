@@ -1,0 +1,47 @@
+<!--pages/css-unit/css-unit.wxml-->
+<navigation-bar title="CSS 单位转换" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="section">
+    <text class="label">输入像素值 (px)</text>
+    <input class="input" type="digit" value="{{inputValue}}" bindinput="onInputChange" />
+    <text class="label" style="margin-top: 16rpx;">设计稿宽度 (px)</text>
+    <input class="input" type="number" value="{{baseSize}}" bindinput="onBaseChange" placeholder="默认 375" />
+  </view>
+  <view class="section" wx:if="{{results.px}}">
+    <text class="label">转换结果</text>
+    <view class="result-list">
+      <view class="result-item" data-value="{{results.px}}" bindtap="onCopy">
+        <text class="result-label">PX</text>
+        <text class="result-value">{{results.px}}</text>
+        <text class="copy-btn">复制</text>
+      </view>
+      <view class="result-item" data-value="{{results.rem}}" bindtap="onCopy">
+        <text class="result-label">REM</text>
+        <text class="result-value">{{results.rem}}</text>
+        <text class="copy-btn">复制</text>
+      </view>
+      <view class="result-item" data-value="{{results.em}}" bindtap="onCopy">
+        <text class="result-label">EM</text>
+        <text class="result-value">{{results.em}}</text>
+        <text class="copy-btn">复制</text>
+      </view>
+      <view class="result-item" data-value="{{results.vw}}" bindtap="onCopy">
+        <text class="result-label">VW</text>
+        <text class="result-value">{{results.vw}}</text>
+        <text class="copy-btn">复制</text>
+      </view>
+      <view class="result-item" data-value="{{results.vh}}" bindtap="onCopy">
+        <text class="result-label">VH</text>
+        <text class="result-value">{{results.vh}}</text>
+        <text class="copy-btn">复制</text>
+      </view>
+      <view class="result-item" data-value="{{results.rpx}}" bindtap="onCopy">
+        <text class="result-label">RPX</text>
+        <text class="result-value">{{results.rpx}}</text>
+        <text class="copy-btn">复制</text>
+      </view>
+    </view>
+  </view>
+</scroll-view>

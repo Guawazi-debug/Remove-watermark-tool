@@ -1,0 +1,49 @@
+<!--pages/cron-gen/cron-gen.wxml-->
+<navigation-bar title="Cron 生成" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="section">
+    <text class="label">常用表达式</text>
+    <view class="preset-grid">
+      <view class="preset-item" wx:for="{{presets}}" wx:key="name" data-value="{{item.value}}" bindtap="onPreset">
+        <text>{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="section">
+    <text class="label">自定义表达式</text>
+    <view class="cron-inputs">
+      <view class="cron-item">
+        <text class="cron-label">分钟</text>
+        <input class="cron-input" value="{{minute}}" bindinput="onMinuteChange" />
+      </view>
+      <view class="cron-item">
+        <text class="cron-label">小时</text>
+        <input class="cron-input" value="{{hour}}" bindinput="onHourChange" />
+      </view>
+      <view class="cron-item">
+        <text class="cron-label">日</text>
+        <input class="cron-input" value="{{day}}" bindinput="onDayChange" />
+      </view>
+      <view class="cron-item">
+        <text class="cron-label">月</text>
+        <input class="cron-input" value="{{month}}" bindinput="onMonthChange" />
+      </view>
+      <view class="cron-item">
+        <text class="cron-label">周</text>
+        <input class="cron-input" value="{{week}}" bindinput="onWeekChange" />
+      </view>
+    </view>
+  </view>
+  <view class="section result-section">
+    <text class="label">生成结果</text>
+    <view class="result-box">
+      <text class="result-cron">{{cron}}</text>
+    </view>
+    <view class="btn-row">
+      <view class="btn btn--secondary" bindtap="onClear"><text>重置</text></view>
+      <view class="btn btn--primary" bindtap="onCopy"><text>复制</text></view>
+    </view>
+  </view>
+</scroll-view>

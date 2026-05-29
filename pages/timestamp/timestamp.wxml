@@ -1,0 +1,52 @@
+<navigation-bar title="时间戳转换" back="{{true}}" homeButton="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="current-section">
+    <text class="current-label">当前时间</text>
+    <text class="current-value">{{currentDate}}</text>
+    <text class="current-value">Unix 秒级时间戳：{{currentTime}}</text>
+  </view>
+
+  <view class="mode-section">
+    <view class="mode-tabs">
+      <view class="mode-tab {{mode === 'toDate' ? 'mode-tab--active' : ''}}" data-mode="toDate" bindtap="onModeChange"><text>时间戳转日期</text></view>
+      <view class="mode-tab {{mode === 'toTs' ? 'mode-tab--active' : ''}}" data-mode="toTs" bindtap="onModeChange"><text>日期转时间戳</text></view>
+    </view>
+  </view>
+
+  <view class="input-section" wx:if="{{mode === 'toDate'}}">
+    <text class="input-label">输入时间戳</text>
+    <view class="input-row">
+      <input class="text-input" type="number" placeholder="支持秒或毫秒时间戳" value="{{timestamp}}" bindinput="onTimestampChange" />
+      <view class="use-btn" bindtap="onUseCurrent"><text>当前</text></view>
+    </view>
+  </view>
+
+  <view class="input-section" wx:if="{{mode === 'toTs'}}">
+    <text class="input-label">输入日期时间</text>
+    <input class="text-input" placeholder="例如 2026-05-28 12:30:00" value="{{dateStr}}" bindinput="onDateChange" />
+  </view>
+
+  <view class="action-row">
+    <view class="btn btn--primary" bindtap="onConvert"><text>转换</text></view>
+    <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+  </view>
+
+  <view class="result-section" wx:if="{{mode === 'toDate' && dateStr}}">
+    <text class="result-label">转换结果</text>
+    <view class="result-content">
+      <text selectable>{{dateStr}}</text>
+    </view>
+    <view class="btn btn--secondary btn--copy" bindtap="onCopy"><text>复制结果</text></view>
+  </view>
+
+  <view class="result-section" wx:if="{{mode === 'toTs' && timestamp}}">
+    <text class="result-label">转换结果</text>
+    <view class="result-content">
+      <text selectable>{{timestamp}}</text>
+    </view>
+    <view class="btn btn--secondary btn--copy" bindtap="onCopy"><text>复制结果</text></view>
+  </view>
+</scroll-view>

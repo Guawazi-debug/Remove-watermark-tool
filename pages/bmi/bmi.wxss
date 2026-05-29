@@ -1,0 +1,13 @@
+.section { margin: 24rpx 32rpx 0; background: #fff; border-radius: 16rpx; padding: 24rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06); }
+.label { font-size: 26rpx; font-weight: 600; color: #1a1a2e; margin-bottom: 12rpx; display: block; }
+.input { height: 80rpx; background: #f5f6fa; border-radius: 10rpx; padding: 0 20rpx; font-size: 28rpx; margin-bottom: 16rpx; }
+.result-section { background: linear-gradient(135deg, #f8f9fa, #e9ecef); }
+.bmi-main { text-align: center; padding: 24rpx 0; }
+.bmi-value { font-size: 72rpx; font-weight: 700; display: block; }
+.bmi-level { font-size: 32rpx; font-weight: 600; }
+.bmi-range { background: #fff; border-radius: 12rpx; padding: 16rpx; text-align: center; margin: 16rpx 0; }
+.range-label { font-size: 22rpx; color: #999; display: block; }
+.range-value { font-size: 28rpx; color: #1a1a2e; font-weight: 600; }
+.bmi-scale { display: flex; gap: 8rpx; }
+.scale-item { flex: 1; border-radius: 8rpx; padding: 12rpx 8rpx; text-align: center; }
+.scale-item text { display: block; color: #fff; font-size: 20rpx; }

@@ -1,0 +1,71 @@
+<!--pages/unit-convert/unit-convert.wxml-->
+<navigation-bar title="单位转换" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+
+  <view class="category-section">
+    <view class="category-tabs">
+      <view
+        wx:for="{{categories}}"
+        wx:key="id"
+        class="category-tab {{category === item.id ? 'category-tab--active' : ''}}"
+        data-category="{{item.id}}"
+        bindtap="onCategoryChange"
+      >
+        <text>{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="convert-section">
+    <view class="unit-group">
+      <text class="unit-label">从</text>
+      <view class="unit-tabs">
+        <view
+          wx:for="{{units[category]}}"
+          wx:key="id"
+          class="unit-tab {{fromUnit === item.id ? 'unit-tab--active' : ''}}"
+          data-unit="{{item.id}}"
+          bindtap="onFromChange"
+        >
+          <text>{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <input class="value-input" type="digit" placeholder="输入数值" value="{{inputValue}}" bindinput="onInputChange" />
+
+    <view class="swap-btn" bindtap="onSwap"><text>⇅</text></view>
+
+    <view class="unit-group">
+      <text class="unit-label">到</text>
+      <view class="unit-tabs">
+        <view
+          wx:for="{{units[category]}}"
+          wx:key="id"
+          class="unit-tab {{toUnit === item.id ? 'unit-tab--active' : ''}}"
+          data-unit="{{item.id}}"
+          bindtap="onToChange"
+        >
+          <text>{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="btn-row" style="margin: 24rpx 32rpx 0;">
+    <view class="btn btn--primary" bindtap="onConvert"><text>转换</text></view>
+    <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+  </view>
+
+  <view class="result-section" wx:if="{{result}}">
+    <text class="result-label">转换结果</text>
+    <view class="result-content">
+      <text class="result-value" selectable>{{result}}</text>
+    </view>
+    <view class="btn btn--secondary btn--copy" bindtap="onCopy"><text>复制结果</text></view>
+  </view>
+
+</scroll-view>

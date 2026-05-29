@@ -1,0 +1,43 @@
+<!--pages/loan-calc/loan-calc.wxml-->
+<navigation-bar title="贷款计算" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="page-root" scroll-y enable-flex>
+
+  <tool-hero></tool-hero>
+  <view class="section">
+    <text class="label">贷款金额 (万元)</text>
+    <input class="input" type="digit" placeholder="输入贷款金额" value="{{amount}}" bindinput="onAmountChange" />
+    <text class="label">年利率 (%)</text>
+    <input class="input" type="digit" placeholder="如: 3.1" value="{{rate}}" bindinput="onRateChange" />
+    <text class="label">贷款年限 (年)</text>
+    <input class="input" type="number" placeholder="如: 30" value="{{years}}" bindinput="onYearsChange" />
+    <view class="btn-row">
+      <view class="btn btn--primary" bindtap="onCalc"><text>计算</text></view>
+      <view class="btn btn--secondary" bindtap="onClear"><text>清空</text></view>
+    </view>
+  </view>
+  <view class="section result-section" wx:if="{{result}}">
+    <text class="label">还款结果（等额本息）</text>
+    <view class="result-main">
+      <text class="result-label">每月还款</text>
+      <text class="result-value main">{{result.monthly}} 元</text>
+    </view>
+    <view class="result-grid">
+      <view class="result-item">
+        <text class="result-label">贷款总额</text>
+        <text class="result-value">{{result.amount}} 万元</text>
+      </view>
+      <view class="result-item">
+        <text class="result-label">还款期数</text>
+        <text class="result-value">{{result.years}} 年</text>
+      </view>
+      <view class="result-item">
+        <text class="result-label">支付利息</text>
+        <text class="result-value red">{{result.totalInterest}} 元</text>
+      </view>
+      <view class="result-item">
+        <text class="result-label">还款总额</text>
+        <text class="result-value">{{result.totalPayment}} 元</text>
+      </view>
+    </view>
+  </view>
+</scroll-view>

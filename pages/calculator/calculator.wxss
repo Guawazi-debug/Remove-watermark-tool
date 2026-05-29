@@ -1,0 +1,26 @@
+.display-section {
+  margin: 24rpx 24rpx 0;
+  padding: 30rpx 26rpx 28rpx;
+  border-radius: 32rpx;
+  position: relative;
+  background:
+    radial-gradient(circle at top right, rgba(194, 122, 74, 0.18), transparent 34%),
+    linear-gradient(180deg, #2b211d 0%, #1d1714 100%);
+  box-shadow: 0 20rpx 38rpx rgba(31, 22, 18, 0.18);
+}
+
+.helper-text {
+  padding-right: 100rpx;
+  color: rgba(244, 216, 192, 0.76);
+}
+
+.expression { font-size: 28rpx; color: rgba(255, 245, 238, 0.56); display: block; min-height: 44rpx; margin-top: 18rpx; }
+.display-value { font-size: 68rpx; color: #fff7f0; font-weight: 300; font-family: monospace; display: block; text-align: right; margin-top: 12rpx; word-break: break-all; }
+.copy-btn { position: absolute; top: 28rpx; right: 24rpx; padding: 10rpx 18rpx; border-radius: 999rpx; font-size: 22rpx; color: #fbe7d5; background: rgba(255, 255, 255, 0.08); }
+.keypad { margin: 24rpx 24rpx 0; display: flex; flex-direction: column; gap: 14rpx; }
+.key-row { display: flex; gap: 14rpx; }
+.key { flex: 1; height: 104rpx; background: rgba(255, 255, 255, 0.88); border-radius: 22rpx; display: flex; align-items: center; justify-content: center; font-size: 36rpx; color: #2c221d; box-shadow: 0 10rpx 22rpx rgba(47, 33, 24, 0.08); border: 2rpx solid rgba(93, 66, 50, 0.06); }
+.key--wide { flex: 2; }
+.key--func { background: rgba(45, 99, 133, 0.12); color: #2d6385; }
+.key--op { background: linear-gradient(135deg, #c27a4a, #8f3d2e); color: #fff9f2; }
+.key--eq { background: linear-gradient(135deg, #8f3d2e, #b45f3d); color: #fff7f0; }
