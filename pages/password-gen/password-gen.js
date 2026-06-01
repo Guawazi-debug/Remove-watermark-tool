@@ -1,4 +1,5 @@
 const { getRandomInt } = require('../../utils/random')
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
 Page({
   data: {
@@ -92,5 +93,12 @@ Page({
 
   onCopyAll() {
     wx.setClipboardData({ data: this.data.passwords.join('\n') })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('密码生成', '/pages/password-gen/password-gen')
+  },
+  onShareTimeline() {
+    return getShareTimeline('密码生成')
   }
 })

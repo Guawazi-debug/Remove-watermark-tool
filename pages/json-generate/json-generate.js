@@ -1,4 +1,6 @@
 // pages/json-generate/json-generate.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     inputText: '',
@@ -115,5 +117,12 @@ Page({
       errorMsg: '',
       showResult: false
     })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('JSON 生成', '/pages/json-generate/json-generate')
+  },
+  onShareTimeline() {
+    return getShareTimeline('JSON 生成')
   }
 })

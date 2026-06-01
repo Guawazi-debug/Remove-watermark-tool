@@ -1,3 +1,5 @@
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     amount: '',
@@ -56,5 +58,12 @@ Page({
 
   onClear() {
     this.setData({ amount: '', rate: '', years: '', result: null })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('贷款计算', '/pages/loan-calc/loan-calc')
+  },
+  onShareTimeline() {
+    return getShareTimeline('贷款计算')
   }
 })

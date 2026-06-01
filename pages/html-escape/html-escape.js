@@ -1,4 +1,6 @@
 // pages/html-escape/html-escape.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: { inputText: '', outputText: '', mode: 'encode' },
   onInputChange(e) { this.setData({ inputText: e.detail.value }) },
@@ -17,5 +19,12 @@ Page({
   onCopy() { wx.setClipboardData({ data: this.data.outputText }) },
   onPaste() { wx.getClipboardData({ success: (res) => { if (res.data) this.setData({ inputText: res.data }) } }) },
   onSwap() { this.setData({ inputText: this.data.outputText, outputText: '', mode: this.data.mode === 'encode' ? 'decode' : 'encode' }) },
-  onClear() { this.setData({ inputText: '', outputText: '' }) }
+  onClear() { this.setData({ inputText: '', outputText: '' }) },
+
+  onShareAppMessage() {
+    return getShareAppMessage('HTML 转义', '/pages/html-escape/html-escape')
+  },
+  onShareTimeline() {
+    return getShareTimeline('HTML 转义')
+  }
 })

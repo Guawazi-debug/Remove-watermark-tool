@@ -1,4 +1,5 @@
 const regions = require('../../config/tax-regions')
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
 Page({
   data: {
@@ -92,5 +93,12 @@ Page({
       currentProvince: this.data.provinces[0],
       autoInsurance: true
     })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('个税计算', '/pages/tax-calc/tax-calc')
+  },
+  onShareTimeline() {
+    return getShareTimeline('个税计算')
   }
 })

@@ -1,4 +1,5 @@
 const { getRandomInt } = require('../../utils/random')
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
 Page({
   data: {
@@ -44,5 +45,12 @@ Page({
 
   onClear() {
     this.setData({ uuids: [] })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('UUID 生成', '/pages/uuid/uuid')
+  },
+  onShareTimeline() {
+    return getShareTimeline('UUID 生成')
   }
 })

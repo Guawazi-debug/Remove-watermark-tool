@@ -1,5 +1,6 @@
 // pages/base64/base64.js
 const { encodeBase64, decodeBase64ToString } = require('../../utils/encoding')
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
 Page({
   data: {
@@ -66,5 +67,12 @@ Page({
       mode: this.data.mode === 'encode' ? 'decode' : 'encode',
       errorMsg: ''
     })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('Base64', '/pages/base64/base64')
+  },
+  onShareTimeline() {
+    return getShareTimeline('Base64')
   }
 })

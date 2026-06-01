@@ -1,4 +1,6 @@
 // pages/bmi/bmi.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: { height: '', weight: '', result: null },
   onHeightChange(e) { this.setData({ height: e.detail.value }) },
@@ -25,5 +27,12 @@ Page({
       }
     })
   },
-  onClear() { this.setData({ height: '', weight: '', result: null }) }
+  onClear() { this.setData({ height: '', weight: '', result: null }) },
+
+  onShareAppMessage() {
+    return getShareAppMessage('BMI 计算', '/pages/bmi/bmi')
+  },
+  onShareTimeline() {
+    return getShareTimeline('BMI 计算')
+  }
 })

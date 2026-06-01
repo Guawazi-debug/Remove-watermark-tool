@@ -1,4 +1,6 @@
 // pages/regex-test/regex-test.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     pattern: '',
@@ -64,5 +66,12 @@ Page({
 
   onClear() {
     this.setData({ pattern: '', testText: '', matches: [], errorMsg: '' })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('正则测试', '/pages/regex-test/regex-test')
+  },
+  onShareTimeline() {
+    return getShareTimeline('正则测试')
   }
 })

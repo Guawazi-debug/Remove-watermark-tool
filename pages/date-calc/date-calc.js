@@ -1,4 +1,5 @@
 const { parseDate, formatDate, diffCalendar } = require('../../utils/date')
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
 Page({
   data: {
@@ -104,5 +105,12 @@ Page({
 
   onClear() {
     this.setData({ date1: '', date2: '', days: '', result: '' })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('日期计算', '/pages/date-calc/date-calc')
+  },
+  onShareTimeline() {
+    return getShareTimeline('日期计算')
   }
 })

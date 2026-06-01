@@ -1,4 +1,5 @@
 const { parseDateTime, formatDateTime } = require('../../utils/date')
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
 Page({
   data: {
@@ -74,5 +75,12 @@ Page({
 
   onClear() {
     this.setData({ timestamp: '', dateStr: '' })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('时间戳转换', '/pages/timestamp/timestamp')
+  },
+  onShareTimeline() {
+    return getShareTimeline('时间戳转换')
   }
 })

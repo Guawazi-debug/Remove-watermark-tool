@@ -1,4 +1,6 @@
 // pages/json-diff/json-diff.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: { json1: '', json2: '', diffResult: [], hasDiff: false },
   onJson1Change(e) { this.setData({ json1: e.detail.value }) },
@@ -36,5 +38,12 @@ Page({
   },
   onPaste1() { wx.getClipboardData({ success: (res) => { if (res.data) this.setData({ json1: res.data }) } }) },
   onPaste2() { wx.getClipboardData({ success: (res) => { if (res.data) this.setData({ json2: res.data }) } }) },
-  onClear() { this.setData({ json1: '', json2: '', diffResult: [], hasDiff: false }) }
+  onClear() { this.setData({ json1: '', json2: '', diffResult: [], hasDiff: false }) },
+
+  onShareAppMessage() {
+    return getShareAppMessage('JSON 对比', '/pages/json-diff/json-diff')
+  },
+  onShareTimeline() {
+    return getShareTimeline('JSON 对比')
+  }
 })

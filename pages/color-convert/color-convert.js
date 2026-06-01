@@ -1,4 +1,6 @@
 // pages/color-convert/color-convert.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     hex: '#4a90d9',
@@ -137,5 +139,12 @@ Page({
 
   onCopy(e) {
     wx.setClipboardData({ data: e.currentTarget.dataset.value })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('颜色转换', '/pages/color-convert/color-convert')
+  },
+  onShareTimeline() {
+    return getShareTimeline('颜色转换')
   }
 })

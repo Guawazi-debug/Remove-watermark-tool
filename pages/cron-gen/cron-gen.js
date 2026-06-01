@@ -1,4 +1,6 @@
 // pages/cron-gen/cron-gen.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     minute: '*', hour: '*', day: '*', month: '*', week: '*',
@@ -27,5 +29,12 @@ Page({
     this.setData({ minute: parts[0], hour: parts[1], day: parts[2], month: parts[3], week: parts[4], cron: val })
   },
   onCopy() { wx.setClipboardData({ data: this.data.cron }) },
-  onClear() { this.setData({ minute: '*', hour: '*', day: '*', month: '*', week: '*', cron: '* * * * *' }) }
+  onClear() { this.setData({ minute: '*', hour: '*', day: '*', month: '*', week: '*', cron: '* * * * *' }) },
+
+  onShareAppMessage() {
+    return getShareAppMessage('Cron 生成', '/pages/cron-gen/cron-gen')
+  },
+  onShareTimeline() {
+    return getShareTimeline('Cron 生成')
+  }
 })

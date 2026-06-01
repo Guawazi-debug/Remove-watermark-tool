@@ -1,4 +1,6 @@
 // pages/url-encode/url-encode.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     inputText: '',
@@ -55,5 +57,12 @@ Page({
       mode: this.data.mode === 'encode' ? 'decode' : 'encode',
       errorMsg: ''
     })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('URL 编解码', '/pages/url-encode/url-encode')
+  },
+  onShareTimeline() {
+    return getShareTimeline('URL 编解码')
   }
 })

@@ -1,4 +1,5 @@
 const { md5, sha1, sha256 } = require('../../utils/hash')
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
 Page({
   data: {
@@ -52,5 +53,12 @@ Page({
 
   _sha256(text) {
     return sha256(text)
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('MD5 / SHA', '/pages/hash/hash')
+  },
+  onShareTimeline() {
+    return getShareTimeline('MD5 / SHA')
   }
 })

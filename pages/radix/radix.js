@@ -1,4 +1,6 @@
 // pages/radix/radix.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     // 数字转进制
@@ -92,5 +94,12 @@ Page({
       fromInput: '',
       fromResults: null
     })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('进制转换', '/pages/radix/radix')
+  },
+  onShareTimeline() {
+    return getShareTimeline('进制转换')
   }
 })

@@ -1,4 +1,6 @@
 // pages/text-diff/text-diff.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     text1: '',
@@ -219,5 +221,12 @@ Page({
       stats: null,
       scrollToLine: ''
     })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('文本对比', '/pages/text-diff/text-diff')
+  },
+  onShareTimeline() {
+    return getShareTimeline('文本对比')
   }
 })

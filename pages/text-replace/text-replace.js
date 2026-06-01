@@ -1,4 +1,6 @@
 // pages/text-replace/text-replace.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     inputText: '',
@@ -37,5 +39,12 @@ Page({
       success: (res) => { if (res.data) this.setData({ inputText: res.data }) }
     })
   },
-  onClear() { this.setData({ inputText: '', findText: '', replaceText: '', result: '', replaceCount: 0 }) }
+  onClear() { this.setData({ inputText: '', findText: '', replaceText: '', result: '', replaceCount: 0 }) },
+
+  onShareAppMessage() {
+    return getShareAppMessage('文本替换', '/pages/text-replace/text-replace')
+  },
+  onShareTimeline() {
+    return getShareTimeline('文本替换')
+  }
 })

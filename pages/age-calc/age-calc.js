@@ -1,4 +1,5 @@
 const { parseDate, diffCalendar, nextBirthdayDate, stripTime } = require('../../utils/date')
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
 Page({
   data: {
@@ -42,5 +43,12 @@ Page({
 
   onClear() {
     this.setData({ birthday: '', result: null })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('年龄计算', '/pages/age-calc/age-calc')
+  },
+  onShareTimeline() {
+    return getShareTimeline('年龄计算')
   }
 })

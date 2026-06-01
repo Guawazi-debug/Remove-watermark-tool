@@ -1,4 +1,6 @@
 // pages/json-parse/json-parse.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     inputText: '',
@@ -94,5 +96,12 @@ Page({
       showResult: false,
       isMinified: false
     })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('JSON 解析', '/pages/json-parse/json-parse')
+  },
+  onShareTimeline() {
+    return getShareTimeline('JSON 解析')
   }
 })

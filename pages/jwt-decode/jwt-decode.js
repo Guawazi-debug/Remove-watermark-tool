@@ -1,4 +1,5 @@
 const { base64UrlDecodeToString } = require('../../utils/encoding')
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
 Page({
   data: {
@@ -56,5 +57,12 @@ Page({
 
   onClear() {
     this.setData({ inputText: '', header: '', payload: '', errorMsg: '' })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('JWT 解析', '/pages/jwt-decode/jwt-decode')
+  },
+  onShareTimeline() {
+    return getShareTimeline('JWT 解析')
   }
 })

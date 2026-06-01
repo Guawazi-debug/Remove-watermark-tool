@@ -1,4 +1,6 @@
 // pages/word-count/word-count.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     inputText: '',
@@ -42,5 +44,12 @@ Page({
 
   onClear() {
     this.setData({ inputText: '', stats: null })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('字数统计', '/pages/word-count/word-count')
+  },
+  onShareTimeline() {
+    return getShareTimeline('字数统计')
   }
 })

@@ -1,4 +1,6 @@
 // pages/case-convert/case-convert.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     inputText: '',
@@ -48,5 +50,12 @@ Page({
 
   onSwap() {
     this.setData({ inputText: this.data.outputText, outputText: '' })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('大小写转换', '/pages/case-convert/case-convert')
+  },
+  onShareTimeline() {
+    return getShareTimeline('大小写转换')
   }
 })

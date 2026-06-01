@@ -1,4 +1,6 @@
 // pages/unit-convert/unit-convert.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     category: 'length',
@@ -119,5 +121,12 @@ Page({
 
   onClear() {
     this.setData({ inputValue: '', result: '' })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('单位转换', '/pages/unit-convert/unit-convert')
+  },
+  onShareTimeline() {
+    return getShareTimeline('单位转换')
   }
 })

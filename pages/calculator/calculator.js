@@ -1,4 +1,6 @@
 // pages/calculator/calculator.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     display: '',
@@ -185,5 +187,12 @@ Page({
     if (text) {
       wx.setClipboardData({ data: text })
     }
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('计算器', '/pages/calculator/calculator')
+  },
+  onShareTimeline() {
+    return getShareTimeline('计算器')
   }
 })

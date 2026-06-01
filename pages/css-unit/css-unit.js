@@ -1,4 +1,6 @@
 // pages/css-unit/css-unit.js
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     inputValue: '16',
@@ -28,5 +30,12 @@ Page({
       }
     })
   },
-  onCopy(e) { wx.setClipboardData({ data: e.currentTarget.dataset.value }) }
+  onCopy(e) { wx.setClipboardData({ data: e.currentTarget.dataset.value }) },
+
+  onShareAppMessage() {
+    return getShareAppMessage('CSS 单位转换', '/pages/css-unit/css-unit')
+  },
+  onShareTimeline() {
+    return getShareTimeline('CSS 单位转换')
+  }
 })

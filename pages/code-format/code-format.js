@@ -1,3 +1,5 @@
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 Page({
   data: {
     inputCode: '',
@@ -435,5 +437,12 @@ Page({
 
   onClear() {
     this.setData({ inputCode: '', outputCode: '' })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('代码格式化', '/pages/code-format/code-format')
+  },
+  onShareTimeline() {
+    return getShareTimeline('代码格式化')
   }
 })
