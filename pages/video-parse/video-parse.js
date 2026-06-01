@@ -295,8 +295,7 @@ Page({
                   isDownloading: false,
                   downloadStatusText: ''
                 })
-                const errMsg = err.errMsg || '未知错误'
-                this.setData({ errorMsg: '保存失败: ' + errMsg })
+                this.setData({ errorMsg: '视频格式不支持直接保存' })
                 this.copyLink(downloadTarget, {
                   title: '下载地址已复制',
                   modal: true
