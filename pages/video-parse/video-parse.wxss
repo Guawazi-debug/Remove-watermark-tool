@@ -212,3 +212,10 @@
   border-radius: 16rpx;
   display: block;
 }
+
+.result-images__links {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}

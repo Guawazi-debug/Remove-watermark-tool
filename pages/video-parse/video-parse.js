@@ -407,6 +407,17 @@ Page({
     })
   },
 
+  // 复制图片地址
+  onCopyImageUrl(e) {
+    const url = e.currentTarget.dataset.url
+    if (!url) return
+    this.copyLink(url, {
+      title: '图片地址已复制',
+      modal: false,
+      toast: true
+    })
+  },
+
   // 清空输入
   onClear() {
     this.setData({
