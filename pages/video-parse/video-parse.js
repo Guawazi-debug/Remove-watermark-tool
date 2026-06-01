@@ -60,6 +60,7 @@ Page({
       return null
     }
 
+    const type = this._pickFirstValue(rawData, ['type']) || 'video'
     const playUrl = this._normalizeUrl(this._pickFirstValue(rawData, ['playUrl', 'play_url', 'video', 'url', 'src']))
     const downloadUrl = this._normalizeUrl(this._pickFirstValue(rawData, ['downloadUrl', 'download_url', 'videoUrl', 'video_url', 'mp4', 'file']))
     const cover = this._normalizeUrl(this._pickFirstValue(rawData, ['cover', 'pic', 'image', 'poster', 'coverUrl', 'cover_url']))
@@ -67,6 +68,28 @@ Page({
     const onlineUrl = this._normalizeUrl(this._pickFirstValue(rawData, ['onlineUrl', 'online_url', 'pageUrl', 'page_url', 'shareUrl', 'share_url']))
     const author = this._pickFirstValue(rawData, ['author', 'nickname', 'userName', 'user_name'])
     const video = playUrl || downloadUrl
+
+    // 处理图片类型
+    if (type === 'images') {
+      const images = rawData.images || []
+      const music = this._normalizeUrl(this._pickFirstValue(rawData, ['music']))
+      if (images.length === 0 && !title && !author) {
+        return null
+      }
+      return {
+        title: title || '解析结果',
+        video: '',
+        playUrl: '',
+        downloadUrl: '',
+        cover: images[0] || '',
+        onlineUrl,
+        author,
+        type: 'images',
+        images: images.map(url => this._normalizeUrl(url)).filter(Boolean),
+        music,
+        raw: rawData
+      }
+    }
 
     if (!video && !cover && !title && !onlineUrl && !author) {
       return null
@@ -80,6 +103,7 @@ Page({
       cover,
       onlineUrl,
       author,
+      type: 'video',
       raw: rawData
     }
   },
@@ -159,6 +183,13 @@ Page({
     }
 
     const result = this.data.result
+
+    // 图片类型：逐张保存
+    if (result && result.type === 'images' && result.images && result.images.length > 0) {
+      this._saveImages(result.images)
+      return
+    }
+
     const downloadTarget = this._getDownloadTarget(result)
     if (!downloadTarget) {
       this.setData({ errorMsg: '当前结果未提供可下载地址，请先复制在线播放地址。' })
@@ -235,6 +266,70 @@ Page({
     }
   },
 
+  // 保存图片列表到相册
+  _saveImages(images) {
+    if (!images || images.length === 0) return
+
+    this.setData({
+      errorMsg: '',
+      isDownloading: true,
+      downloadProgress: 0,
+      downloadStatusText: `准备保存 ${images.length} 张图片...`
+    })
+
+    let savedCount = 0
+    let failCount = 0
+
+    images.forEach((imageUrl, index) => {
+      wx.downloadFile({
+        url: imageUrl,
+        success: (res) => {
+          if (res.statusCode === 200 && res.tempFilePath) {
+            wx.saveImageToPhotosAlbum({
+              filePath: res.tempFilePath,
+              success: () => {
+                savedCount++
+                const progress = Math.round(((savedCount + failCount) / images.length) * 100)
+                this.setData({
+                  downloadProgress: progress,
+                  downloadStatusText: `已保存 ${savedCount}/${images.length}`
+                })
+                if (savedCount + failCount === images.length) {
+                  this.setData({ isDownloading: false, downloadStatusText: '' })
+                  const msg = failCount > 0 ? `已保存 ${savedCount} 张，${failCount} 张失败` : `已保存 ${savedCount} 张图片`
+                  wx.showToast({ title: msg, icon: savedCount > 0 ? 'success' : 'none' })
+                }
+              },
+              fail: () => {
+                failCount++
+                if (savedCount + failCount === images.length) {
+                  this.setData({ isDownloading: false, downloadStatusText: '' })
+                  const msg = savedCount > 0 ? `已保存 ${savedCount} 张，${failCount} 张失败` : '保存失败'
+                  wx.showToast({ title: msg, icon: 'none' })
+                }
+              }
+            })
+          } else {
+            failCount++
+            if (savedCount + failCount === images.length) {
+              this.setData({ isDownloading: false, downloadStatusText: '' })
+              const msg = savedCount > 0 ? `已保存 ${savedCount} 张，${failCount} 张失败` : '下载失败'
+              wx.showToast({ title: msg, icon: 'none' })
+            }
+          }
+        },
+        fail: () => {
+          failCount++
+          if (savedCount + failCount === images.length) {
+            this.setData({ isDownloading: false, downloadStatusText: '' })
+            const msg = savedCount > 0 ? `已保存 ${savedCount} 张，${failCount} 张失败` : '下载失败'
+            wx.showToast({ title: msg, icon: 'none' })
+          }
+        }
+      })
+    })
+  },
+
   onCopyPlayUrl() {
     const playUrl = this.data.result && (this.data.result.playUrl || this.data.result.video || '')
     if (!playUrl) {
@@ -299,6 +394,17 @@ Page({
   // 全屏状态变化
   onFullscreenChange(e) {
     this.setData({ _isFullscreen: e.detail.fullScreen })
+  },
+
+  // 图片点击预览
+  onImageTap(e) {
+    const index = e.currentTarget.dataset.index || 0
+    const images = (this.data.result && this.data.result.images) || []
+    if (images.length === 0) return
+    wx.previewImage({
+      current: images[index],
+      urls: images
+    })
   },
 
   // 清空输入

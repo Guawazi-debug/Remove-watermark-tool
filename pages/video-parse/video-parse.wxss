@@ -198,3 +198,17 @@
   color: #2d6385;
   font-size: 22rpx;
 }
+
+/* ===== 图片展示 ===== */
+.result-images {
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.result-images__item {
+  width: 100%;
+  border-radius: 16rpx;
+  display: block;
+}
