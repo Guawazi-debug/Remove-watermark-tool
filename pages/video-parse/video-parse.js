@@ -1,5 +1,7 @@
 // pages/video-parse/video-parse.js
 
+const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
+
 // ========== 接口配置 ==========
 const PARSE_API = 'https://qsy.awenz.cn/api.php'
 // =============================
@@ -403,18 +405,18 @@ Page({
   // 视频点击暂停/播放
   onVideoTap() {
     const videoCtx = wx.createVideoContext('videoPlayer', this)
-    if (this.data._paused) {
+    if (this._paused) {
       videoCtx.play()
-      this.setData({ _paused: false })
+      this._paused = false
     } else {
       videoCtx.pause()
-      this.setData({ _paused: true })
+      this._paused = true
     }
   },
 
   // 全屏状态变化
   onFullscreenChange(e) {
-    this.setData({ _isFullscreen: e.detail.fullScreen })
+    this._isFullscreen = e.detail.fullScreen
   },
 
   // 图片点击预览
@@ -454,5 +456,12 @@ Page({
       errorMsg: '',
       parseSuccessText: ''
     })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('视频解析', '/pages/video-parse/video-parse')
+  },
+  onShareTimeline() {
+    return getShareTimeline('视频解析')
   }
 })

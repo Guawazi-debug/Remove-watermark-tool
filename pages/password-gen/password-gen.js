@@ -13,7 +13,8 @@ Page({
   },
 
   onLengthChange(e) {
-    this.setData({ length: parseInt(e.detail.value, 10) || 16 })
+    const val = parseInt(e.detail.value, 10) || 16
+    this.setData({ length: Math.min(val, 128) })
   },
 
   onToggleOption(e) {

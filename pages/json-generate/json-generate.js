@@ -7,6 +7,7 @@ Page({
     generatedJson: '',
     errorMsg: '',
     mode: 'keyvalue',
+    modeHint: '',
     modes: [
       { id: 'keyvalue', name: '键值对', desc: 'name=value 或 name:value' },
       { id: 'lines', name: '列表', desc: '每行一个值' },
@@ -16,12 +17,12 @@ Page({
   },
 
   onInputChange(e) {
-    this.setData({ inputText: e.detail.value, errorMsg: '' })
+    this.setData({ inputText: e.detail.value, errorMsg: '', modeHint: '' })
   },
 
   // 模式切换
   onModeChange(e) {
-    this.setData({ mode: e.currentTarget.dataset.mode })
+    this.setData({ mode: e.currentTarget.dataset.mode, modeHint: '' })
   },
 
   // 从剪贴板粘贴
@@ -84,9 +85,17 @@ Page({
 
   // 自动识别
   _autoDetect(text) {
-    try { return JSON.parse(text) } catch(e) {}
+    try {
+      const result = JSON.parse(text)
+      this.setData({ modeHint: '识别为 JSON' })
+      return result
+    } catch(e) {}
     const kv = this._parseKeyValue(text)
-    if (Object.keys(kv).length > 0) return kv
+    if (Object.keys(kv).length > 0) {
+      this.setData({ modeHint: '识别为键值对' })
+      return kv
+    }
+    this.setData({ modeHint: '识别为行列表' })
     return this._parseLines(text)
   },
 

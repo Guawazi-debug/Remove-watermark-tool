@@ -62,7 +62,10 @@
   <!-- 生成结果 -->
   <view class="result-section" wx:if="{{showResult}}">
     <view class="result-header">
-      <text class="result-title">生成结果</text>
+      <view>
+        <text class="result-title">生成结果</text>
+        <text class="result-mode" wx:if="{{modeHint}}">{{modeHint}}</text>
+      </view>
       <view class="action-btn action-btn--primary" bindtap="onCopyResult">
         <text>复制</text>
       </view>

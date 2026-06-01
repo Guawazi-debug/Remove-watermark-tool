@@ -163,14 +163,19 @@ Page({
 
   onBackspace() {
     let expr = this.data.inputExpr
-    if (expr.length > 0) {
-      if (expr.endsWith(' ')) {
-        expr = expr.slice(0, -3)
-      } else {
-        expr = expr.slice(0, -1)
+    if (expr.length === 0) return
+
+    // 运算符格式为 " op "（前后各一个空格）
+    const ops = [' + ', ' - ', ' * ', ' / ']
+    for (const op of ops) {
+      if (expr.endsWith(op)) {
+        expr = expr.slice(0, -op.length)
+        this.setData({ inputExpr: expr, display: '' })
+        return
       }
-      this.setData({ inputExpr: expr, display: '' })
     }
+    expr = expr.slice(0, -1)
+    this.setData({ inputExpr: expr, display: '' })
   },
 
   onPercent() {

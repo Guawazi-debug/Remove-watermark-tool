@@ -8,6 +8,8 @@
     <input class="input" type="digit" value="{{inputValue}}" bindinput="onInputChange" />
     <text class="label" style="margin-top: 16rpx;">设计稿宽度 (px)</text>
     <input class="input" type="number" value="{{baseSize}}" bindinput="onBaseChange" placeholder="默认 375" />
+    <text class="label" style="margin-top: 16rpx;">基准字体大小 (px)</text>
+    <input class="input" type="digit" value="{{fontSize}}" bindinput="onFontSizeChange" placeholder="默认 16" />
   </view>
   <view class="section" wx:if="{{results.px}}">
     <text class="label">转换结果</text>

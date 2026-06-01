@@ -23,19 +23,7 @@ Component({
     },
     _colorize(line) {
       const segments = []
-      // 匹配 JSON 语法元素的正则
-      const regex = /("(?:[^"\\]|\\.)*")\s*:/g  // key
-      let lastIndex = 0
-      let match
 
-      // 先处理 key
-      const keyRegex = /("(?:[^"\\]|\\.)*")\s*:/g
-      const stringRegex = /("(?:[^"\\]|\\.)*")/g
-      const numberRegex = /\b(-?\d+\.?\d*(?:[eE][+-]?\d+)?)\b/g
-      const boolNullRegex = /\b(true|false|null)\b/g
-      const bracketRegex = /([{}\[\]])/g
-
-      // 简化处理：逐字符分析
       let i = 0
       while (i < line.length) {
         // 跳过空白

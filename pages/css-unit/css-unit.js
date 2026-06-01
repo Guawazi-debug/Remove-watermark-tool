@@ -5,20 +5,22 @@ Page({
   data: {
     inputValue: '16',
     baseSize: '375',
+    fontSize: '16',
     results: {}
   },
   onLoad() { this._convert() },
   onInputChange(e) { this.setData({ inputValue: e.detail.value }); this._convert() },
   onBaseChange(e) { this.setData({ baseSize: e.detail.value }); this._convert() },
+  onFontSizeChange(e) { this.setData({ fontSize: e.detail.value }); this._convert() },
   _convert() {
     const px = parseFloat(this.data.inputValue)
     const base = parseFloat(this.data.baseSize)
+    const fontSize = parseFloat(this.data.fontSize) || 16
     if (isNaN(px) || !Number.isFinite(base) || base <= 0) {
       this.setData({ results: {} })
       return
     }
 
-    const fontSize = 16
     this.setData({
       results: {
         px: px.toFixed(2),
