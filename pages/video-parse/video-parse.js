@@ -356,6 +356,19 @@ Page({
     })
   },
 
+  onCopyOnlineUrl() {
+    const onlineUrl = this.data.result && this.data.result.onlineUrl || ''
+    if (!onlineUrl) {
+      this.setData({ errorMsg: '当前结果未提供在线页面地址。' })
+      return
+    }
+    this.copyLink(onlineUrl, {
+      title: '页面地址已复制',
+      modal: false,
+      toast: true
+    })
+  },
+
   // 复制链接降级方案
   copyLink(url, options) {
     const config = typeof options === 'string'
