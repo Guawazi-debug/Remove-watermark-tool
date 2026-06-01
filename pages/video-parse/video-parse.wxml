@@ -102,12 +102,8 @@
           show-menu-by-longpress="{{true}}"
         />
         <view class="result-images__links">
-          <view class="link-card" wx:for="{{result.images}}" wx:for-item="imgUrl" wx:for-index="idx" wx:key="idx">
-            <text class="link-card__label">图片 {{idx + 1}}</text>
-            <text class="link-card__value" selectable>{{imgUrl}}</text>
-            <view class="link-card__action" bindtap="onCopyImageUrl" data-url="{{imgUrl}}">
-              <text>复制地址</text>
-            </view>
+          <view class="result-images__copy" wx:for="{{result.images}}" wx:for-item="imgUrl" wx:for-index="idx" wx:key="idx" bindtap="onCopyImageUrl" data-url="{{imgUrl}}">
+            <text>复制图片{{result.images.length > 1 ? (idx + 1) : ''}}地址</text>
           </view>
         </view>
       </view>
