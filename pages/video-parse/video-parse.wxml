@@ -91,19 +91,18 @@
 
       <!-- 图片展示 -->
       <view class="result-images" wx:if="{{result.type === 'images' && result.images.length > 0}}">
-        <image
-          wx:for="{{result.images}}"
-          wx:key="index"
-          class="result-images__item"
-          src="{{item}}"
-          mode="widthFix"
-          bindtap="onImageTap"
-          data-index="{{index}}"
-          show-menu-by-longpress="{{true}}"
-        />
-        <view class="result-images__links">
-          <view class="result-images__copy" wx:for="{{result.images}}" wx:for-item="imgUrl" wx:for-index="idx" wx:key="idx" bindtap="onCopyImageUrl" data-url="{{imgUrl}}">
-            <text>复制图片{{result.images.length > 1 ? (idx + 1) : ''}}地址</text>
+        <view class="result-images__item" wx:for="{{result.images}}" wx:key="index">
+          <text class="result-images__label" wx:if="{{result.images.length > 1}}">图片 {{index + 1}}</text>
+          <image
+            class="result-images__img"
+            src="{{item}}"
+            mode="widthFix"
+            bindtap="onImageTap"
+            data-index="{{index}}"
+            show-menu-by-longpress="{{true}}"
+          />
+          <view class="result-images__copy" bindtap="onCopyImageUrl" data-url="{{item}}">
+            <text>复制图片{{result.images.length > 1 ? (index + 1) : ''}}地址</text>
           </view>
         </view>
       </view>
