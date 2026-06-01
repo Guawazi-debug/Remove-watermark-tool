@@ -115,74 +115,6 @@ Page({
     return result.downloadUrl || result.video || result.playUrl || result.onlineUrl || ''
   },
 
-  // 检查相册写入权限
-  _checkPhotoPermission() {
-    return new Promise((resolve, reject) => {
-      wx.getSetting({
-        success: (res) => {
-          if (res.authSetting['scope.writePhotosAlbum'] === false) {
-            // 用户之前拒绝过，引导去设置页
-            wx.showModal({
-              title: '需要相册权限',
-              content: '保存到相册需要你授权相册访问权限',
-              confirmText: '去设置',
-              cancelText: '取消',
-              success: (modalRes) => {
-                if (modalRes.confirm) {
-                  wx.openSetting({
-                    success: (settingRes) => {
-                      if (settingRes.authSetting['scope.writePhotosAlbum']) {
-                        resolve()
-                      } else {
-                        reject()
-                      }
-                    },
-                    fail: () => reject()
-                  })
-                } else {
-                  reject()
-                }
-              }
-            })
-          } else {
-            // 首次或已授权，直接请求授权
-            wx.authorize({
-              scope: 'scope.writePhotosAlbum',
-              success: () => {
-                resolve()
-              },
-              fail: () => {
-                wx.showModal({
-                  title: '需要相册权限',
-                  content: '保存到相册需要你授权相册访问权限',
-                  confirmText: '去设置',
-                  cancelText: '取消',
-                  success: (modalRes) => {
-                    if (modalRes.confirm) {
-                      wx.openSetting({
-                        success: (settingRes) => {
-                          if (settingRes.authSetting['scope.writePhotosAlbum']) {
-                            resolve()
-                          } else {
-                            reject()
-                          }
-                        },
-                        fail: () => reject()
-                      })
-                    } else {
-                      reject()
-                    }
-                  }
-                })
-              }
-            })
-          }
-        },
-        fail: () => reject()
-      })
-    })
-  },
-
   // 输入框内容变化
   onInputChange(e) {
     this.setData({ inputUrl: e.detail.value, errorMsg: '' })
@@ -250,97 +182,88 @@ Page({
       return
     }
 
-    this._checkPhotoPermission().then(() => {
-      const result = this.data.result
+    const result = this.data.result
 
-      // 图片类型：逐张保存
-      if (result && result.type === 'images' && result.images && result.images.length > 0) {
-        this._saveImages(result.images)
-        return
-      }
+    // 图片类型：逐张保存
+    if (result && result.type === 'images' && result.images && result.images.length > 0) {
+      this._saveImages(result.images)
+      return
+    }
 
-      const downloadTarget = this._getDownloadTarget(result)
-      if (!downloadTarget) {
-        this.setData({ errorMsg: '当前结果未提供可下载地址，请先复制在线播放地址。' })
-        return
-      }
+    const downloadTarget = this._getDownloadTarget(result)
+    if (!downloadTarget) {
+      this.setData({ errorMsg: '当前结果未提供可下载地址，请先复制在线播放地址。' })
+      return
+    }
 
-      this.setData({
-        errorMsg: '',
-        isDownloading: true,
-        downloadProgress: 0,
-        downloadStatusText: '准备下载...'
-      })
-      const task = wx.downloadFile({
-        url: downloadTarget,
-        success: (res) => {
-          console.log('下载结果:', res)
-          if (res.statusCode === 200 && res.tempFilePath) {
-            this.setData({
-              downloadProgress: 100,
-              downloadStatusText: '下载完成，准备保存到相册...'
-            })
-            wx.saveVideoToPhotosAlbum({
-              filePath: res.tempFilePath,
-              success: () => {
-                this.setData({
-                  isDownloading: false,
-                  downloadStatusText: ''
-                })
-                wx.showToast({ title: '已保存到相册', icon: 'success' })
-              },
-              fail: (err) => {
-                console.error('保存视频失败:', err)
-                this.setData({
-                  isDownloading: false,
-                  downloadStatusText: ''
-                })
-                this.setData({ errorMsg: '视频格式不支持直接保存' })
-                this.copyLink(downloadTarget, {
-                  title: '下载地址已复制',
-                  modal: true
-                })
-              }
-            })
-          } else {
-            console.error('下载失败，状态码:', res.statusCode)
-            this.setData({
-              isDownloading: false,
-              downloadStatusText: ''
-            })
-            this.setData({ errorMsg: '下载失败，状态码: ' + res.statusCode })
-            this.copyLink(downloadTarget, {
-              title: '下载地址已复制',
-              modal: true
-            })
-          }
-        },
-        fail: (err) => {
-          console.error('下载请求失败:', err)
+    this.setData({
+      errorMsg: '',
+      isDownloading: true,
+      downloadProgress: 0,
+      downloadStatusText: '准备下载...'
+    })
+    const task = wx.downloadFile({
+      url: downloadTarget,
+      success: (res) => {
+        if (res.statusCode === 200 && res.tempFilePath) {
+          this.setData({
+            downloadProgress: 100,
+            downloadStatusText: '下载完成，准备保存到相册...'
+          })
+          wx.saveVideoToPhotosAlbum({
+            filePath: res.tempFilePath,
+            success: () => {
+              this.setData({
+                isDownloading: false,
+                downloadStatusText: ''
+              })
+              wx.showToast({ title: '已保存到相册', icon: 'success' })
+            },
+            fail: () => {
+              this.setData({
+                isDownloading: false,
+                downloadStatusText: ''
+              })
+              this.setData({ errorMsg: '保存到相册失败，已为你切换到复制链接方案。' })
+              this.copyLink(downloadTarget, {
+                title: '下载地址已复制',
+                modal: true
+              })
+            }
+          })
+        } else {
           this.setData({
             isDownloading: false,
             downloadStatusText: ''
           })
-          const errMsg = err.errMsg || '未知错误'
-          this.setData({ errorMsg: '下载失败: ' + errMsg })
+          this.setData({ errorMsg: '下载地址不可直接保存，已为你切换到复制链接方案。' })
           this.copyLink(downloadTarget, {
             title: '下载地址已复制',
             modal: true
           })
         }
-      })
-
-      if (task && typeof task.onProgressUpdate === 'function') {
-        task.onProgressUpdate((progress) => {
-          this.setData({
-            downloadProgress: progress.progress || 0,
-            downloadStatusText: `下载中 ${progress.progress || 0}%`
-          })
+      },
+      fail: () => {
+        this.setData({
+          isDownloading: false,
+          downloadStatusText: ''
+        })
+        this.setData({ errorMsg: '下载失败，已为你切换到复制链接方案。' })
+        this.copyLink(downloadTarget, {
+          title: '下载地址已复制',
+          modal: true
         })
       }
-    }).catch(() => {
-      // 用户拒绝授权，已由 _checkPhotoPermission 处理
     })
+
+    if (task && typeof task.onProgressUpdate === 'function') {
+      task.onProgressUpdate((progress) => {
+        this.setData({
+          downloadProgress: progress.progress || 0,
+          downloadStatusText: `下载中 ${progress.progress || 0}%`
+        })
+      })
+    }
   },
 
   // 保存图片列表到相册
@@ -357,11 +280,29 @@ Page({
     let savedCount = 0
     let failCount = 0
 
+    const onComplete = () => {
+      this.setData({ isDownloading: false, downloadStatusText: '' })
+      if (failCount > 0 && savedCount === 0) {
+        this.setData({ errorMsg: '保存到相册失败，已为你切换到复制链接方案。' })
+        this.copyLink(images.join('\n'), {
+          title: '图片地址已复制',
+          modal: true
+        })
+      } else if (failCount > 0) {
+        const msg = `已保存 ${savedCount} 张，${failCount} 张失败，失败地址已复制`
+        this.copyLink(images.slice(savedCount).join('\n'), {
+          title: msg,
+          modal: true
+        })
+      } else {
+        wx.showToast({ title: `已保存 ${savedCount} 张图片`, icon: 'success' })
+      }
+    }
+
     images.forEach((imageUrl, index) => {
       wx.downloadFile({
         url: imageUrl,
         success: (res) => {
-          console.log('图片下载结果:', index, res)
           if (res.statusCode === 200 && res.tempFilePath) {
             wx.saveImageToPhotosAlbum({
               filePath: res.tempFilePath,
@@ -372,40 +313,21 @@ Page({
                   downloadProgress: progress,
                   downloadStatusText: `已保存 ${savedCount}/${images.length}`
                 })
-                if (savedCount + failCount === images.length) {
-                  this.setData({ isDownloading: false, downloadStatusText: '' })
-                  const msg = failCount > 0 ? `已保存 ${savedCount} 张，${failCount} 张失败` : `已保存 ${savedCount} 张图片`
-                  wx.showToast({ title: msg, icon: savedCount > 0 ? 'success' : 'none' })
-                }
+                if (savedCount + failCount === images.length) onComplete()
               },
-              fail: (err) => {
-                console.error('保存图片失败:', index, err)
+              fail: () => {
                 failCount++
-                if (savedCount + failCount === images.length) {
-                  this.setData({ isDownloading: false, downloadStatusText: '' })
-                  const msg = savedCount > 0 ? `已保存 ${savedCount} 张，${failCount} 张失败` : '保存失败'
-                  wx.showToast({ title: msg, icon: 'none' })
-                }
+                if (savedCount + failCount === images.length) onComplete()
               }
             })
           } else {
-            console.error('图片下载失败，状态码:', index, res.statusCode)
             failCount++
-            if (savedCount + failCount === images.length) {
-              this.setData({ isDownloading: false, downloadStatusText: '' })
-              const msg = savedCount > 0 ? `已保存 ${savedCount} 张，${failCount} 张失败` : '下载失败'
-              wx.showToast({ title: msg, icon: 'none' })
-            }
+            if (savedCount + failCount === images.length) onComplete()
           }
         },
-        fail: (err) => {
-          console.error('图片下载请求失败:', index, err)
+        fail: () => {
           failCount++
-          if (savedCount + failCount === images.length) {
-            this.setData({ isDownloading: false, downloadStatusText: '' })
-            const msg = savedCount > 0 ? `已保存 ${savedCount} 张，${failCount} 张失败` : '下载失败'
-            wx.showToast({ title: msg, icon: 'none' })
-          }
+          if (savedCount + failCount === images.length) onComplete()
         }
       })
     })
