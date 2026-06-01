@@ -131,7 +131,7 @@
           <text class="link-card__label">在线页面地址</text>
           <text class="link-card__value" selectable>{{result.onlineUrl}}</text>
         </view>
-        <view class="result-fallback" wx:if="{{!result.video}}">
+        <view class="result-fallback" wx:if="{{!result.video && result.type !== 'images'}}">
           <text class="result-fallback__text">当前返回结果未提供可播放视频地址，但你仍可以尝试使用下方按钮处理。</text>
         </view>
       </view>
