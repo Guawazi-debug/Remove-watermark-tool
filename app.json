@@ -35,10 +35,10 @@
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationStyle": "custom",
-    "enableShareAppMessage": true,
-    "enableShareTimeline": true
+    "navigationStyle": "custom"
   },
+  "enableShareAppMessage": true,
+  "enableShareTimeline": true,
   "style": "v2",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"

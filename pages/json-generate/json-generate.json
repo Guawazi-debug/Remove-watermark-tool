@@ -3,7 +3,5 @@
     "navigation-bar": "/components/navigation-bar/navigation-bar",
     "json-viewer": "/components/json-viewer/json-viewer",
     "tool-hero": "/components/tool-hero/tool-hero"
-  },
-  "enableShareAppMessage": true,
-  "enableShareTimeline": true
+  }
 }
