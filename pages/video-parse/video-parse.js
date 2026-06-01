@@ -284,13 +284,18 @@ Page({
       this.setData({ isDownloading: false, downloadStatusText: '' })
       if (failCount > 0 && savedCount === 0) {
         this.setData({ errorMsg: '保存到相册失败，已为你切换到复制链接方案。' })
-        this.copyLink(images.join('\n'), {
+        const text = images.map((url, i) => `图片${i + 1}: ${url}`).join('\n')
+        this.copyLink(text, {
           title: '图片地址已复制',
           modal: true
         })
       } else if (failCount > 0) {
         const msg = `已保存 ${savedCount} 张，${failCount} 张失败，失败地址已复制`
-        this.copyLink(images.slice(savedCount).join('\n'), {
+        const failImages = []
+        images.forEach((url, i) => {
+          if (i >= savedCount) failImages.push(`图片${i + 1}: ${url}`)
+        })
+        this.copyLink(failImages.join('\n'), {
           title: msg,
           modal: true
         })
@@ -426,8 +431,11 @@ Page({
   // 复制图片地址
   onCopyImageUrl(e) {
     const url = e.currentTarget.dataset.url
+    const index = e.currentTarget.dataset.index
     if (!url) return
-    this.copyLink(url, {
+    const images = (this.data.result && this.data.result.images) || []
+    const label = images.length > 1 ? `图片${index + 1}: ` : ''
+    this.copyLink(`${label}${url}`, {
       title: '图片地址已复制',
       modal: false,
       toast: true

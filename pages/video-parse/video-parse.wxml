@@ -101,7 +101,7 @@
             data-index="{{index}}"
             show-menu-by-longpress="{{true}}"
           />
-          <view class="result-images__copy" bindtap="onCopyImageUrl" data-url="{{item}}">
+          <view class="result-images__copy" bindtap="onCopyImageUrl" data-url="{{item}}" data-index="{{index}}">
             <text>复制图片{{result.images.length > 1 ? (index + 1) : ''}}地址</text>
           </view>
         </view>
