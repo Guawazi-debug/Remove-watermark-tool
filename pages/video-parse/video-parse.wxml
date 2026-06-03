@@ -87,6 +87,11 @@
         object-fit="contain"
         bindtap="onVideoTap"
         bindfullscreenchange="onFullscreenChange"
+        binderror="onVideoError"
+        bindplay="onVideoPlay"
+        bindpause="onVideoPause"
+        bindwaiting="onVideoWaiting"
+        bindloadedmetadata="onVideoLoadedMetadata"
       ></video>
 
       <!-- 图片展示 -->

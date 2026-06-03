@@ -50,8 +50,9 @@ Page({
       return `https:${trimmed}`
     }
 
-    if (trimmed.startsWith('http://')) {
-      return `https://${trimmed.slice(7)}`
+    // 保留原始协议，不强制转换
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed
     }
 
     return trimmed
@@ -159,6 +160,12 @@ Page({
         const data = res.data && typeof res.data === 'object' ? res.data.data : null
         const normalized = this._normalizeParseResult(data)
         if (res.statusCode === 200 && res.data && res.data.code === 200 && normalized) {
+          console.log('[video-parse] 解析成功:', {
+            type: normalized.type,
+            hasVideo: !!normalized.video,
+            hasPlayUrl: !!normalized.playUrl,
+            videoUrl: normalized.video ? normalized.video.substring(0, 100) + '...' : '无'
+          })
           this.setData({
             result: normalized,
             hasResolvedResult: true,
@@ -207,7 +214,44 @@ Page({
     const task = wx.downloadFile({
       url: downloadTarget,
       success: (res) => {
+        console.log('[video-parse] 下载结果:', {
+          statusCode: res.statusCode,
+          filePath: res.tempFilePath,
+          header: res.header
+        })
+
         if (res.statusCode === 200 && res.tempFilePath) {
+          // 读取文件前几个字节，检查是否是视频文件
+          const fs = wx.getFileSystemManager()
+          fs.getFileInfo({
+            filePath: res.tempFilePath,
+            success: (fileInfo) => {
+              console.log('[video-parse] 文件信息:', fileInfo)
+            },
+            fail: (err) => {
+              console.error('[video-parse] 获取文件信息失败:', err)
+            }
+          })
+
+          // 读取文件内容前100字节，检查是否是JSON
+          fs.readFile({
+            filePath: res.tempFilePath,
+            encoding: 'utf8',
+            position: 0,
+            length: 100,
+            success: (data) => {
+              const content = data.data
+              console.log('[video-parse] 文件内容前100字节:', content)
+              if (content && (content.startsWith('{') || content.startsWith('['))) {
+                console.error('[video-parse] 下载的文件可能是JSON格式，不是视频文件')
+                this.setData({ errorMsg: '下载的文件是JSON格式，不是视频文件。请检查视频链接是否正确。' })
+              }
+            },
+            fail: (err) => {
+              console.error('[video-parse] 读取文件内容失败:', err)
+            }
+          })
+
           this.setData({
             downloadProgress: 100,
             downloadStatusText: '下载完成，准备保存到相册...'
@@ -221,7 +265,8 @@ Page({
               })
               wx.showToast({ title: '已保存到相册', icon: 'success' })
             },
-            fail: () => {
+            fail: (err) => {
+              console.error('[video-parse] 保存到相册失败:', err)
               this.setData({
                 isDownloading: false,
                 downloadStatusText: ''
@@ -245,7 +290,8 @@ Page({
           })
         }
       },
-      fail: () => {
+      fail: (err) => {
+        console.error('[video-parse] 下载失败:', err)
         this.setData({
           isDownloading: false,
           downloadStatusText: ''
@@ -412,6 +458,36 @@ Page({
       videoCtx.pause()
       this._paused = true
     }
+  },
+
+  // 视频播放错误处理 - 调试日志
+  onVideoError(e) {
+    console.error('[video-parse] 视频播放错误:', e.detail)
+    const error = e.detail || {}
+    console.error('[video-parse] 错误详情:', {
+      errMsg: error.errMsg,
+      errCode: error.errCode,
+      target: error.target
+    })
+    this.setData({ errorMsg: `视频播放错误: ${error.errMsg || '未知错误'}` })
+  },
+
+  // 视频播放状态变化 - 调试日志
+  onVideoPlay() {
+    console.log('[video-parse] 视频开始播放')
+  },
+
+  onVideoPause() {
+    console.log('[video-parse] 视频暂停')
+  },
+
+  onVideoWaiting() {
+    console.log('[video-parse] 视频加载中...')
+  },
+
+  // 视频元数据加载完成 - 调试日志
+  onVideoLoadedMetadata(e) {
+    console.log('[video-parse] 视频元数据加载完成:', e.detail)
   },
 
   // 全屏状态变化
