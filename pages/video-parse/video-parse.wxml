@@ -73,10 +73,10 @@
 
       <!-- 视频播放器 -->
       <video
-        wx:if="{{result.video}}"
+        wx:if="{{playSrc}}"
         id="videoPlayer"
         class="result-video"
-        src="{{result.video}}"
+        src="{{playSrc}}"
         poster="{{result.cover}}"
         controls
         show-fullscreen-btn
@@ -85,7 +85,6 @@
         enable-progress-gesture
         show-mute-btn
         object-fit="contain"
-        bindtap="onVideoTap"
         bindfullscreenchange="onFullscreenChange"
         binderror="onVideoError"
         bindplay="onVideoPlay"

@@ -17,7 +17,8 @@ Page({
     downloadStatusText: '',
     errorMsg: '',
     serviceHint: '解析依赖外部服务与平台下载权限，若保存失败会自动复制视频链接。',
-    parseSuccessText: ''
+    parseSuccessText: '',
+    playSrc: '' // 经过代理的播放地址
   },
 
   // 从文本中提取 URL
@@ -50,7 +51,6 @@ Page({
       return `https:${trimmed}`
     }
 
-    // 保留原始协议，不强制转换
     if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
       return trimmed
     }
@@ -115,7 +115,41 @@ Page({
     if (!result || typeof result !== 'object') {
       return ''
     }
-    return result.downloadUrl || result.video || result.playUrl || result.onlineUrl || ''
+    return result.downloadUrl || result.playUrl || result.video || ''
+  },
+
+  // 判断视频 URL 是否需要通过代理转发（绕过防盗链）
+  // 除了自己服务器上的（B站缓存视频）都走代理
+  _needProxy(url) {
+    if (!url) return false
+    // 已经在自己服务器上的不需要代理（B站缓存视频等）
+    if (url.indexOf('qsy.awenz.cn') !== -1) return false
+    // 其他所有外部地址都走代理
+    return true
+  },
+
+  // 通过代理接口包装视频 URL（绕过防盗链）
+  _proxyUrl(url) {
+    if (!url || !this._needProxy(url)) return url
+    return PARSE_API + '?proxy=' + encodeURIComponent(url)
+  },
+
+  // 获取播放地址（通过代理）
+  _getPlaySrc(result) {
+    if (!result) return ''
+    const raw = result.playUrl || result.video || result.downloadUrl || ''
+    return this._proxyUrl(raw)
+  },
+
+  // 获取下载地址（通过代理 + download 参数）
+  _getDownloadSrc(result) {
+    if (!result) return ''
+    const raw = result.downloadUrl || result.playUrl || result.video || ''
+    if (!raw) return ''
+    if (this._needProxy(raw)) {
+      return PARSE_API + '?proxy=' + encodeURIComponent(raw) + '&download'
+    }
+    return raw
   },
 
   // 输入框内容变化
@@ -152,30 +186,65 @@ Page({
     this.setData({ inputUrl: url })
     this.setData({ loading: true, errorMsg: '', result: null, hasResolvedResult: false, parseSuccessText: '' })
 
+    // 添加时间戳防止 PC 端 wx.request 缓存响应
+    const timestamp = Date.now()
+    const separator = PARSE_API.includes('?') ? '&' : '?'
+    const requestUrl = PARSE_API + separator + 'url=' + encodeURIComponent(url) + '&_t=' + timestamp
+
     wx.request({
-      url: PARSE_API + '?url=' + encodeURIComponent(url),
+      url: requestUrl,
       method: 'GET',
       timeout: 12000,
       success: (res) => {
-        const data = res.data && typeof res.data === 'object' ? res.data.data : null
-        const normalized = this._normalizeParseResult(data)
-        if (res.statusCode === 200 && res.data && res.data.code === 200 && normalized) {
+        console.log('[video-parse] API 响应:', {
+          statusCode: res.statusCode,
+          dataType: typeof res.data,
+          hasData: !!(res.data && res.data.data)
+        })
+
+        // 兼容 res.data 为对象或 JSON 字符串两种情况
+        let apiData = null
+        let code = 0
+        let msg = ''
+
+        if (res.data && typeof res.data === 'object') {
+          apiData = res.data.data
+          code = res.data.code
+          msg = res.data.msg || ''
+        } else if (typeof res.data === 'string') {
+          try {
+            const parsed = JSON.parse(res.data)
+            if (parsed && typeof parsed === 'object') {
+              apiData = parsed.data
+              code = parsed.code
+              msg = parsed.msg || ''
+            }
+          } catch (e) {
+            console.error('[video-parse] JSON 解析失败:', e)
+          }
+        }
+
+        const normalized = this._normalizeParseResult(apiData)
+
+        if (res.statusCode === 200 && code === 200 && normalized) {
           console.log('[video-parse] 解析成功:', {
             type: normalized.type,
             hasVideo: !!normalized.video,
-            hasPlayUrl: !!normalized.playUrl,
-            videoUrl: normalized.video ? normalized.video.substring(0, 100) + '...' : '无'
+            videoUrl: normalized.video ? normalized.video.substring(0, 120) + '...' : '无'
           })
           this.setData({
             result: normalized,
             hasResolvedResult: true,
-            parseSuccessText: res.data.msg || '解析成功'
+            parseSuccessText: msg || '解析成功',
+            playSrc: this._getPlaySrc(normalized)
           })
         } else {
-          this.setData({ errorMsg: (res.data && res.data.msg) || '解析失败，请检查链接是否正确' })
+          console.error('[video-parse] 解析失败:', { statusCode: res.statusCode, code, hasData: !!apiData, normalized: !!normalized })
+          this.setData({ errorMsg: msg || '解析失败，请检查链接是否正确' })
         }
       },
-      fail: () => {
+      fail: (err) => {
+        console.error('[video-parse] 请求失败:', err)
         this.setData({ errorMsg: '网络请求失败，请稍后重试' })
       },
       complete: () => {
@@ -199,7 +268,7 @@ Page({
       return
     }
 
-    const downloadTarget = this._getDownloadTarget(result)
+    const downloadTarget = this._getDownloadSrc(result)
     if (!downloadTarget) {
       this.setData({ errorMsg: '当前结果未提供可下载地址，请先复制在线播放地址。' })
       return
@@ -216,66 +285,39 @@ Page({
       success: (res) => {
         console.log('[video-parse] 下载结果:', {
           statusCode: res.statusCode,
-          filePath: res.tempFilePath,
-          header: res.header
+          filePath: res.tempFilePath
         })
 
         if (res.statusCode === 200 && res.tempFilePath) {
-          // 读取文件前几个字节，检查是否是视频文件
+          // 读取文件内容前100字节，检查是否是 JSON 而非视频
           const fs = wx.getFileSystemManager()
-          fs.getFileInfo({
-            filePath: res.tempFilePath,
-            success: (fileInfo) => {
-              console.log('[video-parse] 文件信息:', fileInfo)
-            },
-            fail: (err) => {
-              console.error('[video-parse] 获取文件信息失败:', err)
-            }
-          })
-
-          // 读取文件内容前100字节，检查是否是JSON
           fs.readFile({
             filePath: res.tempFilePath,
             encoding: 'utf8',
             position: 0,
             length: 100,
             success: (data) => {
-              const content = data.data
-              console.log('[video-parse] 文件内容前100字节:', content)
+              const content = (data.data || '').trim()
               if (content && (content.startsWith('{') || content.startsWith('['))) {
-                console.error('[video-parse] 下载的文件可能是JSON格式，不是视频文件')
-                this.setData({ errorMsg: '下载的文件是JSON格式，不是视频文件。请检查视频链接是否正确。' })
+                console.error('[video-parse] 下载的文件是 JSON 格式，不是视频文件')
+                this.setData({
+                  isDownloading: false,
+                  downloadStatusText: '',
+                  errorMsg: '下载的文件是JSON格式，不是视频文件。已复制播放地址，请在浏览器中打开。'
+                })
+                const playUrl = this.data.result && (this.data.result.playUrl || this.data.result.video || '')
+                if (playUrl) {
+                  this.copyLink(playUrl, {
+                    title: '播放地址已复制',
+                    modal: true
+                  })
+                }
+                return
               }
+              this._saveVideoToAlbum(res.tempFilePath, downloadTarget)
             },
-            fail: (err) => {
-              console.error('[video-parse] 读取文件内容失败:', err)
-            }
-          })
-
-          this.setData({
-            downloadProgress: 100,
-            downloadStatusText: '下载完成，准备保存到相册...'
-          })
-          wx.saveVideoToPhotosAlbum({
-            filePath: res.tempFilePath,
-            success: () => {
-              this.setData({
-                isDownloading: false,
-                downloadStatusText: ''
-              })
-              wx.showToast({ title: '已保存到相册', icon: 'success' })
-            },
-            fail: (err) => {
-              console.error('[video-parse] 保存到相册失败:', err)
-              this.setData({
-                isDownloading: false,
-                downloadStatusText: ''
-              })
-              this.setData({ errorMsg: '保存到相册失败，已为你切换到复制链接方案。' })
-              this.copyLink(downloadTarget, {
-                title: '下载地址已复制',
-                modal: true
-              })
+            fail: () => {
+              this._saveVideoToAlbum(res.tempFilePath, downloadTarget)
             }
           })
         } else {
@@ -312,6 +354,36 @@ Page({
         })
       })
     }
+  },
+
+  // 保存视频到相册
+  _saveVideoToAlbum(filePath, downloadTarget) {
+    this.setData({
+      downloadProgress: 100,
+      downloadStatusText: '下载完成，准备保存到相册...'
+    })
+    wx.saveVideoToPhotosAlbum({
+      filePath: filePath,
+      success: () => {
+        this.setData({
+          isDownloading: false,
+          downloadStatusText: ''
+        })
+        wx.showToast({ title: '已保存到相册', icon: 'success' })
+      },
+      fail: (err) => {
+        console.error('[video-parse] 保存到相册失败:', err)
+        this.setData({
+          isDownloading: false,
+          downloadStatusText: ''
+        })
+        this.setData({ errorMsg: '保存到相册失败，已为你切换到复制链接方案。' })
+        this.copyLink(downloadTarget, {
+          title: '下载地址已复制',
+          modal: true
+        })
+      }
+    })
   },
 
   // 保存图片列表到相册
@@ -352,7 +424,7 @@ Page({
       }
     }
 
-    images.forEach((imageUrl, index) => {
+    images.forEach((imageUrl) => {
       wx.downloadFile({
         url: imageUrl,
         success: (res) => {
@@ -448,19 +520,7 @@ Page({
     })
   },
 
-  // 视频点击暂停/播放
-  onVideoTap() {
-    const videoCtx = wx.createVideoContext('videoPlayer', this)
-    if (this._paused) {
-      videoCtx.play()
-      this._paused = false
-    } else {
-      videoCtx.pause()
-      this._paused = true
-    }
-  },
-
-  // 视频播放错误处理 - 调试日志
+  // 视频播放错误处理
   onVideoError(e) {
     console.error('[video-parse] 视频播放错误:', e.detail)
     const error = e.detail || {}
@@ -469,10 +529,17 @@ Page({
       errCode: error.errCode,
       target: error.target
     })
-    this.setData({ errorMsg: `视频播放错误: ${error.errMsg || '未知错误'}` })
+
+    this.setData({ errorMsg: `视频播放错误: ${error.errMsg || '未知错误'}，已复制播放地址，请在浏览器中打开` })
+    const result = this.data.result
+    if (result) {
+      this.copyLink(result.playUrl || result.video || result.downloadUrl || '', {
+        title: '播放地址已复制',
+        modal: true
+      })
+    }
   },
 
-  // 视频播放状态变化 - 调试日志
   onVideoPlay() {
     console.log('[video-parse] 视频开始播放')
   },
@@ -485,7 +552,6 @@ Page({
     console.log('[video-parse] 视频加载中...')
   },
 
-  // 视频元数据加载完成 - 调试日志
   onVideoLoadedMetadata(e) {
     console.log('[video-parse] 视频元数据加载完成:', e.detail)
   },
@@ -530,7 +596,8 @@ Page({
       downloadProgress: 0,
       downloadStatusText: '',
       errorMsg: '',
-      parseSuccessText: ''
+      parseSuccessText: '',
+      playSrc: ''
     })
   },
 
