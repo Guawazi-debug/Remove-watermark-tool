@@ -1,6 +1,6 @@
 <navigation-bar title="时间戳转换" back="{{true}}" homeButton="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
 
-<scroll-view class="page-root" scroll-y enable-flex>
+<scroll-view class="page-root" scroll-y enable-flex show-scrollbar="{{false}}">
 
   <tool-hero></tool-hero>
   <view class="current-section">

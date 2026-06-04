@@ -1,6 +1,6 @@
 <!--pages/cron-gen/cron-gen.wxml-->
 <navigation-bar title="Cron 生成" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
-<scroll-view class="page-root" scroll-y enable-flex>
+<scroll-view class="page-root" scroll-y enable-flex show-scrollbar="{{false}}">
 
   <tool-hero></tool-hero>
   <view class="section">

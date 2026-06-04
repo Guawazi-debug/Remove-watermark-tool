@@ -66,12 +66,16 @@ Component({
       const isAndroid = platform === 'android'
       const isDevtools = platform === 'devtools'
       const windowWidth = windowInfo.windowWidth
-      const top = (windowInfo.safeArea && windowInfo.safeArea.top) || 0
+      // 优先用 statusBarHeight，fallback 到 safeArea.top
+      const sysInfo = wx.getSystemInfoSync()
+      const statusBarHeight = sysInfo.statusBarHeight || 0
+      const safeAreaTop = (windowInfo.safeArea && windowInfo.safeArea.top) || 0
+      const top = statusBarHeight || safeAreaTop
       this.setData({
         ios: !isAndroid,
         innerPaddingRight: `padding-right: ${windowWidth - rect.left}px`,
         leftWidth: `width: ${windowWidth - rect.left}px`,
-        safeAreaTop: isDevtools || isAndroid ? `height: calc(var(--height) + ${top}px); padding-top: ${top}px` : ``
+        safeAreaTop: `height: calc(var(--height) + ${top}px); padding-top: ${top}px`
       })
     },
   },

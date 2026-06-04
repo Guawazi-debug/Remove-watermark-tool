@@ -29,6 +29,19 @@ page {
   background: transparent;
   display: flex;
   flex-direction: column;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.page-root::-webkit-scrollbar {
+  display: none;
+}
+
+/* 隐藏所有 scroll-view 的滚动条（WebView 渲染引擎） */
+::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
 }
 
 .btn-row {

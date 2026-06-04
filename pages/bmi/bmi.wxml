@@ -1,6 +1,6 @@
 <!--pages/bmi/bmi.wxml-->
 <navigation-bar title="BMI 计算" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
-<scroll-view class="page-root" scroll-y enable-flex>
+<scroll-view class="page-root" scroll-y enable-flex show-scrollbar="{{false}}">
 
   <tool-hero></tool-hero>
   <view class="section">

@@ -1,7 +1,7 @@
 <!--pages/radix/radix.wxml-->
 <navigation-bar title="进制转换" back="{{true}}" homeButton="{{true}}" color="black" background="#FFF"></navigation-bar>
 
-<scroll-view class="page-root" scroll-y enable-flex>
+<scroll-view class="page-root" scroll-y enable-flex show-scrollbar="{{false}}">
 
   <tool-hero></tool-hero>
 

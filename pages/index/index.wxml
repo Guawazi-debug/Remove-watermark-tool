@@ -1,6 +1,6 @@
 <navigation-bar title="工具小栈" back="{{false}}" color="#241b16" background="#F8F3EC"></navigation-bar>
 
-<scroll-view class="page-root index-page" scroll-y enable-flex>
+<scroll-view class="page-root index-page" scroll-y enable-flex show-scrollbar="{{false}}">
   <view class="hero-panel">
     <view class="hero-kicker">Mini Program Toolbox</view>
     <text class="hero-title">把高频小工具，做成一套顺手的工作台。</text>
