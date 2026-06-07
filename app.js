@@ -95,7 +95,7 @@ App({
       method: 'POST',
       header: {
         'Content-Type': 'application/json',
-        'X-API-Key': 'moyin小程序专用密钥v1.2.0'
+        'X-API-Key': 'moyin-api-key-v1.2.0'
       },
       data: {
         action: 'login',
@@ -127,7 +127,7 @@ App({
         method: 'POST',
         header: {
           'Content-Type': 'application/json',
-          'X-API-Key': 'moyin小程序专用密钥v1.2.0'
+          'X-API-Key': 'moyin-api-key-v1.2.0'
         },
         data: {
           action: 'track',

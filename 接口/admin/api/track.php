@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // API密钥验证
 $apiKey = $_SERVER['HTTP_X_API_KEY'] ?? '';
 $validApiKeys = [
-    'moyin小程序专用密钥v1.2.0'  // 实际使用时应从配置文件读取
+    'moyin-api-key-v1.2.0'  // 实际使用时应从配置文件读取
 ];
 
 if (!in_array($apiKey, $validApiKeys)) {
