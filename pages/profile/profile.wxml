@@ -52,7 +52,7 @@
             <view class="avatar-preview">
               <image class="avatar-preview__img" src="{{tempAvatarUrl}}" mode="aspectFill" wx:if="{{tempAvatarUrl}}"></image>
               <view class="avatar-preview__placeholder" wx:else>
-                <text class="avatar-preview__icon">📷</text>
+                <text class="avatar-preview__icon">+</text>
               </view>
             </view>
           </button>
