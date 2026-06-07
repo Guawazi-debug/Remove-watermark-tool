@@ -131,6 +131,10 @@ App({
       success: (res) => {
         console.log('登录同步成功', res.data)
         this.globalData.apiReady = true
+        // 保存VIP状态到本地
+        if (res.data && res.data.data && res.data.data.is_vip !== undefined) {
+          wx.setStorageSync('vip-member', res.data.data.is_vip == 1)
+        }
       },
       fail: (err) => {
         console.log('登录同步失败，不影响使用', err)
