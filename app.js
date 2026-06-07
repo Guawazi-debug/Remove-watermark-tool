@@ -93,6 +93,10 @@ App({
     wx.request({
       url: this.globalData.apiBaseUrl + '/track.php',
       method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'moyin小程序专用密钥v1.2.0'
+      },
       data: {
         action: 'login',
         openid: this.globalData.openid,
@@ -121,6 +125,10 @@ App({
       wx.request({
         url: this.globalData.apiBaseUrl + '/track.php',
         method: 'POST',
+        header: {
+          'Content-Type': 'application/json',
+          'X-API-Key': 'moyin小程序专用密钥v1.2.0'
+        },
         data: {
           action: 'track',
           openid: this.globalData.openid,
