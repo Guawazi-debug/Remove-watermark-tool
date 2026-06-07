@@ -132,55 +132,51 @@
   </view>
 
   <!-- 功能菜单 -->
-  <view class="menu-card">
-    <view class="menu-item" bindtap="onShowFeedback">
-      <view class="menu-item__left">
-        <view class="menu-item__icon-wrap">
-          <text class="menu-item__icon-text">✎</text>
+  <view class="menu-section">
+    <view class="menu-section__title">服务与支持</view>
+    <view class="menu-grid">
+      <view class="menu-grid__item" bindtap="onShowFeedback">
+        <view class="menu-grid__icon" style="background: rgba(194, 149, 106, 0.1); color: #c2956a;">
+          <text>✎</text>
         </view>
-        <text class="menu-item__text">意见反馈</text>
+        <text class="menu-grid__text">意见反馈</text>
       </view>
-      <text class="menu-item__arrow">›</text>
+      <view class="menu-grid__item" bindtap="onFeedbackList">
+        <view class="menu-grid__icon" style="background: rgba(96, 165, 250, 0.1); color: #60a5fa;">
+          <text>≡</text>
+        </view>
+        <text class="menu-grid__text">反馈列表</text>
+      </view>
+      <view class="menu-grid__item" bindtap="onAbout">
+        <view class="menu-grid__icon" style="background: rgba(52, 211, 153, 0.1); color: #34d399;">
+          <text>ⓘ</text>
+        </view>
+        <text class="menu-grid__text">关于我们</text>
+      </view>
     </view>
+  </view>
 
-    <view class="menu-item" bindtap="onFeedbackList">
-      <view class="menu-item__left">
-        <view class="menu-item__icon-wrap">
-          <text class="menu-item__icon-text">≡</text>
+  <view class="menu-section">
+    <view class="menu-section__title">其他</view>
+    <view class="menu-list">
+      <view class="menu-list__item" bindtap="onClearCache">
+        <view class="menu-list__left">
+          <view class="menu-list__icon" style="background: rgba(251, 191, 36, 0.1); color: #fbbf24;">
+            <text>◇</text>
+          </view>
+          <text class="menu-list__text">清除缓存</text>
         </view>
-        <text class="menu-item__text">反馈列表</text>
+        <text class="menu-list__arrow">›</text>
       </view>
-      <text class="menu-item__arrow">›</text>
-    </view>
-
-    <view class="menu-item" bindtap="onAbout">
-      <view class="menu-item__left">
-        <view class="menu-item__icon-wrap">
-          <text class="menu-item__icon-text">ⓘ</text>
+      <view class="menu-list__item menu-list__item--danger" bindtap="onLogout">
+        <view class="menu-list__left">
+          <view class="menu-list__icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+            <text>⏻</text>
+          </view>
+          <text class="menu-list__text menu-list__text--danger">退出登录</text>
         </view>
-        <text class="menu-item__text">关于我们</text>
+        <text class="menu-list__arrow">›</text>
       </view>
-      <text class="menu-item__arrow">›</text>
-    </view>
-
-    <view class="menu-item" bindtap="onClearCache">
-      <view class="menu-item__left">
-        <view class="menu-item__icon-wrap">
-          <text class="menu-item__icon-text">✕</text>
-        </view>
-        <text class="menu-item__text">清除缓存</text>
-      </view>
-      <text class="menu-item__arrow">›</text>
-    </view>
-
-    <view class="menu-item menu-item--danger" bindtap="onLogout">
-      <view class="menu-item__left">
-        <view class="menu-item__icon-wrap menu-item__icon-wrap--danger">
-          <text class="menu-item__icon-text menu-item__icon-text--danger">⏻</text>
-        </view>
-        <text class="menu-item__text menu-item__text--danger">退出登录</text>
-      </view>
-      <text class="menu-item__arrow">›</text>
     </view>
   </view>
 </scroll-view>
