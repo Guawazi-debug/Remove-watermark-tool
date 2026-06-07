@@ -611,7 +611,7 @@
 
 .about-modal {
   width: 85%;
-  max-height: 85vh;
+  height: 70vh;
   background: #ffffff;
   border-radius: 24rpx;
   overflow: hidden;
@@ -648,9 +648,8 @@
 
 .about-modal__body {
   padding: 32rpx;
-  padding-bottom: 16rpx;
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .about-logo-section {
@@ -711,10 +710,9 @@
 
 .about-footer {
   margin-top: 32rpx;
-  padding: 24rpx 0;
+  padding-top: 24rpx;
   border-top: 1rpx solid #f0ebe6;
-  display: flex;
-  justify-content: flex-end;
+  text-align: center;
 }
 
 .about-copyright {
