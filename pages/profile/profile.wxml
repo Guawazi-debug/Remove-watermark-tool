@@ -169,8 +169,8 @@
 </scroll-view>
 
 <!-- 反馈弹窗 -->
-<view class="modal-mask" wx:if="{{showFeedback}}" catchtap="onHideFeedback" catchtouchmove="">
-  <view class="modal-content" catchtap="" catchtouchmove="">
+<view class="modal-mask" wx:if="{{showFeedback}}" catchtouchmove="preventMove">
+  <view class="modal-content">
     <view class="modal-header">
       <text class="modal-title">意见反馈</text>
       <view class="modal-close" bindtap="onHideFeedback">
@@ -178,15 +178,13 @@
       </view>
     </view>
 
-    <view class="modal-body" catchtap="" catchtouchmove="">
+    <view class="modal-body">
       <textarea
         class="feedback-input"
         placeholder="请描述您遇到的问题或建议..."
         maxlength="500"
         value="{{feedbackText}}"
         bindinput="onFeedbackInput"
-        catchtap=""
-        catchtouchmove=""
       ></textarea>
       <text class="feedback-count">{{feedbackText.length}}/500</text>
     </view>

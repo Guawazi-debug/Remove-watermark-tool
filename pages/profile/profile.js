@@ -221,6 +221,11 @@ Page({
     this.setData({ showFeedback: false })
   },
 
+  // 阻止弹窗内容区域的触摸移动事件
+  preventMove() {
+    return
+  },
+
   // 输入反馈内容
   onFeedbackInput(e) {
     this.setData({ feedbackText: e.detail.value })
