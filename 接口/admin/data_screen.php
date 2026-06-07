@@ -80,8 +80,10 @@ $peakHour = db()->fetch("
     LIMIT 1
 ", [$today]);
 
-// 平均每日使用
-$daysSinceLaunch = max(1, (int)((time() - strtotime('2024-01-01')) / 86400));
+// 平均每日使用（自上线以来）
+$firstUsage = db()->fetch("SELECT MIN(used_at) as first_date FROM tool_usage");
+$startDate = $firstUsage['first_date'] ?? date('Y-m-d');
+$daysSinceLaunch = max(1, (int)((time() - strtotime($startDate)) / 86400));
 $dailyAvg = round($stats['total_usage'] / $daysSinceLaunch);
 ?>
 <!DOCTYPE html>
@@ -406,7 +408,7 @@ $dailyAvg = round($stats['total_usage'] / $daysSinceLaunch);
             </div>
             <div class="stat-box">
                 <div class="stat-box-icon">◉</div>
-                <div class="stat-box-value"><?php echo number_format($stats['week_usage']); ?></div>
+                <div class="stat-box-value" id="weekUsage"><?php echo number_format($stats['week_usage']); ?></div>
                 <div class="stat-box-label">本周使用次数</div>
                 <div class="stat-box-change <?php echo $stats['week_usage'] >= $stats['last_week_usage'] ? 'up' : 'down'; ?>">
                     <?php echo $stats['week_usage'] >= $stats['last_week_usage'] ? '↑' : '↓'; ?>
@@ -415,12 +417,12 @@ $dailyAvg = round($stats['total_usage'] / $daysSinceLaunch);
             </div>
             <div class="stat-box">
                 <div class="stat-box-icon">◈</div>
-                <div class="stat-box-value"><?php echo number_format($stats['total_users']); ?></div>
+                <div class="stat-box-value" id="totalUsers"><?php echo number_format($stats['total_users']); ?></div>
                 <div class="stat-box-label">总用户数</div>
             </div>
             <div class="stat-box">
                 <div class="stat-box-icon">▣</div>
-                <div class="stat-box-value"><?php echo number_format($stats['total_usage']); ?></div>
+                <div class="stat-box-value" id="totalUsage"><?php echo number_format($stats['total_usage']); ?></div>
                 <div class="stat-box-label">总使用次数</div>
             </div>
         </div>
@@ -588,9 +590,45 @@ $dailyAvg = round($stats['total_usage'] / $daysSinceLaunch);
         categoryChart.resize();
     });
 
-    // 自动刷新数据（每30秒）
+    // 自动刷新数据（每30秒，使用AJAX局部刷新）
     setInterval(function() {
-        location.reload();
+        fetch('api/stats.php?action=dashboard')
+            .then(function(response) {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.code === 200 && data.data) {
+                    // 更新今日使用次数
+                    var todayUsageEl = document.getElementById('todayUsage');
+                    if (todayUsageEl) {
+                        todayUsageEl.textContent = data.data.today_usage || '0';
+                    }
+
+                    // 更新本周使用次数
+                    var weekUsageEl = document.getElementById('weekUsage');
+                    if (weekUsageEl) {
+                        weekUsageEl.textContent = data.data.week_usage || '0';
+                    }
+
+                    // 更新总用户数
+                    var totalUsersEl = document.getElementById('totalUsers');
+                    if (totalUsersEl) {
+                        totalUsersEl.textContent = data.data.total_users || '0';
+                    }
+
+                    // 更新总使用次数
+                    var totalUsageEl = document.getElementById('totalUsage');
+                    if (totalUsageEl) {
+                        totalUsageEl.textContent = data.data.total_usage || '0';
+                    }
+
+                    console.log('数据已刷新: ' + new Date().toLocaleTimeString());
+                }
+            })
+            .catch(function(error) {
+                console.log('数据刷新失败，将在下次自动重试');
+            });
     }, 30000);
     </script>
 </body>

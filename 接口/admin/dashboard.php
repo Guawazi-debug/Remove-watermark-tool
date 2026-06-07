@@ -51,10 +51,12 @@ $weekUsage = db()->count('tool_usage', "DATE(used_at) BETWEEN ? AND ?", [
     date('Y-m-d')
 ]);
 
-// 上周使用次数
+// 上周使用次数（上周一到上周日）
+$lastWeekMonday = date('Y-m-d', strtotime('last monday -7 days'));
+$lastWeekSunday = date('Y-m-d', strtotime('last sunday -7 days'));
 $lastWeekUsage = db()->count('tool_usage', "DATE(used_at) BETWEEN ? AND ?", [
-    date('Y-m-d', strtotime('-13 days')),
-    date('Y-m-d', strtotime('-7 days'))
+    $lastWeekMonday,
+    $lastWeekSunday
 ]);
 
 // 24小时使用趋势（根据选择的日期范围）
@@ -278,7 +280,7 @@ $recentUsage = db()->fetchAll("
                     <div class="stat-mini-icon">◎</div>
                     <div class="stat-mini-info">
                         <div class="stat-mini-label">日均使用</div>
-                        <div class="stat-mini-value"><?php echo number_format($totalUsage / max(1, (int)((time() - strtotime('2024-01-01')) / 86400))); ?></div>
+                        <div class="stat-mini-value"><?php echo number_format($totalUsage / $daysSinceLaunch); ?></div>
                         <div class="stat-mini-change neutral">自上线以来</div>
                     </div>
                 </div>

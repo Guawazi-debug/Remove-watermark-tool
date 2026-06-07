@@ -6,16 +6,28 @@ if (isLoggedIn()) {
     exit;
 }
 
+// 生成CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
-
-    if (login($username, $password)) {
-        header('Location: dashboard.php');
-        exit;
+    // 验证CSRF token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error = 'CSRF验证失败，请重试';
     } else {
-        $error = '用户名或密码错误';
+        $username = substr($_POST['username'] ?? '', 0, 50);
+        $password = substr($_POST['password'] ?? '', 0, 100);
+
+        if (login($username, $password)) {
+            // 登录成功后重新生成CSRF token
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            header('Location: dashboard.php');
+            exit;
+        } else {
+            $error = '用户名或密码错误';
+        }
     }
 }
 ?>
@@ -265,18 +277,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <div class="form-group">
                     <label class="form-label">用户名</label>
-                    <input type="text" name="username" class="form-input" placeholder="请输入用户名" required autocomplete="username">
+                    <input type="text" name="username" class="form-input" placeholder="请输入用户名" required autocomplete="username" maxlength="50">
                 </div>
                 <div class="form-group">
                     <label class="form-label">密码</label>
-                    <input type="password" name="password" class="form-input" placeholder="请输入密码" required autocomplete="current-password">
+                    <input type="password" name="password" class="form-input" placeholder="请输入密码" required autocomplete="current-password" maxlength="100">
                 </div>
                 <button type="submit" class="login-btn">登 录</button>
             </form>
 
-            <div class="login-footer">© 2024 抹印小栈</div>
+            <div class="login-footer">© <?php echo date('Y'); ?> 抹印小栈</div>
         </div>
     </div>
 </body>

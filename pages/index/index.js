@@ -1,4 +1,5 @@
 const { toolCategories, toolIndex } = require('../../utils/tool-meta')
+const { recordUseCount, recordRecentTool } = require('../../utils/common')
 const app = getApp()
 
 const RECENT_TOOLS_KEY = 'recent-tools'
@@ -49,8 +50,8 @@ Page({
     const page = e.detail.page || e.currentTarget.dataset.page
     const toolId = e.detail.toolId || e.currentTarget.dataset.toolId
     if (toolId) {
-      this._recordRecentTool(toolId)
-      this._recordUseCount()
+      recordRecentTool(toolId)
+      recordUseCount()
       // 记录到服务器
       app.trackToolUse(toolId)
     }
@@ -66,16 +67,6 @@ Page({
     }
   },
 
-  // 记录使用次数
-  _recordUseCount() {
-    const stats = wx.getStorageSync('user-stats') || {
-      totalUseCount: 0,
-      firstUseDate: new Date().toISOString().split('T')[0]
-    }
-    stats.totalUseCount = (stats.totalUseCount || 0) + 1
-    stats.lastUseDate = new Date().toISOString().split('T')[0]
-    wx.setStorageSync('user-stats', stats)
-  },
 
   onSearchInput(e) {
     const keyword = e.detail.value.trim().toLowerCase()

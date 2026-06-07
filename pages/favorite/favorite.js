@@ -1,4 +1,5 @@
 const { toolIndex } = require('../../utils/tool-meta')
+const { recordUseCount } = require('../../utils/common')
 const app = getApp()
 
 const FAVORITE_TOOLS_KEY = 'favorite-tools'
@@ -79,7 +80,7 @@ Page({
 
     const page = e.currentTarget.dataset.page
     const toolId = e.currentTarget.dataset.toolId
-    this._recordUseCount()
+    recordUseCount()
     // 记录到服务器
     if (toolId) {
       app.trackToolUse(toolId)
@@ -94,16 +95,6 @@ Page({
     })
   },
 
-  // 记录使用次数
-  _recordUseCount() {
-    const stats = wx.getStorageSync('user-stats') || {
-      totalUseCount: 0,
-      firstUseDate: new Date().toISOString().split('T')[0]
-    }
-    stats.totalUseCount = (stats.totalUseCount || 0) + 1
-    stats.lastUseDate = new Date().toISOString().split('T')[0]
-    wx.setStorageSync('user-stats', stats)
-  },
 
   // 显示创建组合弹窗
   onShowComboModal() {

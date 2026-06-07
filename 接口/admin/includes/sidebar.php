@@ -54,6 +54,6 @@ $baseUrl = 'https://moyin.awenz.cn/admin';
             <span class="menu-icon">◁</span>
             <span>退出登录</span>
         </a>
-        <p class="sidebar-footer-text">抹印小栈 v1.1.0</p>
+        <p class="sidebar-footer-text">抹印小栈 v1.2.0</p>
     </div>
 </aside>

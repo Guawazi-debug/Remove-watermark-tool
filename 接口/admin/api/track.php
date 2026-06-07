@@ -8,9 +8,9 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: https://moyin.awenz.cn');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, X-API-Key');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
@@ -19,6 +19,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     error('请求方式错误');
 }
+
+// API密钥验证
+$apiKey = $_SERVER['HTTP_X_API_KEY'] ?? '';
+$validApiKeys = [
+    'moyin小程序专用密钥v1.2.0'  // 实际使用时应从配置文件读取
+];
+
+if (!in_array($apiKey, $validApiKeys)) {
+    error('API密钥无效', 403);
+}
+
+// 简单的频率限制（每IP每分钟最多60次请求）
+$ip = getUserIP();
+$rateLimitFile = sys_get_temp_dir() . '/rate_limit_' . md5($ip);
+$now = time();
+$window = 60; // 1分钟窗口
+
+if (file_exists($rateLimitFile)) {
+    $data = json_decode(file_get_contents($rateLimitFile), true);
+    if ($data && ($now - $data['start']) < $window) {
+        if ($data['count'] >= 60) {
+            error('请求过于频繁，请稍后再试', 429);
+        }
+        $data['count']++;
+    } else {
+        $data = ['start' => $now, 'count' => 1];
+    }
+} else {
+    $data = ['start' => $now, 'count' => 1];
+}
+
+file_put_contents($rateLimitFile, json_encode($data));
 
 $input = json_decode(file_get_contents('php://input'), true);
 
@@ -39,20 +71,50 @@ $ip = getUserIP();
 function uploadAvatar($avatarData, $openid) {
     if (empty($avatarData)) return '';
 
+    // 验证base64格式
+    if (!preg_match('/^data:image\/(jpeg|png|gif);base64,/', $avatarData, $matches)) {
+        return '';
+    }
+
+    // 移除base64前缀
+    $avatarData = preg_replace('/^data:image\/\w+;base64,/', '', $avatarData);
+
+    // 解码base64数据
+    $data = base64_decode($avatarData);
+    if ($data === false) {
+        return '';
+    }
+
+    // 验证文件大小 (最大2MB)
+    if (strlen($data) > 2 * 1024 * 1024) {
+        return '';
+    }
+
+    // 验证图片类型
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->buffer($data);
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!in_array($mime, $allowedTypes)) {
+        return '';
+    }
+
+    // 过滤openid中的非法字符，防止路径遍历
+    $openid = preg_replace('/[^a-zA-Z0-9_-]/', '', $openid);
+
     // 创建头像目录
     $uploadDir = '/www/wwwroot/moyin.awenz.cn/admin/uploads/avatars/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
 
-    // 生成文件名
-    $filename = $openid . '_' . time() . '.jpg';
+    // 生成安全文件名
+    $extMap = ['image/jpeg' => '.jpg', 'image/png' => '.png', 'image/gif' => '.gif'];
+    $ext = $extMap[$mime] ?? '.jpg';
+    $filename = $openid . '_' . bin2hex(random_bytes(16)) . $ext;
     $filepath = $uploadDir . $filename;
 
-    // 解码base64数据
-    $data = base64_decode($avatarData);
-    if ($data) {
-        file_put_contents($filepath, $data);
+    // 写入文件
+    if (file_put_contents($filepath, $data)) {
         return 'https://moyin.awenz.cn/admin/uploads/avatars/' . $filename;
     }
     return '';
@@ -62,15 +124,25 @@ function uploadAvatar($avatarData, $openid) {
 function downloadAvatar($avatarUrl, $openid) {
     if (empty($avatarUrl)) return '';
 
+    // 验证URL格式
+    if (!filter_var($avatarUrl, FILTER_VALIDATE_URL)) {
+        return '';
+    }
+
+    // 只允许http和https协议
+    $scheme = parse_url($avatarUrl, PHP_URL_SCHEME);
+    if (!in_array($scheme, ['http', 'https'])) {
+        return '';
+    }
+
+    // 过滤openid中的非法字符，防止路径遍历
+    $openid = preg_replace('/[^a-zA-Z0-9_-]/', '', $openid);
+
     // 创建头像目录
     $uploadDir = '/www/wwwroot/moyin.awenz.cn/admin/uploads/avatars/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
-
-    // 生成文件名
-    $filename = $openid . '_' . time() . '.jpg';
-    $filepath = $uploadDir . $filename;
 
     // 下载文件
     $ch = curl_init($avatarUrl);
@@ -78,14 +150,40 @@ function downloadAvatar($avatarUrl, $openid) {
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_TIMEOUT => 30,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_MAXREDIRS => 3,
         CURLOPT_USERAGENT => 'Mozilla/5.0'
     ]);
     $imageData = curl_exec($ch);
+    $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
-    if ($imageData) {
-        file_put_contents($filepath, $imageData);
+    // 验证下载是否成功
+    if ($imageData === false || $statusCode !== 200) {
+        return '';
+    }
+
+    // 验证文件大小 (最大2MB)
+    if (strlen($imageData) > 2 * 1024 * 1024) {
+        return '';
+    }
+
+    // 验证图片类型
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->buffer($imageData);
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!in_array($mime, $allowedTypes)) {
+        return '';
+    }
+
+    // 生成安全文件名
+    $extMap = ['image/jpeg' => '.jpg', 'image/png' => '.png', 'image/gif' => '.gif'];
+    $ext = $extMap[$mime] ?? '.jpg';
+    $filename = $openid . '_' . bin2hex(random_bytes(16)) . $ext;
+    $filepath = $uploadDir . $filename;
+
+    // 写入文件
+    if (file_put_contents($filepath, $imageData)) {
         return 'https://moyin.awenz.cn/admin/uploads/avatars/' . $filename;
     }
     return '';
@@ -112,7 +210,7 @@ switch ($action) {
         if ($user) {
             // 更新用户信息
             $updateData = [
-                'nickname' => $nickname,
+                'nickname' => mb_substr($nickname, 0, 50),  // 限制昵称长度
                 'last_login' => date('Y-m-d H:i:s'),
                 'login_count' => $user['login_count'] + 1
             ];
@@ -128,18 +226,20 @@ switch ($action) {
             // 创建新用户
             $userId = db()->insert('users', [
                 'openid' => $openid,
-                'nickname' => $nickname,
+                'nickname' => mb_substr($nickname, 0, 50),  // 限制昵称长度
                 'avatar_url' => $localAvatar ?: $avatarUrl
             ]);
         }
 
-        // 记录登录日志
-        db()->insert('login_logs', [
-            'user_id' => $userId,
-            'login_type' => 'user',
-            'ip_address' => $ip,
-            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
-        ]);
+        // 记录登录日志（仅在用户ID有效时）
+        if ($userId) {
+            db()->insert('login_logs', [
+                'user_id' => $userId,
+                'login_type' => 'user',
+                'ip_address' => $ip,
+                'user_agent' => mb_substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 500)
+            ]);
+        }
 
         success([
             'user_id' => $userId,
