@@ -178,14 +178,13 @@
       </view>
     </view>
 
-    <view class="modal-body">
+    <view class="modal-body" catchtap="">
       <textarea
         class="feedback-input"
         placeholder="请描述您遇到的问题或建议..."
         maxlength="500"
         value="{{feedbackText}}"
         bindinput="onFeedbackInput"
-        catchtap=""
       ></textarea>
       <text class="feedback-count">{{feedbackText.length}}/500</text>
     </view>
