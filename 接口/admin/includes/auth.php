@@ -34,6 +34,7 @@ function login($username, $password) {
         db()->insert('login_logs', [
             'user_id' => null,
             'login_type' => 'admin',
+            'login_time' => date('Y-m-d H:i:s'),
             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
         ]);
