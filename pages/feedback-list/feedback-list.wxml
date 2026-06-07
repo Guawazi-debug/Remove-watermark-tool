@@ -1,0 +1,35 @@
+<navigation-bar title="我的反馈" back="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root feedback-page" scroll-y enable-flex show-scrollbar="{{false}}">
+  <!-- 加载中 -->
+  <view class="loading-box" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-box" wx:elif="{{feedbackList.length === 0}}">
+    <text class="empty-icon">✎</text>
+    <text class="empty-text">暂无反馈记录</text>
+    <text class="empty-desc">提交反馈后可在此查看回复</text>
+  </view>
+
+  <!-- 反馈列表 -->
+  <view class="feedback-list" wx:else>
+    <view class="feedback-item" wx:for="{{feedbackList}}" wx:key="id">
+      <!-- 反馈内容 -->
+      <view class="feedback-item__header">
+        <view class="feedback-item__status" style="background: {{item.statusColor}}20; color: {{item.statusColor}};">
+          {{item.statusText}}
+        </view>
+        <text class="feedback-item__time">{{item.time}}</text>
+      </view>
+      <view class="feedback-item__content">{{item.content}}</view>
+
+      <!-- 官方回复 -->
+      <view class="feedback-item__reply" wx:if="{{item.reply}}">
+        <view class="reply-label">官方回复</view>
+        <view class="reply-content">{{item.reply}}</view>
+      </view>
+    </view>
+  </view>
+</scroll-view>

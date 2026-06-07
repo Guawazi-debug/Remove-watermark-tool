@@ -195,5 +195,31 @@ App({
         callback && callback(false)
       }
     })
+  },
+
+  // 获取我的反馈列表
+  getMyFeedbackList(callback) {
+    wx.request({
+      url: this.globalData.apiBaseUrl + '/feedback.php?action=my',
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'moyin-api-key-v1.2.0'
+      },
+      data: {
+        openid: this.globalData.openid
+      },
+      timeout: 5000,
+      success: (res) => {
+        if (res.data && res.data.code === 200) {
+          callback && callback(res.data.data.list)
+        } else {
+          callback && callback([])
+        }
+      },
+      fail: () => {
+        callback && callback([])
+      }
+    })
   }
 })

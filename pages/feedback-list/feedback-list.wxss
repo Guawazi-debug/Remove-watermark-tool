@@ -1,0 +1,100 @@
+.feedback-page {
+  min-height: 100vh;
+  background: #F8F3EC;
+  padding: 20rpx 30rpx;
+}
+
+/* 加载中 */
+.loading-box {
+  display: flex;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 150rpx 0;
+}
+.empty-icon {
+  font-size: 80rpx;
+  color: #ccc;
+  margin-bottom: 20rpx;
+}
+.empty-text {
+  font-size: 30rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+.empty-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 反馈列表 */
+.feedback-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.feedback-item {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.feedback-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.feedback-item__status {
+  font-size: 22rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.feedback-item__time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.feedback-item__content {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+/* 官方回复 */
+.feedback-item__reply {
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.reply-label {
+  font-size: 22rpx;
+  color: #c2956a;
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.reply-content {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+  background: #faf8f5;
+  padding: 16rpx 20rpx;
+  border-radius: 10rpx;
+}

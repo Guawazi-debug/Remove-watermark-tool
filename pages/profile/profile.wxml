@@ -136,6 +136,16 @@
       <text class="menu-item__arrow">›</text>
     </view>
 
+    <view class="menu-item" bindtap="onFeedbackList">
+      <view class="menu-item__left">
+        <view class="menu-item__icon-wrap">
+          <text class="menu-item__icon-text">≡</text>
+        </view>
+        <text class="menu-item__text">反馈列表</text>
+      </view>
+      <text class="menu-item__arrow">›</text>
+    </view>
+
     <view class="menu-item" bindtap="onAbout">
       <view class="menu-item__left">
         <view class="menu-item__icon-wrap">

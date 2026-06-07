@@ -282,6 +282,13 @@ Page({
     })
   },
 
+  // 跳转反馈列表
+  onFeedbackList() {
+    wx.navigateTo({
+      url: '/pages/feedback-list/feedback-list'
+    })
+  },
+
   // 退出登录
   onLogout() {
     wx.showModal({

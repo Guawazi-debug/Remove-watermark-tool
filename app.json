@@ -4,6 +4,8 @@
     "pages/category/category",
     "pages/favorite/favorite",
     "pages/profile/profile",
+    "pages/feedback-list/feedback-list",
+    "pages/profile/profile",
     "pages/video-parse/video-parse",
     "pages/json-parse/json-parse",
     "pages/json-generate/json-generate",
