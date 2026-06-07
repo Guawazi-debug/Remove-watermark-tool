@@ -1,4 +1,5 @@
 const { toolCategories, toolIndex } = require('../../utils/tool-meta')
+const app = getApp()
 
 Page({
   data: {
@@ -67,6 +68,8 @@ Page({
     if (toolId) {
       this._recordRecentTool(toolId)
       this._recordUseCount()
+      // 记录到服务器
+      app.trackToolUse(toolId)
     }
     wx.navigateTo({
       url: page,

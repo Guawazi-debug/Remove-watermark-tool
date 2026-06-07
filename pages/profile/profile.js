@@ -1,4 +1,5 @@
 const { toolIndex } = require('../../utils/tool-meta')
+const app = getApp()
 
 const RECENT_TOOLS_KEY = 'recent-tools'
 const FAVORITE_TOOLS_KEY = 'favorite-tools'
@@ -169,7 +170,23 @@ Page({
   // 点击工具
   onToolTap(e) {
     const page = e.currentTarget.dataset.page
+    const toolId = e.currentTarget.dataset.toolId
+    if (toolId) {
+      this._recordUseCount()
+      app.trackToolUse(toolId)
+    }
     wx.navigateTo({ url: page })
+  },
+
+  // 记录使用次数
+  _recordUseCount() {
+    const stats = wx.getStorageSync('user-stats') || {
+      totalUseCount: 0,
+      firstUseDate: new Date().toISOString().split('T')[0]
+    }
+    stats.totalUseCount = (stats.totalUseCount || 0) + 1
+    stats.lastUseDate = new Date().toISOString().split('T')[0]
+    wx.setStorageSync('user-stats', stats)
   },
 
   // 打开反馈弹窗

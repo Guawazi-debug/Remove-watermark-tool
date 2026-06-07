@@ -1,2 +1,115 @@
 // app.js
-App({})
+App({
+  globalData: {
+    openid: '',
+    userInfo: null,
+    apiBaseUrl: 'https://moyin.awenz.cn/admin/api',
+    apiReady: false
+  },
+
+  onLaunch() {
+    // 获取用户信息
+    const userInfo = wx.getStorageSync('user-info')
+    if (userInfo) {
+      this.globalData.userInfo = userInfo
+    }
+
+    // 生成或获取openid
+    this._initOpenid()
+
+    // 延迟执行API请求，避免阻塞界面加载
+    setTimeout(() => {
+      this._syncLogin()
+    }, 1000)
+  },
+
+  _initOpenid() {
+    let openid = wx.getStorageSync('openid')
+    if (!openid) {
+      // 生成临时openid
+      openid = 'wx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+      wx.setStorageSync('openid', openid)
+    }
+    this.globalData.openid = openid
+  },
+
+  _syncLogin() {
+    const userInfo = this.globalData.userInfo
+    if (!userInfo) return
+
+    // 如果有头像URL，下载并转换为base64
+    if (userInfo.avatarUrl) {
+      wx.downloadFile({
+        url: userInfo.avatarUrl,
+        timeout: 5000,
+        success: (res) => {
+          if (res.statusCode === 200) {
+            const fs = wx.getFileSystemManager()
+            try {
+              const base64 = fs.readFileSync(res.tempFilePath, 'base64')
+              this._uploadLogin(userInfo, base64)
+            } catch (e) {
+              console.log('头像读取失败', e)
+              this._uploadLogin(userInfo, '')
+            }
+          } else {
+            this._uploadLogin(userInfo, '')
+          }
+        },
+        fail: () => {
+          this._uploadLogin(userInfo, '')
+        }
+      })
+    } else {
+      this._uploadLogin(userInfo, '')
+    }
+  },
+
+  _uploadLogin(userInfo, avatarBase64) {
+    wx.request({
+      url: this.globalData.apiBaseUrl + '/track.php',
+      method: 'POST',
+      data: {
+        action: 'login',
+        openid: this.globalData.openid,
+        nickname: userInfo.nickName || '微信用户',
+        avatar_url: userInfo.avatarUrl || '',
+        avatar_data: avatarBase64
+      },
+      timeout: 8000,
+      success: (res) => {
+        console.log('登录同步成功', res.data)
+        this.globalData.apiReady = true
+      },
+      fail: (err) => {
+        console.log('登录同步失败，不影响使用', err)
+        // 即使失败也不影响小程序使用
+      }
+    })
+  },
+
+  // 记录工具使用 - 后台异步执行
+  trackToolUse(toolId) {
+    if (!toolId || !this.globalData.openid) return
+
+    // 使用setTimeout延迟执行，避免阻塞
+    setTimeout(() => {
+      wx.request({
+        url: this.globalData.apiBaseUrl + '/track.php',
+        method: 'POST',
+        data: {
+          action: 'track',
+          openid: this.globalData.openid,
+          tool_id: toolId
+        },
+        timeout: 5000,
+        success: (res) => {
+          console.log('使用记录成功', res.data)
+        },
+        fail: (err) => {
+          console.log('使用记录失败，不影响使用', err)
+        }
+      })
+    }, 100)
+  }
+})

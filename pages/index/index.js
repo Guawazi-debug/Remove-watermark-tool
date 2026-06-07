@@ -1,4 +1,5 @@
 const { toolCategories, toolIndex } = require('../../utils/tool-meta')
+const app = getApp()
 
 const RECENT_TOOLS_KEY = 'recent-tools'
 const FAVORITE_TOOLS_KEY = 'favorite-tools'
@@ -50,6 +51,8 @@ Page({
     if (toolId) {
       this._recordRecentTool(toolId)
       this._recordUseCount()
+      // 记录到服务器
+      app.trackToolUse(toolId)
     }
     if (page) {
       wx.navigateTo({

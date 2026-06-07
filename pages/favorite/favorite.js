@@ -1,4 +1,5 @@
 const { toolIndex } = require('../../utils/tool-meta')
+const app = getApp()
 
 const FAVORITE_TOOLS_KEY = 'favorite-tools'
 const TOOL_COMBOS_KEY = 'tool-combinations'
@@ -77,7 +78,12 @@ Page({
     this._isNavigating = true
 
     const page = e.currentTarget.dataset.page
+    const toolId = e.currentTarget.dataset.toolId
     this._recordUseCount()
+    // 记录到服务器
+    if (toolId) {
+      app.trackToolUse(toolId)
+    }
     wx.navigateTo({
       url: page,
       complete: () => {
