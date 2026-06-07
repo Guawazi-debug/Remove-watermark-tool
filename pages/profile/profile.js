@@ -219,16 +219,26 @@ Page({
       return
     }
 
-    // 存储反馈（实际项目中可上传到服务器）
-    const feedbacks = wx.getStorageSync('feedbacks') || []
-    feedbacks.unshift({
-      content: feedbackText.trim(),
-      time: new Date().toISOString()
-    })
-    wx.setStorageSync('feedbacks', feedbacks.slice(0, 50)) // 最多保存50条
+    wx.showLoading({ title: '提交中...' })
 
-    this.setData({ showFeedback: false })
-    wx.showToast({ title: '感谢反馈', icon: 'success' })
+    // 提交到服务器
+    app.submitFeedback(feedbackText.trim(), (success) => {
+      wx.hideLoading()
+      if (success) {
+        this.setData({ showFeedback: false, feedbackText: '' })
+        wx.showToast({ title: '感谢反馈', icon: 'success' })
+      } else {
+        // 服务器提交失败，保存到本地
+        const feedbacks = wx.getStorageSync('feedbacks') || []
+        feedbacks.unshift({
+          content: feedbackText.trim(),
+          time: new Date().toISOString()
+        })
+        wx.setStorageSync('feedbacks', feedbacks.slice(0, 50))
+        this.setData({ showFeedback: false, feedbackText: '' })
+        wx.showToast({ title: '已保存到本地', icon: 'success' })
+      }
+    })
   },
 
   // 清除缓存

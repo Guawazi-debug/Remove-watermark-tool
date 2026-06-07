@@ -166,5 +166,34 @@ App({
         }
       })
     }, 100)
+  },
+
+  // 提交意见反馈
+  submitFeedback(content, callback) {
+    const userInfo = this.globalData.userInfo || {}
+    wx.request({
+      url: this.globalData.apiBaseUrl + '/feedback.php?action=submit',
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'moyin-api-key-v1.2.0'
+      },
+      data: {
+        openid: this.globalData.openid,
+        nickname: userInfo.nickName || '匿名用户',
+        content: content
+      },
+      timeout: 5000,
+      success: (res) => {
+        if (res.data && res.data.code === 200) {
+          callback && callback(true)
+        } else {
+          callback && callback(false)
+        }
+      },
+      fail: () => {
+        callback && callback(false)
+      }
+    })
   }
 })
