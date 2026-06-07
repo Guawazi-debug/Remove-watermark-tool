@@ -221,7 +221,7 @@
 <view class="about-modal-mask" wx:if="{{showAbout}}" catchtouchmove="">
   <view class="about-modal">
     <view class="about-modal__header">
-      <text class="about-modal__title">关于工具小栈</text>
+      <text class="about-modal__title">关于抹印小栈</text>
       <view class="about-modal__close" bindtap="onCloseAbout">
         <text>×</text>
       </view>
