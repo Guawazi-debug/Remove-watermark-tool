@@ -611,12 +611,10 @@
 
 .about-modal {
   width: 85%;
-  height: 70vh;
+  max-height: 80vh;
   background: #ffffff;
   border-radius: 24rpx;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 .about-modal__header {
@@ -648,8 +646,9 @@
 
 .about-modal__body {
   padding: 32rpx;
-  flex: 1;
-  overflow: hidden;
+  max-height: 60vh;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .about-logo-section {
@@ -705,7 +704,9 @@
   color: #241b16;
   line-height: 1.8;
   white-space: pre-wrap;
-  word-break: break-all;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .about-footer {
