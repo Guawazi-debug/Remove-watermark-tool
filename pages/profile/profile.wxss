@@ -659,12 +659,7 @@
 .about-logo {
   width: 120rpx;
   height: 120rpx;
-  background: linear-gradient(135deg, #d36b4c, #c2956a);
   border-radius: 28rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 56rpx;
   margin-bottom: 16rpx;
 }
 

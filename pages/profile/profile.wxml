@@ -230,7 +230,7 @@
     <scroll-view class="about-modal__body" scroll-y>
       <!-- Logo和版本 -->
       <view class="about-logo-section">
-        <view class="about-logo">🧰</view>
+        <image class="about-logo" src="/logo.png" mode="aspectFit"></image>
         <text class="about-app-name">工具小栈</text>
         <text class="about-version" wx:if="{{aboutData.version}}">{{aboutData.version}}</text>
       </view>
