@@ -177,9 +177,13 @@ Page({
       nickName = tempNickName.trim()
     }
 
+    // 获取当前已有的头像URL（如果有的话）
+    const existingUserInfo = wx.getStorageSync('user-info') || {}
+    const existingAvatarUrl = existingUserInfo.avatarUrl || ''
+
     // 保存用户信息
     const userInfo = {
-      avatarUrl: tempAvatarUrl || '',
+      avatarUrl: tempAvatarUrl || existingAvatarUrl,
       nickName: nickName
     }
 
@@ -196,20 +200,13 @@ Page({
 
     wx.showToast({ title: '登录成功', icon: 'success' })
 
-    // 立即读取头像并上传到服务器
-    if (tempAvatarUrl) {
-      // 如果已经是服务器上的永久URL，不需要重新上传
-      if (tempAvatarUrl.indexOf('moyin.awenz.cn') > -1) {
-        console.log('头像已是服务器永久URL，跳过上传')
-        app._syncLogin()
-        return
-      }
-
+    // 只有选择了新头像时才上传到服务器
+    if (tempAvatarUrl && tempAvatarUrl !== existingAvatarUrl) {
       const fs = wx.getFileSystemManager()
       try {
         const base64 = fs.readFileSync(tempAvatarUrl, 'base64')
         console.log('读取头像成功，长度:', base64.length)
-        // 直接调用上传
+        // 上传头像到服务器
         wx.request({
           url: app.globalData.apiBaseUrl + '/track.php',
           method: 'POST',
@@ -247,6 +244,7 @@ Page({
         app._syncLogin()
       }
     } else {
+      // 没有新头像，仅同步登录信息
       app._syncLogin()
     }
   },
