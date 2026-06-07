@@ -129,7 +129,7 @@ $tools = db()->fetchAll("SELECT * FROM tools ORDER BY name");
                             <td style="color: rgba(255,255,255,0.5);">#<?php echo $log['id']; ?></td>
                             <td>
                                 <div class="user-info">
-                                    <?php if ($log['avatar_url']): ?>
+                                    <?php if ($log['avatar_url'] && preg_match('#^https?://moyin\.awenz\.cn/#', $log['avatar_url'])): ?>
                                     <img src="<?php echo htmlspecialchars($log['avatar_url']); ?>" class="user-avatar" alt="">
                                     <?php else: ?>
                                     <div class="user-avatar" style="background: var(--accent-dark); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px;">👤</div>

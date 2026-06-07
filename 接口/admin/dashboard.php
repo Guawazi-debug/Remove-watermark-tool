@@ -332,7 +332,7 @@ $recentUsage = db()->fetchAll("
                             <tr>
                                 <td>
                                     <div class="user-cell">
-                                        <?php if ($log['avatar_url']): ?>
+                                        <?php if ($log['avatar_url'] && preg_match('#^https?://moyin\.awenz\.cn/#', $log['avatar_url'])): ?>
                                         <img src="<?php echo htmlspecialchars($log['avatar_url']); ?>" class="user-avatar" alt="">
                                         <?php else: ?>
                                         <div class="user-avatar-placeholder"><?php echo mb_substr($log['nickname'] ?? '用', 0, 1); ?></div>

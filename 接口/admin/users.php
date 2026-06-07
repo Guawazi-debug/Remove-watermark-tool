@@ -97,7 +97,7 @@ $users = db()->fetchAll("
                         <tr>
                             <td>
                                 <div class="user-info">
-                                    <?php if ($user['avatar_url']): ?>
+                                    <?php if ($user['avatar_url'] && preg_match('#^https?://moyin\.awenz\.cn/#', $user['avatar_url'])): ?>
                                     <img src="<?php echo htmlspecialchars($user['avatar_url']); ?>" class="user-avatar" alt="">
                                     <?php else: ?>
                                     <div class="user-avatar" style="background: var(--accent-dark); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px;">👤</div>
