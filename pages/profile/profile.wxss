@@ -709,7 +709,8 @@
   margin-top: 32rpx;
   padding-top: 24rpx;
   border-top: 1rpx solid #f0ebe6;
-  text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .about-copyright {
