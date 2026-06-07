@@ -8,6 +8,11 @@
       <text class="tool-card__badge" wx:if="{{badge}}">{{badge}}</text>
     </view>
   </view>
-  <text class="tool-card__name">{{name}}</text>
+  <view class="tool-card__name-row">
+    <text class="tool-card__name">{{name}}</text>
+    <view class="tool-card__favorite {{isFavorite ? 'tool-card__favorite--active' : ''}}" catchtap="onFavoriteTap">
+      <text>{{isFavorite ? '♥' : '♡'}}</text>
+    </view>
+  </view>
   <text class="tool-card__desc">{{desc}}</text>
 </view>

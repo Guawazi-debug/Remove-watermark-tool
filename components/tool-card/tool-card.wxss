@@ -49,6 +49,30 @@
   border-radius: 999rpx;
 }
 
+.tool-card__name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.tool-card__favorite {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #c4b5a8;
+  flex-shrink: 0;
+  margin-right: -12rpx;
+  margin-top: -8rpx;
+}
+
+.tool-card__favorite--active {
+  color: #d36b4c;
+}
+
 .tool-card__category {
   background: rgba(54, 43, 38, 0.05);
   color: #5f564d;
@@ -63,7 +87,7 @@
   font-size: 32rpx;
   font-weight: 700;
   color: #201914;
-  margin-bottom: 10rpx;
+  flex: 1;
 }
 
 .tool-card__desc {

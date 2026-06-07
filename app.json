@@ -1,6 +1,9 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/category/category",
+    "pages/favorite/favorite",
+    "pages/profile/profile",
     "pages/video-parse/video-parse",
     "pages/json-parse/json-parse",
     "pages/json-generate/json-generate",
@@ -37,8 +40,38 @@
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
   },
-  "enableShareAppMessage": true,
-  "enableShareTimeline": true,
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#d36b4c",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tabbar/home.png",
+        "selectedIconPath": "images/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/category/category",
+        "text": "分类",
+        "iconPath": "images/tabbar/category.png",
+        "selectedIconPath": "images/tabbar/category-active.png"
+      },
+      {
+        "pagePath": "pages/favorite/favorite",
+        "text": "收藏",
+        "iconPath": "images/tabbar/favorite.png",
+        "selectedIconPath": "images/tabbar/favorite-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/tabbar/profile.png",
+        "selectedIconPath": "images/tabbar/profile-active.png"
+      }
+    ]
+  },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"

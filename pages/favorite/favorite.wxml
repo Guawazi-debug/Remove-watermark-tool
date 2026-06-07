@@ -1,0 +1,218 @@
+<navigation-bar title="收藏" back="{{false}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root favorite-page" scroll-y enable-flex show-scrollbar="{{false}}">
+  <!-- Tab切换 -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{activeTab === 'tools' ? 'tab-item--active' : ''}}"
+      data-tab="tools"
+      bindtap="onTabTap"
+    >
+      <text>工具收藏</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'combos' ? 'tab-item--active' : ''}}"
+      data-tab="combos"
+      bindtap="onTabTap"
+    >
+      <text>工具组合</text>
+    </view>
+  </view>
+
+  <!-- 工具收藏列表 -->
+  <view class="tab-content" wx:if="{{activeTab === 'tools'}}">
+    <view class="section-header" wx:if="{{favoriteTools.length > 0}}">
+      <text class="section-header__title">已收藏 {{favoriteTools.length}} 个工具</text>
+    </view>
+
+    <view class="favorite-list" wx:if="{{favoriteTools.length > 0}}">
+      <view
+        class="favorite-item"
+        wx:for="{{favoriteTools}}"
+        wx:key="id"
+      >
+        <view
+          class="favorite-item__left"
+          data-page="{{item.page}}"
+          data-tool-id="{{item.id}}"
+          bindtap="onToolTap"
+        >
+          <view class="favorite-item__icon" style="background: {{item.color}}20; color: {{item.color}};">
+            <text>{{item.icon}}</text>
+          </view>
+          <view class="favorite-item__info">
+            <text class="favorite-item__name">{{item.name}}</text>
+            <text class="favorite-item__desc">{{item.desc}}</text>
+          </view>
+        </view>
+        <view class="favorite-item__action" data-id="{{item.id}}" bindtap="onRemoveFavorite">
+          <text class="favorite-item__remove">取消</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <text class="empty-state__icon">♡</text>
+      <text class="empty-state__title">还没有收藏工具</text>
+      <text class="empty-state__desc">在工具详情页点击收藏按钮添加</text>
+    </view>
+  </view>
+
+  <!-- 工具组合列表 -->
+  <view class="tab-content" wx:if="{{activeTab === 'combos'}}">
+    <view class="combo-header">
+      <text class="combo-header__title">我的组合</text>
+      <view class="combo-add-btn" bindtap="onShowComboModal">
+        <text>+ 新建</text>
+      </view>
+    </view>
+
+    <view class="combo-list" wx:if="{{toolCombos.length > 0}}">
+      <view
+        class="combo-item"
+        wx:for="{{toolCombos}}"
+        wx:key="id"
+      >
+        <view class="combo-item__header">
+          <view class="combo-item__title">
+            <text class="combo-item__name">{{item.name}}</text>
+          </view>
+          <view class="combo-item__actions">
+            <view class="combo-action-btn" data-id="{{item.id}}" bindtap="onRunCombo">
+              <text>执行</text>
+            </view>
+            <view class="combo-action-btn combo-action-btn--delete" data-id="{{item.id}}" bindtap="onDeleteCombo">
+              <text>删除</text>
+            </view>
+          </view>
+        </view>
+        <view class="combo-item__tools">
+          <view
+            class="combo-tool-item"
+            wx:for="{{item.toolNames}}"
+            wx:for-item="toolName"
+            wx:key="index"
+          >
+            <text class="combo-tool-index">{{index + 1}}</text>
+            <text class="combo-tool-name">{{toolName}}</text>
+            <text class="combo-tool-arrow" wx:if="{{index < item.toolNames.length - 1}}">→</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <text class="empty-state__icon">⚡</text>
+      <text class="empty-state__title">还没有工具组合</text>
+      <text class="empty-state__desc">创建组合，串联多个工具</text>
+    </view>
+  </view>
+</scroll-view>
+
+<!-- 组合执行面板 -->
+<view class="runner-panel" wx:if="{{showRunner && runnerCombo}}">
+  <view class="runner-header">
+    <view class="runner-info">
+      <text class="runner-title">{{runnerCombo.name}}</text>
+      <text class="runner-progress">{{runnerCombo.currentIndex + 1}} / {{runnerCombo.toolDetails.length}}</text>
+    </view>
+    <view class="runner-close" bindtap="onCloseRunner">
+      <text>×</text>
+    </view>
+  </view>
+
+  <view class="runner-steps">
+    <view
+      class="runner-step {{index === runnerCombo.currentIndex ? 'runner-step--active' : ''}} {{index < runnerCombo.currentIndex ? 'runner-step--done' : ''}}"
+      wx:for="{{runnerCombo.toolDetails}}"
+      wx:key="id"
+    >
+      <view class="runner-step__icon">
+        <text wx:if="{{index < runnerCombo.currentIndex}}">✓</text>
+        <text wx:elif="{{index === runnerCombo.currentIndex}}">{{index + 1}}</text>
+        <text wx:else>{{index + 1}}</text>
+      </view>
+      <text class="runner-step__name">{{item.name}}</text>
+      <view class="runner-step__line" wx:if="{{index < runnerCombo.toolDetails.length - 1}}"></view>
+    </view>
+  </view>
+
+  <view class="runner-tool">
+    <view class="runner-tool__icon" style="background: {{runnerCombo.currentTool.color}}20; color: {{runnerCombo.currentTool.color}};">
+      <text>{{runnerCombo.currentTool.icon}}</text>
+    </view>
+    <view class="runner-tool__info">
+      <text class="runner-tool__name">{{runnerCombo.currentTool.name}}</text>
+      <text class="runner-tool__desc">{{runnerCombo.currentTool.desc}}</text>
+    </view>
+  </view>
+
+  <view class="runner-actions">
+    <view class="runner-btn runner-btn--open" bindtap="onOpenTool" data-page="{{runnerCombo.currentTool.page}}">
+      <text>打开工具</text>
+    </view>
+    <view class="runner-btn runner-btn--next" bindtap="onNextTool">
+      <text>{{runnerCombo.currentIndex >= runnerCombo.toolDetails.length - 1 ? '完成' : '下一个'}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 创建组合弹窗 -->
+<view class="modal-mask" wx:if="{{showComboModal}}">
+  <view class="modal-content">
+    <view class="modal-header" catchtap="">
+      <text class="modal-title">新建工具组合</text>
+      <view class="modal-close" catchtap="onHideComboModal">
+        <text>×</text>
+      </view>
+    </view>
+
+    <view class="modal-body" catchtap="">
+      <view class="form-group">
+        <text class="form-label">组合名称</text>
+        <input
+          class="form-input"
+          placeholder="例如：JSON处理流程"
+          value="{{comboName}}"
+          bindinput="onComboNameInput"
+        />
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">选择工具（最多3个）</text>
+        <scroll-view class="tool-select-list" scroll-y style="max-height: 400rpx;">
+          <view
+            class="tool-select-item {{item.selected ? 'tool-select-item--selected' : ''}}"
+            wx:for="{{availableTools}}"
+            wx:key="id"
+            data-id="{{item.id}}"
+            catchtap="onToggleTool"
+          >
+            <view class="tool-select-item__icon" style="background: {{item.color}}20; color: {{item.color}};">
+              <text>{{item.icon}}</text>
+            </view>
+            <text class="tool-select-item__name">{{item.name}}</text>
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="selected-preview" wx:if="{{selectedTools.length > 0}}" catchtap="">
+        <text class="selected-preview__label">已选择：</text>
+        <view class="selected-preview__list">
+          <text class="selected-preview__item" wx:for="{{selectedTools}}" wx:key="id">
+            {{item.name}}{{index < selectedTools.length - 1 ? ' → ' : ''}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <view class="modal-footer" catchtap="">
+      <view class="modal-btn modal-btn--cancel" bindtap="onHideComboModal">
+        <text>取消</text>
+      </view>
+      <view class="modal-btn modal-btn--confirm" bindtap="onSaveCombo">
+        <text>保存</text>
+      </view>
+    </view>
+  </view>
+</view>

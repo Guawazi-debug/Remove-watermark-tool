@@ -38,22 +38,25 @@
         <text class="section-subtitle">保留你最近打开的工具入口</text>
       </view>
     </view>
-    <scroll-view class="recent-scroll" scroll-x enhanced show-scrollbar="{{false}}">
-      <view class="recent-row">
-        <view
-          class="recent-chip"
-          wx:for="{{recentTools}}"
-          wx:key="id"
-          data-page="{{item.page}}"
-          data-tool-id="{{item.id}}"
-          bindtap="onToolTap"
-          style="border-color: {{item.color}}33;"
-        >
-          <text class="recent-chip__name">{{item.name}}</text>
-          <text class="recent-chip__meta">{{item.categoryName}}</text>
+    <view class="recent-grid">
+      <view
+        class="recent-card"
+        wx:for="{{recentTools}}"
+        wx:key="id"
+        wx:if="{{index < 4}}"
+        data-page="{{item.page}}"
+        data-tool-id="{{item.id}}"
+        bindtap="onToolTap"
+      >
+        <view class="recent-card__icon" style="background: {{item.color}}15; color: {{item.color}};">
+          <text>{{item.icon}}</text>
+        </view>
+        <view class="recent-card__info">
+          <text class="recent-card__name">{{item.name}}</text>
+          <text class="recent-card__category">{{item.categoryName}}</text>
         </view>
       </view>
-    </scroll-view>
+    </view>
   </view>
 
   <view class="section-block">
@@ -69,15 +72,16 @@
         wx:key="id"
         wx:for-item="tool"
         tool-id="{{tool.id}}"
+        page="{{tool.page}}"
         icon="{{tool.icon}}"
         name="{{tool.name}}"
         desc="{{tool.desc}}"
         badge="{{tool.badge}}"
         category="{{tool.categoryName}}"
         color="{{tool.color}}"
-        data-page="{{tool.page}}"
-        data-tool-id="{{tool.id}}"
-        bindtap="onToolTap"
+        is-favorite="{{tool.isFavorite}}"
+        bind:tap="onToolTap"
+        bind:favorite="onFavoriteTool"
       />
     </view>
   </view>
@@ -111,9 +115,11 @@
             badge="{{tool.badge}}"
             category="{{item.name}}"
             color="{{tool.color}}"
+            is-favorite="{{tool.isFavorite}}"
             data-page="{{tool.page}}"
             data-tool-id="{{tool.id}}"
             bindtap="onToolTap"
+            bind:favorite="onFavoriteTool"
           />
         </view>
       </view>
@@ -121,7 +127,7 @@
 
     <view class="empty-state" wx:else>
       <text class="empty-state__title">没有找到匹配工具</text>
-      <text class="empty-state__desc">试试换一个关键词，比如“日期”、“编码”或“JSON”。</text>
+      <text class="empty-state__desc">试试换一个关键词，比如"日期"、"编码"或"JSON"。</text>
     </view>
   </view>
 </scroll-view>

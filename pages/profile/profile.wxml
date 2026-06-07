@@ -1,0 +1,201 @@
+<navigation-bar title="我的" back="{{false}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root profile-page" scroll-y enable-flex show-scrollbar="{{false}}">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-card__main" wx:if="{{hasUserInfo}}">
+      <!-- 已登录显示头像和昵称 -->
+      <view class="user-avatar">
+        <image class="user-avatar__img" src="{{userInfo.avatarUrl}}" mode="aspectFill" wx:if="{{userInfo.avatarUrl}}"></image>
+        <text class="user-avatar__icon" wx:else>👤</text>
+      </view>
+      <view class="user-info">
+        <text class="user-name">{{userInfo.nickName || '微信用户'}}</text>
+        <view class="vip-badge" wx:if="{{isVip}}">
+          <text>VIP会员</text>
+        </view>
+        <view class="vip-badge vip-badge--normal" wx:else>
+          <text>普通会员</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 未登录显示一键登录 -->
+    <view class="login-card" wx:else>
+      <view class="login-avatar">
+        <text class="login-avatar__icon">👤</text>
+      </view>
+      <view class="login-info">
+        <text class="login-title">欢迎使用工具小栈</text>
+        <text class="login-desc">登录后可同步收藏和使用记录</text>
+      </view>
+      <view class="login-btn" bindtap="onQuickLogin">
+        <text>一键登录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 登录弹窗 -->
+  <view class="login-modal-mask" wx:if="{{showLoginModal}}" catchtap="">
+    <view class="login-modal">
+      <view class="login-modal__header">
+        <text class="login-modal__title">获取微信信息</text>
+        <view class="login-modal__close" bindtap="onCloseLoginModal">
+          <text>×</text>
+        </view>
+      </view>
+
+      <view class="login-modal__body">
+        <!-- 头像选择 -->
+        <view class="login-avatar-section">
+          <button class="avatar-select-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+            <view class="avatar-preview">
+              <image class="avatar-preview__img" src="{{tempAvatarUrl}}" mode="aspectFill" wx:if="{{tempAvatarUrl}}"></image>
+              <view class="avatar-preview__placeholder" wx:else>
+                <text class="avatar-preview__icon">📷</text>
+              </view>
+            </view>
+          </button>
+          <text class="login-avatar-hint" wx:if="{{!tempAvatarUrl}}">点击选择微信头像</text>
+        </view>
+
+        <!-- 昵称输入 -->
+        <view class="login-nickname-section">
+          <text class="login-label">昵称</text>
+          <input
+            class="login-nickname-input"
+            type="nickname"
+            placeholder="点击获取微信昵称"
+            value="{{tempNickName}}"
+            bindchange="onNicknameChange"
+          />
+        </view>
+      </view>
+
+      <view class="login-modal__footer">
+        <view class="login-modal__btn login-modal__btn--confirm" bindtap="onConfirmLogin">
+          <text>完成登录</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 使用统计 -->
+  <view class="stats-card">
+    <view class="stats-item">
+      <text class="stats-value">{{stats.totalUseCount}}</text>
+      <text class="stats-label">使用次数</text>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <text class="stats-value">{{stats.favoriteCount}}</text>
+      <text class="stats-label">收藏工具</text>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <text class="stats-value">31</text>
+      <text class="stats-label">全部工具</text>
+    </view>
+  </view>
+
+  <!-- 最近使用 -->
+  <view class="section-block" wx:if="{{recentTools.length > 0}}">
+    <view class="section-head">
+      <text class="section-title">最近使用</text>
+    </view>
+    <view class="recent-grid">
+      <view
+        class="recent-card"
+        wx:for="{{recentTools}}"
+        wx:key="id"
+        wx:if="{{index < 4}}"
+        data-page="{{item.page}}"
+        data-tool-id="{{item.id}}"
+        bindtap="onToolTap"
+      >
+        <view class="recent-card__icon" style="background: {{item.color}}15; color: {{item.color}};">
+          <text>{{item.icon}}</text>
+        </view>
+        <view class="recent-card__info">
+          <text class="recent-card__name">{{item.name}}</text>
+          <text class="recent-card__category">{{item.categoryName}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-card">
+    <view class="menu-item" bindtap="onShowFeedback">
+      <view class="menu-item__left">
+        <view class="menu-item__icon-wrap">
+          <text class="menu-item__icon-text">✎</text>
+        </view>
+        <text class="menu-item__text">意见反馈</text>
+      </view>
+      <text class="menu-item__arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="onAbout">
+      <view class="menu-item__left">
+        <view class="menu-item__icon-wrap">
+          <text class="menu-item__icon-text">ⓘ</text>
+        </view>
+        <text class="menu-item__text">关于我们</text>
+      </view>
+      <text class="menu-item__arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="onClearCache">
+      <view class="menu-item__left">
+        <view class="menu-item__icon-wrap">
+          <text class="menu-item__icon-text">✕</text>
+        </view>
+        <text class="menu-item__text">清除缓存</text>
+      </view>
+      <text class="menu-item__arrow">›</text>
+    </view>
+
+    <view class="menu-item menu-item--danger" bindtap="onLogout">
+      <view class="menu-item__left">
+        <view class="menu-item__icon-wrap menu-item__icon-wrap--danger">
+          <text class="menu-item__icon-text menu-item__icon-text--danger">⏻</text>
+        </view>
+        <text class="menu-item__text menu-item__text--danger">退出登录</text>
+      </view>
+      <text class="menu-item__arrow">›</text>
+    </view>
+  </view>
+</scroll-view>
+
+<!-- 反馈弹窗 -->
+<view class="modal-mask" wx:if="{{showFeedback}}" bindtap="onHideFeedback">
+  <view class="modal-content" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">意见反馈</text>
+      <view class="modal-close" bindtap="onHideFeedback">
+        <text>×</text>
+      </view>
+    </view>
+
+    <view class="modal-body">
+      <textarea
+        class="feedback-input"
+        placeholder="请描述您遇到的问题或建议..."
+        maxlength="500"
+        value="{{feedbackText}}"
+        bindinput="onFeedbackInput"
+      ></textarea>
+      <text class="feedback-count">{{feedbackText.length}}/500</text>
+    </view>
+
+    <view class="modal-footer">
+      <view class="modal-btn modal-btn--cancel" bindtap="onHideFeedback">
+        <text>取消</text>
+      </view>
+      <view class="modal-btn modal-btn--confirm" bindtap="onSubmitFeedback">
+        <text>提交</text>
+      </view>
+    </view>
+  </view>
+</view>

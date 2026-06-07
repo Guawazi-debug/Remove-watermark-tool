@@ -1,0 +1,80 @@
+<navigation-bar title="分类" back="{{false}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root category-page" scroll-y enable-flex show-scrollbar="{{false}}">
+  <!-- 未选中分类时显示分类列表 -->
+  <view class="category-list" wx:if="{{!selectedCategory}}">
+    <view class="category-header">
+      <text class="category-header__title">全部分类</text>
+      <text class="category-header__desc">选择分类查看工具</text>
+    </view>
+
+    <view
+      class="category-item"
+      wx:for="{{categories}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onCategoryTap"
+      style="border-left-color: {{item.accent}};"
+    >
+      <view class="category-item__info">
+        <text class="category-item__name">{{item.name}}</text>
+        <text class="category-item__desc">{{item.description}}</text>
+      </view>
+      <view class="category-item__right">
+        <text class="category-item__count">{{item.tools.length}} 项</text>
+        <text class="category-item__arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 选中分类后显示工具列表 -->
+  <view class="tool-list" wx:if="{{selectedCategory}}">
+    <view class="tool-list__header">
+      <view class="back-btn" bindtap="onBackTap">
+        <view class="back-btn__icon">‹</view>
+      </view>
+      <text class="tool-list__title" style="color: {{selectedCategory.accent}};">{{selectedCategory.name}}</text>
+    </view>
+    <text class="tool-list__desc" style="padding: 0 32rpx;">{{selectedCategory.description}}</text>
+
+    <view class="tool-search">
+      <view class="tool-search__box">
+        <text class="tool-search__icon">FIND</text>
+        <input
+          class="tool-search__input"
+          placeholder="搜索{{selectedCategory.name}}工具"
+          placeholder-class="tool-search__placeholder"
+          value="{{searchKeyword}}"
+          bindinput="onSearchInput"
+        />
+        <view class="tool-search__clear" wx:if="{{searchKeyword}}" bindtap="onSearchClear">
+          <text>清除</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="tool-grid">
+      <view
+        class="tool-card"
+        wx:for="{{filteredTools}}"
+        wx:key="id"
+        data-page="{{item.page}}"
+        data-tool-id="{{item.id}}"
+        bindtap="onToolTap"
+      >
+        <view class="tool-card__icon" style="background: {{item.color}}20; color: {{item.color}};">
+          <text>{{item.icon}}</text>
+        </view>
+        <view class="tool-card__info">
+          <text class="tool-card__name">{{item.name}}</text>
+          <text class="tool-card__desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{filteredTools.length === 0}}">
+      <text class="empty-state__title">没有找到匹配工具</text>
+      <text class="empty-state__desc">试试换一个关键词</text>
+    </view>
+  </view>
+</scroll-view>
