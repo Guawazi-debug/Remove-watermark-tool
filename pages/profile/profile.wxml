@@ -15,7 +15,7 @@
           <text>VIP会员</text>
         </view>
         <view class="vip-badge vip-badge--normal" wx:else>
-          <text>普通会员</text>
+          <text>普通用户</text>
         </view>
       </view>
       <!-- 通知图标 -->
