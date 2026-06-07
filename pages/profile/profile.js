@@ -330,9 +330,40 @@ Page({
 
   // 关于我们
   onAbout() {
+    wx.showLoading({ title: '加载中...' })
+
+    // 从服务器获取关于我们内容
+    wx.request({
+      url: app.globalData.apiBaseUrl + '/about.php',
+      method: 'GET',
+      timeout: 5000,
+      success: (res) => {
+        wx.hideLoading()
+        if (res.data && res.data.code === 200 && res.data.data) {
+          const data = res.data.data
+          const version = data.version || 'v1.3.0'
+          const content = data.content || '一个实用的微信小程序工具箱，提供30+款开发和生活工具。'
+          wx.showModal({
+            title: '关于工具小栈',
+            content: `版本：${version}\n\n${content}`,
+            showCancel: false
+          })
+        } else {
+          this._showDefaultAbout()
+        }
+      },
+      fail: () => {
+        wx.hideLoading()
+        this._showDefaultAbout()
+      }
+    })
+  },
+
+  // 显示默认关于我们
+  _showDefaultAbout() {
     wx.showModal({
       title: '关于工具小栈',
-      content: '版本：v1.1.0\n\n一个实用的微信小程序工具箱，提供30+款开发和生活工具。',
+      content: '版本：v1.3.0\n\n一个实用的微信小程序工具箱，提供30+款开发和生活工具。',
       showCancel: false
     })
   }
