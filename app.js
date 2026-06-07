@@ -135,6 +135,13 @@ App({
         if (res.data && res.data.data && res.data.data.is_vip !== undefined) {
           wx.setStorageSync('vip-member', res.data.data.is_vip == 1)
         }
+        // 如果服务器返回了头像URL，更新本地存储
+        if (res.data && res.data.data && res.data.data.avatar_url) {
+          const savedUserInfo = wx.getStorageSync('user-info') || {}
+          savedUserInfo.avatarUrl = res.data.data.avatar_url
+          wx.setStorageSync('user-info', savedUserInfo)
+          this.globalData.userInfo = savedUserInfo
+        }
       },
       fail: (err) => {
         console.log('登录同步失败，不影响使用', err)
