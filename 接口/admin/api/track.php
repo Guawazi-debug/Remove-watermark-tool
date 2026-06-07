@@ -236,6 +236,7 @@ switch ($action) {
             db()->insert('login_logs', [
                 'user_id' => $userId,
                 'login_type' => 'user',
+                'login_time' => date('Y-m-d H:i:s'),
                 'ip_address' => $ip,
                 'user_agent' => mb_substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 500)
             ]);
