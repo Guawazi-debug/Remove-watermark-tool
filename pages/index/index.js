@@ -44,15 +44,41 @@ Page({
   onToolTap(e) {
     // 防止重复点击
     if (this._isNavigating) return
-    this._isNavigating = true
 
     // 从组件事件或原生事件中获取数据
     const page = e.detail.page || e.currentTarget.dataset.page
     const toolId = e.detail.toolId || e.currentTarget.dataset.toolId
+
+    // 检查登录状态
+    if (!app.isLoggedIn()) {
+      // 未登录，显示登录弹窗
+      app.showLoginModal(() => {
+        // 登录成功后执行原来的操作
+        this._isNavigating = true
+        if (toolId) {
+          recordRecentTool(toolId)
+          recordUseCount()
+          app.trackToolUse(toolId)
+        }
+        if (page) {
+          wx.navigateTo({
+            url: page,
+            complete: () => {
+              setTimeout(() => {
+                this._isNavigating = false
+              }, 300)
+            }
+          })
+        }
+      })
+      return
+    }
+
+    // 已登录，执行原来的操作
+    this._isNavigating = true
     if (toolId) {
       recordRecentTool(toolId)
       recordUseCount()
-      // 记录到服务器
       app.trackToolUse(toolId)
     }
     if (page) {

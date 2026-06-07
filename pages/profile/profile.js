@@ -25,10 +25,17 @@ Page({
     tempNickName: ''
   },
 
-  onLoad() {
+  onLoad(options) {
     this._loadData()
     // 请求用户信息授权
     this._authorizeUser()
+
+    // 检查是否从外部触发登录弹窗
+    if (options.showLogin === 'true') {
+      setTimeout(() => {
+        this.onQuickLogin()
+      }, 300)
+    }
   },
 
   // 请求用户信息授权
@@ -57,6 +64,12 @@ Page({
 
   onShow() {
     this._loadData()
+
+    // 检查登录状态变化，触发回调
+    const app = getApp()
+    if (app.globalData._loginCallback && this.data.hasUserInfo) {
+      app.onLoginSuccess()
+    }
   },
 
   // 加载数据
@@ -252,6 +265,11 @@ Page({
             userInfo: null,
             hasUserInfo: false
           })
+
+          // 清除全局登录状态
+          const app = getApp()
+          app.globalData.userInfo = null
+
           wx.showToast({ title: '已退出', icon: 'success' })
         }
       }

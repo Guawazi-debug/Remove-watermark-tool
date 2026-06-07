@@ -4,7 +4,8 @@ App({
     openid: '',
     userInfo: null,
     apiBaseUrl: 'https://moyin.awenz.cn/admin/api',
-    apiReady: false
+    apiReady: false,
+    _loginCallback: null  // 登录成功回调
   },
 
   onLaunch() {
@@ -21,6 +22,29 @@ App({
     setTimeout(() => {
       this._syncLogin()
     }, 1000)
+  },
+
+  // 检查是否已登录
+  isLoggedIn() {
+    const userInfo = wx.getStorageSync('user-info')
+    return userInfo && userInfo.nickName && userInfo.nickName !== '微信用户'
+  },
+
+  // 显示登录弹窗
+  showLoginModal(callback) {
+    this.globalData._loginCallback = callback
+    wx.navigateTo({
+      url: '/pages/profile/profile?showLogin=true'
+    })
+  },
+
+  // 登录成功回调
+  onLoginSuccess() {
+    if (this.globalData._loginCallback) {
+      const callback = this.globalData._loginCallback
+      this.globalData._loginCallback = null
+      callback()
+    }
   },
 
   _initOpenid() {

@@ -76,12 +76,35 @@ Page({
   onToolTap(e) {
     // 防止重复点击
     if (this._isNavigating) return
-    this._isNavigating = true
 
     const page = e.currentTarget.dataset.page
     const toolId = e.currentTarget.dataset.toolId
+
+    // 检查登录状态
+    if (!app.isLoggedIn()) {
+      // 未登录，显示登录弹窗
+      app.showLoginModal(() => {
+        // 登录成功后执行原来的操作
+        this._isNavigating = true
+        recordUseCount()
+        if (toolId) {
+          app.trackToolUse(toolId)
+        }
+        wx.navigateTo({
+          url: page,
+          complete: () => {
+            setTimeout(() => {
+              this._isNavigating = false
+            }, 300)
+          }
+        })
+      })
+      return
+    }
+
+    // 已登录，执行原来的操作
+    this._isNavigating = true
     recordUseCount()
-    // 记录到服务器
     if (toolId) {
       app.trackToolUse(toolId)
     }
