@@ -71,20 +71,26 @@ App({
     const userInfo = this.globalData.userInfo
     if (!userInfo) return
 
+    // 如果头像URL已经是服务器上的永久URL，不需要重新上传
+    if (userInfo.avatarUrl && userInfo.avatarUrl.indexOf('moyin.awenz.cn') > -1) {
+      this._uploadLogin(userInfo, '')
+      return
+    }
+
     // 如果有头像URL，尝试读取并转换为base64
     if (userInfo.avatarUrl) {
       const fs = wx.getFileSystemManager()
       // 判断是否为本地临时文件路径
       if (userInfo.avatarUrl.startsWith('http://tmp/') || userInfo.avatarUrl.startsWith('wxfile://') || userInfo.avatarUrl.startsWith('https://tmp/')) {
-        // 本地临时文件，直接读取
+        // 本地临时文件，尝试读取
         try {
           const base64 = fs.readFileSync(userInfo.avatarUrl, 'base64')
           this._uploadLogin(userInfo, base64)
         } catch (e) {
-          console.log('本地头像读取失败', e)
+          console.log('本地头像读取失败，跳过上传')
           this._uploadLogin(userInfo, '')
         }
-      } else {
+      } else if (userInfo.avatarUrl.startsWith('http://') || userInfo.avatarUrl.startsWith('https://')) {
         // 远程URL，下载后读取
         wx.downloadFile({
           url: userInfo.avatarUrl,
@@ -106,6 +112,8 @@ App({
             this._uploadLogin(userInfo, '')
           }
         })
+      } else {
+        this._uploadLogin(userInfo, '')
       }
     } else {
       this._uploadLogin(userInfo, '')
