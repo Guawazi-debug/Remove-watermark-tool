@@ -264,6 +264,7 @@ switch ($action) {
         db()->insert('tool_usage', [
             'user_id' => $userId,
             'tool_id' => $toolId,
+            'used_at' => date('Y-m-d H:i:s'),
             'ip_address' => $ip
         ]);
 
