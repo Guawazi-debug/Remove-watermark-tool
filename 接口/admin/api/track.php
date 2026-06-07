@@ -76,13 +76,10 @@ $ip = getUserIP();
 function uploadAvatar($avatarData, $openid) {
     if (empty($avatarData)) return '';
 
-    // 验证base64格式
-    if (!preg_match('/^data:image\/(jpeg|png|gif);base64,/', $avatarData, $matches)) {
-        return '';
+    // 如果有base64前缀，移除它
+    if (preg_match('/^data:image\/\w+;base64,/', $avatarData)) {
+        $avatarData = preg_replace('/^data:image\/\w+;base64,/', '', $avatarData);
     }
-
-    // 移除base64前缀
-    $avatarData = preg_replace('/^data:image\/\w+;base64,/', '', $avatarData);
 
     // 解码base64数据
     $data = base64_decode($avatarData);

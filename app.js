@@ -61,29 +61,42 @@ App({
     const userInfo = this.globalData.userInfo
     if (!userInfo) return
 
-    // 如果有头像URL，下载并转换为base64
+    // 如果有头像URL，尝试读取并转换为base64
     if (userInfo.avatarUrl) {
-      wx.downloadFile({
-        url: userInfo.avatarUrl,
-        timeout: 5000,
-        success: (res) => {
-          if (res.statusCode === 200) {
-            const fs = wx.getFileSystemManager()
-            try {
-              const base64 = fs.readFileSync(res.tempFilePath, 'base64')
-              this._uploadLogin(userInfo, base64)
-            } catch (e) {
-              console.log('头像读取失败', e)
-              this._uploadLogin(userInfo, '')
-            }
-          } else {
-            this._uploadLogin(userInfo, '')
-          }
-        },
-        fail: () => {
+      const fs = wx.getFileSystemManager()
+      // 判断是否为本地临时文件路径
+      if (userInfo.avatarUrl.startsWith('http://tmp/') || userInfo.avatarUrl.startsWith('wxfile://') || userInfo.avatarUrl.startsWith('https://tmp/')) {
+        // 本地临时文件，直接读取
+        try {
+          const base64 = fs.readFileSync(userInfo.avatarUrl, 'base64')
+          this._uploadLogin(userInfo, base64)
+        } catch (e) {
+          console.log('本地头像读取失败', e)
           this._uploadLogin(userInfo, '')
         }
-      })
+      } else {
+        // 远程URL，下载后读取
+        wx.downloadFile({
+          url: userInfo.avatarUrl,
+          timeout: 5000,
+          success: (res) => {
+            if (res.statusCode === 200) {
+              try {
+                const base64 = fs.readFileSync(res.tempFilePath, 'base64')
+                this._uploadLogin(userInfo, base64)
+              } catch (e) {
+                console.log('头像读取失败', e)
+                this._uploadLogin(userInfo, '')
+              }
+            } else {
+              this._uploadLogin(userInfo, '')
+            }
+          },
+          fail: () => {
+            this._uploadLogin(userInfo, '')
+          }
+        })
+      }
     } else {
       this._uploadLogin(userInfo, '')
     }
