@@ -647,6 +647,8 @@
 .about-modal__body {
   padding: 32rpx;
   max-height: 60vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .about-logo-section {
@@ -709,8 +711,7 @@
   margin-top: 32rpx;
   padding-top: 24rpx;
   border-top: 1rpx solid #f0ebe6;
-  display: flex;
-  justify-content: flex-end;
+  text-align: right;
 }
 
 .about-copyright {
