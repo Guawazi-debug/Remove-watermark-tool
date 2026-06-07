@@ -93,12 +93,16 @@ function uploadAvatar($avatarData, $openid) {
     }
 
     // 验证图片类型
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mime = $finfo->buffer($data);
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!in_array($mime, $allowedTypes)) {
+    $imageInfo = @getimagesizefromstring($data);
+    if ($imageInfo === false) {
         return '';
     }
+    $allowedTypes = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF];
+    if (!in_array($imageInfo[2], $allowedTypes)) {
+        return '';
+    }
+    $extMap = [IMAGETYPE_JPEG => '.jpg', IMAGETYPE_PNG => '.png', IMAGETYPE_GIF => '.gif'];
+    $ext = $extMap[$imageInfo[2]] ?? '.jpg';
 
     // 过滤openid中的非法字符，防止路径遍历
     $openid = preg_replace('/[^a-zA-Z0-9_-]/', '', $openid);
