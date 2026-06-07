@@ -60,9 +60,9 @@ class Database {
         }
 
         $keys = array_keys($data);
-        $fields = implode(',', $keys);
+        $fields = implode(',', array_map(function($k) { return "`{$k}`"; }, $keys));
         $placeholders = implode(',', array_fill(0, count($keys), '?'));
-        $sql = "INSERT INTO `{$table}` (`{$fields}`) VALUES ({$placeholders})";
+        $sql = "INSERT INTO `{$table}` ({$fields}) VALUES ({$placeholders})";
         $this->query($sql, array_values($data));
         return $this->conn->lastInsertId();
     }
