@@ -2,6 +2,8 @@
   min-height: 100vh;
   background: #F8F3EC;
   padding: 20rpx 30rpx;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /* 加载中 */
