@@ -177,7 +177,7 @@ Page({
       nickName = tempNickName.trim()
     }
 
-    // 先保存用户信息（头像URL稍后由服务器返回后更新）
+    // 保存用户信息
     const userInfo = {
       avatarUrl: tempAvatarUrl || '',
       nickName: nickName
@@ -185,6 +185,7 @@ Page({
 
     console.log('保存的用户信息:', userInfo)
     wx.setStorageSync('user-info', userInfo)
+    app.globalData.userInfo = userInfo
 
     // 立即更新页面显示
     this.setData({
@@ -195,8 +196,52 @@ Page({
 
     wx.showToast({ title: '登录成功', icon: 'success' })
 
-    // 触发登录同步，上传头像到服务器
-    app._syncLogin()
+    // 立即读取头像并上传到服务器
+    if (tempAvatarUrl) {
+      const fs = wx.getFileSystemManager()
+      try {
+        const base64 = fs.readFileSync(tempAvatarUrl, 'base64')
+        console.log('读取头像成功，长度:', base64.length)
+        // 直接调用上传
+        wx.request({
+          url: app.globalData.apiBaseUrl + '/track.php',
+          method: 'POST',
+          header: {
+            'Content-Type': 'application/json',
+            'X-API-Key': 'moyin-api-key-v1.2.0'
+          },
+          data: {
+            action: 'login',
+            openid: app.globalData.openid,
+            nickname: nickName,
+            avatar_url: tempAvatarUrl,
+            avatar_data: base64
+          },
+          timeout: 8000,
+          success: (res) => {
+            console.log('登录同步成功', res.data)
+            // 更新头像URL为服务器返回的永久URL
+            if (res.data && res.data.data && res.data.data.avatar_url) {
+              const savedUserInfo = wx.getStorageSync('user-info') || {}
+              savedUserInfo.avatarUrl = res.data.data.avatar_url
+              wx.setStorageSync('user-info', savedUserInfo)
+              app.globalData.userInfo = savedUserInfo
+              this.setData({ userInfo: savedUserInfo })
+              console.log('头像已更新为:', res.data.data.avatar_url)
+            }
+          },
+          fail: (err) => {
+            console.log('登录同步失败', err)
+          }
+        })
+      } catch (e) {
+        console.log('读取头像失败:', e)
+        // 读取失败，仅同步登录信息
+        app._syncLogin()
+      }
+    } else {
+      app._syncLogin()
+    }
   },
 
   // 点击工具
