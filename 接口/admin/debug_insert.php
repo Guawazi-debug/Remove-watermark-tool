@@ -26,6 +26,13 @@ $loginLogsFields = [
 echo "插入字段: " . count($loginLogsFields) . " 个<br>";
 echo "字段列表: " . implode(', ', array_keys($loginLogsFields)) . "<br>";
 
+// 显示生成的 SQL
+$keys = array_keys($loginLogsFields);
+$fields = implode(',', $keys);
+$placeholders = implode(',', array_fill(0, count($keys), '?'));
+$sql = "INSERT INTO `login_logs` (`{$fields}`) VALUES ({$placeholders})";
+echo "生成的SQL: {$sql}<br>";
+
 try {
     $id = db()->insert('login_logs', $loginLogsFields);
     echo "<span style='color: green;'>✓ 插入成功，ID: {$id}</span><br>";
@@ -48,11 +55,33 @@ $toolUsageFields = [
 echo "插入字段: " . count($toolUsageFields) . " 个<br>";
 echo "字段列表: " . implode(', ', array_keys($toolUsageFields)) . "<br>";
 
+// 显示生成的 SQL
+$keys = array_keys($toolUsageFields);
+$fields = implode(',', $keys);
+$placeholders = implode(',', array_fill(0, count($keys), '?'));
+$sql = "INSERT INTO `tool_usage` (`{$fields}`) VALUES ({$placeholders})";
+echo "生成的SQL: {$sql}<br>";
+
 try {
     $id = db()->insert('tool_usage', $toolUsageFields);
     echo "<span style='color: green;'>✓ 插入成功，ID: {$id}</span><br>";
 } catch (PDOException $e) {
     echo "<span style='color: red;'>✗ 插入失败: " . $e->getMessage() . "</span><br>";
+}
+
+echo "<br>";
+
+// 测试直接SQL插入
+echo "<h2>测试直接SQL插入</h2>";
+
+$testSql = "INSERT INTO `login_logs` (`user_id`, `login_type`, `login_time`, `ip_address`, `user_agent`) VALUES (1, 'user', '" . date('Y-m-d H:i:s') . "', '127.0.0.1', 'Direct SQL')";
+echo "SQL: {$testSql}<br>";
+
+try {
+    db()->query($testSql);
+    echo "<span style='color: green;'>✓ 直接SQL插入成功</span><br>";
+} catch (PDOException $e) {
+    echo "<span style='color: red;'>✗ 直接SQL插入失败: " . $e->getMessage() . "</span><br>";
 }
 
 echo "<br>";
