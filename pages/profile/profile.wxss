@@ -710,7 +710,7 @@
   padding-top: 24rpx;
   border-top: 1rpx solid #f0ebe6;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .about-copyright {
