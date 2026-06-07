@@ -1,0 +1,35 @@
+<navigation-bar title="我的通知" back="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root notification-page" scroll-y enable-flex show-scrollbar="{{false}}">
+  <!-- 加载中 -->
+  <view class="loading-box" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-box" wx:elif="{{notificationList.length === 0}}">
+    <text class="empty-icon">🔔</text>
+    <text class="empty-text">暂无通知</text>
+    <text class="empty-desc">有新消息时会在这里显示</text>
+  </view>
+
+  <!-- 通知列表 -->
+  <view class="notification-list" wx:else>
+    <view class="notification-item {{item.is_read ? '' : 'unread'}}" wx:for="{{notificationList}}" wx:key="id" data-item="{{item}}" bindtap="onNotificationTap">
+      <view class="notification-item__icon" style="background: {{item.typeColor}}20; color: {{item.typeColor}};">
+        <text>📢</text>
+      </view>
+      <view class="notification-item__content">
+        <view class="notification-item__header">
+          <text class="notification-item__title">{{item.title}}</text>
+          <view class="notification-item__dot" wx:if="{{!item.is_read}}"></view>
+        </view>
+        <text class="notification-item__desc">{{item.content}}</text>
+        <view class="notification-item__footer">
+          <text class="notification-item__type" style="background: {{item.typeColor}}20; color: {{item.typeColor}};">{{item.typeText}}</text>
+          <text class="notification-item__time">{{item.time}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>

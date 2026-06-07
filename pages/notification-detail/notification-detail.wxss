@@ -1,0 +1,79 @@
+.detail-page {
+  min-height: 100vh;
+  background: #F8F3EC;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* 加载中 */
+.loading-box {
+  display: flex;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 150rpx 0;
+}
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 通知详情卡片 */
+.detail-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.detail-type {
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.detail-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.detail-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.4;
+  margin-bottom: 24rpx;
+  display: block;
+}
+
+.detail-divider {
+  height: 1rpx;
+  background: #f0f0f0;
+  margin-bottom: 24rpx;
+}
+
+.detail-content {
+  font-size: 30rpx;
+  color: #444;
+  line-height: 1.8;
+  word-break: break-all;
+  white-space: pre-wrap;
+}

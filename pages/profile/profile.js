@@ -12,6 +12,7 @@ Page({
     userInfo: null,
     hasUserInfo: false,
     isVip: false,
+    unreadCount: 0,
     stats: {
       totalUseCount: 0,
       firstUseDate: '',
@@ -109,6 +110,13 @@ Page({
     const recentIds = wx.getStorageSync(RECENT_TOOLS_KEY) || []
     const recentTools = recentIds.slice(0, 5).map(id => toolIndex[id]).filter(Boolean)
     this.setData({ recentTools })
+
+    // 加载未读通知数量
+    if (this.data.hasUserInfo) {
+      app.getUnreadCount((count) => {
+        this.setData({ unreadCount: count })
+      })
+    }
   },
 
   // 一键登录 - 显示登录弹窗
@@ -286,6 +294,13 @@ Page({
   onFeedbackList() {
     wx.navigateTo({
       url: '/pages/feedback-list/feedback-list'
+    })
+  },
+
+  // 跳转通知列表
+  onNotificationList() {
+    wx.navigateTo({
+      url: '/pages/notification-list/notification-list'
     })
   },
 

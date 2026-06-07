@@ -18,6 +18,37 @@
   gap: 24rpx;
 }
 
+/* 通知图标 */
+.notification-icon {
+  position: relative;
+  margin-left: auto;
+  padding: 10rpx;
+}
+
+.notification-icon__bell {
+  font-size: 40rpx;
+}
+
+.notification-icon__badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 32rpx;
+  height: 32rpx;
+  padding: 0 8rpx;
+  background: #e74c3c;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-icon__badge text {
+  font-size: 20rpx;
+  color: #fff;
+  line-height: 1;
+}
+
 .user-avatar-btn {
   background: transparent;
   padding: 0;

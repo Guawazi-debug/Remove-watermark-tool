@@ -1,0 +1,26 @@
+<navigation-bar title="通知详情" back="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root detail-page" scroll-y enable-flex show-scrollbar="{{false}}">
+  <!-- 加载中 -->
+  <view class="loading-box" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 通知内容 -->
+  <view class="detail-card" wx:elif="{{notification}}">
+    <view class="detail-header">
+      <view class="detail-type" style="background: {{notification.typeColor}}20; color: {{notification.typeColor}};">
+        {{notification.typeText}}
+      </view>
+      <text class="detail-time">{{notification.time}}</text>
+    </view>
+    <text class="detail-title">{{notification.title}}</text>
+    <view class="detail-divider"></view>
+    <text class="detail-content">{{notification.content}}</text>
+  </view>
+
+  <!-- 不存在 -->
+  <view class="empty-box" wx:else>
+    <text class="empty-text">通知不存在或已删除</text>
+  </view>
+</scroll-view>

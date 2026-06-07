@@ -1,0 +1,128 @@
+.notification-page {
+  min-height: 100vh;
+  background: #F8F3EC;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* 加载中 */
+.loading-box {
+  display: flex;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 150rpx 0;
+}
+.empty-icon {
+  font-size: 80rpx;
+  color: #ccc;
+  margin-bottom: 20rpx;
+}
+.empty-text {
+  font-size: 30rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+.empty-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 通知列表 */
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.notification-item {
+  display: flex;
+  gap: 24rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.notification-item.unread {
+  border-left: 6rpx solid #c2956a;
+}
+
+.notification-item__icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  flex-shrink: 0;
+}
+
+.notification-item__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-item__header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 8rpx;
+}
+
+.notification-item__title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notification-item__dot {
+  width: 14rpx;
+  height: 14rpx;
+  background: #e74c3c;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.notification-item__desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.notification-item__footer {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.notification-item__type {
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 16rpx;
+}
+
+.notification-item__time {
+  font-size: 22rpx;
+  color: #999;
+}

@@ -221,5 +221,80 @@ App({
         callback && callback([])
       }
     })
+  },
+
+  // 获取我的通知列表
+  getMyNotifications(callback) {
+    wx.request({
+      url: this.globalData.apiBaseUrl + '/notification.php?action=my',
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'moyin-api-key-v1.2.0'
+      },
+      data: {
+        openid: this.globalData.openid
+      },
+      timeout: 5000,
+      success: (res) => {
+        if (res.data && res.data.code === 200) {
+          callback && callback(res.data.data.list)
+        } else {
+          callback && callback([])
+        }
+      },
+      fail: () => {
+        callback && callback([])
+      }
+    })
+  },
+
+  // 获取未读通知数量
+  getUnreadCount(callback) {
+    wx.request({
+      url: this.globalData.apiBaseUrl + '/notification.php?action=unread_count',
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'moyin-api-key-v1.2.0'
+      },
+      data: {
+        openid: this.globalData.openid
+      },
+      timeout: 5000,
+      success: (res) => {
+        if (res.data && res.data.code === 200) {
+          callback && callback(res.data.data.count)
+        } else {
+          callback && callback(0)
+        }
+      },
+      fail: () => {
+        callback && callback(0)
+      }
+    })
+  },
+
+  // 标记通知已读
+  markNotificationRead(notificationId, callback) {
+    wx.request({
+      url: this.globalData.apiBaseUrl + '/notification.php?action=read',
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'moyin-api-key-v1.2.0'
+      },
+      data: {
+        notification_id: notificationId,
+        openid: this.globalData.openid
+      },
+      timeout: 5000,
+      success: (res) => {
+        callback && callback(res.data && res.data.code === 200)
+      },
+      fail: () => {
+        callback && callback(false)
+      }
+    })
   }
 })

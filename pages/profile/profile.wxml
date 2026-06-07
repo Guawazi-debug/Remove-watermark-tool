@@ -18,6 +18,13 @@
           <text>普通会员</text>
         </view>
       </view>
+      <!-- 通知图标 -->
+      <view class="notification-icon" bindtap="onNotificationList">
+        <text class="notification-icon__bell">🔔</text>
+        <view class="notification-icon__badge" wx:if="{{unreadCount > 0}}">
+          <text>{{unreadCount > 99 ? '99+' : unreadCount}}</text>
+        </view>
+      </view>
     </view>
 
     <!-- 未登录显示一键登录 -->
