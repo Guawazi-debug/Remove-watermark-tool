@@ -594,3 +594,125 @@
   font-size: 28rpx;
   color: #ffffff;
 }
+
+/* 关于我们弹窗 */
+.about-modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.about-modal {
+  width: 85%;
+  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.about-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0ebe6;
+}
+
+.about-modal__title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #241b16;
+}
+
+.about-modal__close {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-modal__close text {
+  font-size: 40rpx;
+  color: #8c7e72;
+}
+
+.about-modal__body {
+  padding: 32rpx;
+  max-height: 60vh;
+}
+
+.about-logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32rpx 0;
+}
+
+.about-logo {
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #d36b4c, #c2956a);
+  border-radius: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  margin-bottom: 16rpx;
+}
+
+.about-app-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #241b16;
+  margin-bottom: 8rpx;
+}
+
+.about-version {
+  font-size: 24rpx;
+  color: #c2956a;
+  padding: 4rpx 16rpx;
+  background: rgba(194, 149, 106, 0.1);
+  border-radius: 20rpx;
+}
+
+.about-content-section {
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #f0ebe6;
+}
+
+.about-section-title {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #8c7e72;
+  margin-bottom: 12rpx;
+  display: block;
+}
+
+.about-text {
+  font-size: 28rpx;
+  color: #241b16;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.about-footer {
+  margin-top: 32rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #f0ebe6;
+  text-align: center;
+}
+
+.about-copyright {
+  font-size: 22rpx;
+  color: #c4b5a8;
+}

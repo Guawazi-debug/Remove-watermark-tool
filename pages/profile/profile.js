@@ -23,7 +23,13 @@ Page({
     feedbackText: '',
     showLoginModal: false,
     tempAvatarUrl: '',
-    tempNickName: ''
+    tempNickName: '',
+    showAbout: false,
+    aboutData: {
+      content: '',
+      version: '',
+      update_log: ''
+    }
   },
 
   onLoad(options) {
@@ -341,19 +347,13 @@ Page({
         wx.hideLoading()
         if (res.data && res.data.code === 200 && res.data.data) {
           const data = res.data.data
-          const version = data.version || 'v1.3.0'
-          const content = data.content || '一个实用的微信小程序工具箱，提供30+款开发和生活工具。'
-          const updateLog = data.update_log || ''
-
-          let showModalContent = `版本：${version}\n\n${content}`
-          if (updateLog) {
-            showModalContent += `\n\n---更新日志---\n${updateLog}`
-          }
-
-          wx.showModal({
-            title: '关于工具小栈',
-            content: showModalContent,
-            showCancel: false
+          this.setData({
+            aboutData: {
+              content: data.content || '一个实用的微信小程序工具箱，提供30+款开发和生活工具。',
+              version: data.version || 'v1.3.0',
+              update_log: data.update_log || ''
+            },
+            showAbout: true
           })
         } else {
           this._showDefaultAbout()
@@ -368,10 +368,18 @@ Page({
 
   // 显示默认关于我们
   _showDefaultAbout() {
-    wx.showModal({
-      title: '关于工具小栈',
-      content: '版本：v1.3.0\n\n一个实用的微信小程序工具箱，提供30+款开发和生活工具。',
-      showCancel: false
+    this.setData({
+      aboutData: {
+        content: '一个实用的微信小程序工具箱，提供30+款开发和生活工具。',
+        version: 'v1.3.0',
+        update_log: ''
+      },
+      showAbout: true
     })
+  },
+
+  // 关闭关于我们弹窗
+  onCloseAbout() {
+    this.setData({ showAbout: false })
   }
 })

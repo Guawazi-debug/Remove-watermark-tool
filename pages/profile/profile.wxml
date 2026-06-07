@@ -216,3 +216,41 @@
     </view>
   </view>
 </view>
+
+<!-- 关于我们弹窗 -->
+<view class="about-modal-mask" wx:if="{{showAbout}}" catchtouchmove="">
+  <view class="about-modal">
+    <view class="about-modal__header">
+      <text class="about-modal__title">关于工具小栈</text>
+      <view class="about-modal__close" bindtap="onCloseAbout">
+        <text>×</text>
+      </view>
+    </view>
+
+    <scroll-view class="about-modal__body" scroll-y>
+      <!-- Logo和版本 -->
+      <view class="about-logo-section">
+        <view class="about-logo">🧰</view>
+        <text class="about-app-name">工具小栈</text>
+        <text class="about-version" wx:if="{{aboutData.version}}">{{aboutData.version}}</text>
+      </view>
+
+      <!-- 关于内容 -->
+      <view class="about-content-section" wx:if="{{aboutData.content}}">
+        <text class="about-section-title">关于我们</text>
+        <text class="about-text">{{aboutData.content}}</text>
+      </view>
+
+      <!-- 更新日志 -->
+      <view class="about-content-section" wx:if="{{aboutData.update_log}}">
+        <text class="about-section-title">更新日志</text>
+        <text class="about-text">{{aboutData.update_log}}</text>
+      </view>
+
+      <!-- 底部信息 -->
+      <view class="about-footer">
+        <text class="about-copyright">© 2026 抹印小栈</text>
+      </view>
+    </scroll-view>
+  </view>
+</view>
