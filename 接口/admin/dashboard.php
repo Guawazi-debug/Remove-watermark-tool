@@ -59,6 +59,11 @@ $lastWeekUsage = db()->count('tool_usage', "DATE(used_at) BETWEEN ? AND ?", [
     $lastWeekSunday
 ]);
 
+// 日均使用（自上线以来）
+$firstUsage = db()->fetch("SELECT MIN(used_at) as first_date FROM tool_usage");
+$startDate = $firstUsage['first_date'] ?? date('Y-m-d');
+$daysSinceLaunch = max(1, (int)((time() - strtotime($startDate)) / 86400));
+
 // 24小时使用趋势（根据选择的日期范围）
 $hourlyUsage = db()->fetchAll("
     SELECT HOUR(used_at) as hour, COUNT(*) as count
