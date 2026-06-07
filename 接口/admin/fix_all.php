@@ -70,15 +70,21 @@ try {
     echo "✗ login_logs 插入失败: " . $e->getMessage() . "<br>";
 }
 
-// 测试 tool_usage 表
+// 测试 tool_usage 表（需要先创建一个测试用户）
 echo "<h3>tool_usage 表</h3>";
 try {
-    $sql = "INSERT INTO `tool_usage` (`user_id`, `tool_id`, `used_at`, `ip_address`) VALUES (1, 'test-tool', '" . date('Y-m-d H:i:s') . "', '127.0.0.1')";
+    // 先创建测试用户，确保外键约束满足
+    $testUserSql = "INSERT INTO `users` (`openid`, `nickname`) VALUES ('test_fk_" . time() . "', 'FK测试')";
+    db()->query($testUserSql);
+    $testUserId = db()->getConnection()->lastInsertId();
+
+    $sql = "INSERT INTO `tool_usage` (`user_id`, `tool_id`, `used_at`, `ip_address`) VALUES ({$testUserId}, 'test-tool', '" . date('Y-m-d H:i:s') . "', '127.0.0.1')";
     db()->query($sql);
     $usageId = db()->getConnection()->lastInsertId();
     echo "✓ tool_usage 插入成功 (ID: {$usageId})<br>";
     // 清理测试数据
     db()->query("DELETE FROM `tool_usage` WHERE `id` = ?", [$usageId]);
+    db()->query("DELETE FROM `users` WHERE `id` = ?", [$testUserId]);
     echo "✓ 测试数据已清理<br>";
 } catch (PDOException $e) {
     echo "✗ tool_usage 插入失败: " . $e->getMessage() . "<br>";
@@ -118,14 +124,20 @@ try {
 
 echo "<h3>tool_usage 表</h3>";
 try {
+    // 先创建测试用户
+    $testUserSql2 = "INSERT INTO `users` (`openid`, `nickname`) VALUES ('test_fk2_" . time() . "', 'FK测试2')";
+    db()->query($testUserSql2);
+    $testUserId2 = db()->getConnection()->lastInsertId();
+
     $id = db()->insert('tool_usage', [
-        'user_id' => 1,
+        'user_id' => $testUserId2,
         'tool_id' => 'test-tool',
         'used_at' => date('Y-m-d H:i:s'),
         'ip_address' => '127.0.0.1'
     ]);
     echo "✓ db()->insert('tool_usage') 成功 (ID: {$id})<br>";
     db()->query("DELETE FROM `tool_usage` WHERE `id` = ?", [$id]);
+    db()->query("DELETE FROM `users` WHERE `id` = ?", [$testUserId2]);
 } catch (Exception $e) {
     echo "✗ db()->insert('tool_usage') 失败: " . $e->getMessage() . "<br>";
 }
