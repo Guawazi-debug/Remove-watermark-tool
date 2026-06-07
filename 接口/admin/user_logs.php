@@ -54,8 +54,9 @@ if ($dateTo) {
     $params[] = $dateTo;
 }
 
-// 获取总数
-$total = db()->count("tool_usage u LEFT JOIN tools t ON u.tool_id = t.tool_id LEFT JOIN users us ON u.user_id = us.id", $where, $params);
+// 获取总数（使用子查询避免JOIN验证问题）
+$totalSql = "SELECT COUNT(*) as count FROM tool_usage u LEFT JOIN tools t ON u.tool_id = t.tool_id LEFT JOIN users us ON u.user_id = us.id WHERE {$where}";
+$total = db()->fetch($totalSql, $params)['count'];
 $totalPages = ceil($total / $pageSize);
 
 // 获取日志
