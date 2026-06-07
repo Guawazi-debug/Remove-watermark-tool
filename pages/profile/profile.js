@@ -343,9 +343,16 @@ Page({
           const data = res.data.data
           const version = data.version || 'v1.3.0'
           const content = data.content || '一个实用的微信小程序工具箱，提供30+款开发和生活工具。'
+          const updateLog = data.update_log || ''
+
+          let showModalContent = `版本：${version}\n\n${content}`
+          if (updateLog) {
+            showModalContent += `\n\n---更新日志---\n${updateLog}`
+          }
+
           wx.showModal({
             title: '关于工具小栈',
-            content: `版本：${version}\n\n${content}`,
+            content: showModalContent,
             showCancel: false
           })
         } else {
