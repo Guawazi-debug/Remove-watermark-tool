@@ -707,8 +707,8 @@
 }
 
 .about-footer {
-  margin-top: 24rpx;
-  padding: 16rpx 0;
+  margin-top: 32rpx;
+  padding: 24rpx 0;
   border-top: 1rpx solid #f0ebe6;
   display: flex;
   justify-content: flex-end;
