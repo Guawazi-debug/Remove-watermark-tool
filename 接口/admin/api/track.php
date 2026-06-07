@@ -175,16 +175,16 @@ function downloadAvatar($avatarUrl, $openid) {
     }
 
     // 验证图片类型
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mime = $finfo->buffer($imageData);
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!in_array($mime, $allowedTypes)) {
+    $imageInfo = @getimagesizefromstring($imageData);
+    if ($imageInfo === false) {
         return '';
     }
-
-    // 生成安全文件名
-    $extMap = ['image/jpeg' => '.jpg', 'image/png' => '.png', 'image/gif' => '.gif'];
-    $ext = $extMap[$mime] ?? '.jpg';
+    $allowedTypes = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF];
+    if (!in_array($imageInfo[2], $allowedTypes)) {
+        return '';
+    }
+    $extMap = [IMAGETYPE_JPEG => '.jpg', IMAGETYPE_PNG => '.png', IMAGETYPE_GIF => '.gif'];
+    $ext = $extMap[$imageInfo[2]] ?? '.jpg';
     $filename = $openid . '_' . bin2hex(random_bytes(16)) . $ext;
     $filepath = $uploadDir . $filename;
 
