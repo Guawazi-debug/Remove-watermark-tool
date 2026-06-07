@@ -185,6 +185,7 @@
         maxlength="500"
         value="{{feedbackText}}"
         bindinput="onFeedbackInput"
+        catchtap=""
       ></textarea>
       <text class="feedback-count">{{feedbackText.length}}/500</text>
     </view>

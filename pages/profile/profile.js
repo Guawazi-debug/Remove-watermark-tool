@@ -195,6 +195,21 @@ Page({
 
   // 打开反馈弹窗
   onShowFeedback() {
+    // 检查登录状态
+    if (!app.isLoggedIn()) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录后再提交反馈',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            this.onQuickLogin()
+          }
+        }
+      })
+      return
+    }
+
     this.setData({
       showFeedback: true,
       feedbackText: ''
