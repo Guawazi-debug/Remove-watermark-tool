@@ -174,9 +174,10 @@ Page({
       // 如果没有输入昵称，尝试使用微信默认昵称
       nickName = '微信用户'
     } else {
-      nickName = nickName.trim()
+      nickName = tempNickName.trim()
     }
 
+    // 先保存用户信息（头像URL稍后由服务器返回后更新）
     const userInfo = {
       avatarUrl: tempAvatarUrl || '',
       nickName: nickName
@@ -193,6 +194,9 @@ Page({
     })
 
     wx.showToast({ title: '登录成功', icon: 'success' })
+
+    // 触发登录同步，上传头像到服务器
+    app._syncLogin()
   },
 
   // 点击工具

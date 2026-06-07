@@ -87,7 +87,11 @@ App({
           const base64 = fs.readFileSync(userInfo.avatarUrl, 'base64')
           this._uploadLogin(userInfo, base64)
         } catch (e) {
-          console.log('本地头像读取失败，跳过上传')
+          console.log('本地头像读取失败，清除无效URL')
+          // 清除无效的头像URL
+          userInfo.avatarUrl = ''
+          wx.setStorageSync('user-info', userInfo)
+          this.globalData.userInfo = userInfo
           this._uploadLogin(userInfo, '')
         }
       } else if (userInfo.avatarUrl.startsWith('http://') || userInfo.avatarUrl.startsWith('https://')) {
@@ -121,6 +125,7 @@ App({
   },
 
   _uploadLogin(userInfo, avatarBase64) {
+    console.log('开始上传登录，头像数据长度:', avatarBase64 ? avatarBase64.length : 0)
     wx.request({
       url: this.globalData.apiBaseUrl + '/track.php',
       method: 'POST',
@@ -144,11 +149,16 @@ App({
           wx.setStorageSync('vip-member', res.data.data.is_vip == 1)
         }
         // 如果服务器返回了头像URL，更新本地存储
-        if (res.data && res.data.data && res.data.data.avatar_url) {
-          const savedUserInfo = wx.getStorageSync('user-info') || {}
-          savedUserInfo.avatarUrl = res.data.data.avatar_url
-          wx.setStorageSync('user-info', savedUserInfo)
-          this.globalData.userInfo = savedUserInfo
+        if (res.data && res.data.data) {
+          const serverAvatarUrl = res.data.data.avatar_url
+          console.log('服务器返回的头像URL:', serverAvatarUrl)
+          if (serverAvatarUrl) {
+            const savedUserInfo = wx.getStorageSync('user-info') || {}
+            savedUserInfo.avatarUrl = serverAvatarUrl
+            wx.setStorageSync('user-info', savedUserInfo)
+            this.globalData.userInfo = savedUserInfo
+            console.log('已更新本地头像URL为:', serverAvatarUrl)
+          }
         }
       },
       fail: (err) => {
