@@ -198,6 +198,13 @@ Page({
 
     // 立即读取头像并上传到服务器
     if (tempAvatarUrl) {
+      // 如果已经是服务器上的永久URL，不需要重新上传
+      if (tempAvatarUrl.indexOf('moyin.awenz.cn') > -1) {
+        console.log('头像已是服务器永久URL，跳过上传')
+        app._syncLogin()
+        return
+      }
+
       const fs = wx.getFileSystemManager()
       try {
         const base64 = fs.readFileSync(tempAvatarUrl, 'base64')
