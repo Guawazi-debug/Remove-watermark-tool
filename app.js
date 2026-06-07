@@ -33,8 +33,18 @@ App({
   // 显示登录弹窗
   showLoginModal(callback) {
     this.globalData._loginCallback = callback
-    wx.navigateTo({
-      url: '/pages/profile/profile?showLogin=true'
+    wx.switchTab({
+      url: '/pages/profile/profile',
+      success: () => {
+        // 通知profile页面显示登录弹窗
+        const pages = getCurrentPages()
+        const profilePage = pages[pages.length - 1]
+        if (profilePage) {
+          setTimeout(() => {
+            profilePage.onQuickLogin()
+          }, 300)
+        }
+      }
     })
   },
 
