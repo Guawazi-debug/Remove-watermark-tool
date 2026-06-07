@@ -53,7 +53,9 @@ Page({
   // 格式化时间
   formatTime(dateStr) {
     if (!dateStr) return ''
-    const date = new Date(dateStr)
+    // 将 "yyyy-MM-dd HH:mm:ss" 转为 "yyyy/MM/dd HH:mm:ss" 以兼容iOS
+    const compatibleStr = dateStr.replace(/-/g, '/')
+    const date = new Date(compatibleStr)
     const now = new Date()
     const diff = now - date
     const minutes = Math.floor(diff / 60000)

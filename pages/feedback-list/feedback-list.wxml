@@ -1,3 +1,4 @@
+<page-meta page-style="overflow: hidden" />
 <navigation-bar title="我的反馈" back="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
 
 <scroll-view class="page-root feedback-page" scroll-y enable-flex show-scrollbar="{{false}}">
