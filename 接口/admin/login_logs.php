@@ -49,8 +49,9 @@ if ($dateTo) {
     $params[] = $dateTo;
 }
 
-// 获取总数
-$total = db()->count("login_logs l", $where, $params);
+// 获取总数（使用子查询避免表别名验证问题）
+$totalSql = "SELECT COUNT(*) as count FROM login_logs l WHERE {$where}";
+$total = db()->fetch($totalSql, $params)['count'];
 $totalPages = ceil($total / $pageSize);
 
 // 获取日志
