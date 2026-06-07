@@ -97,12 +97,16 @@ class Database {
     }
 
     public function count($table, $where = '1', $params = []) {
-        // 验证表名只包含合法字符
-        if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+        // 验证表名只包含合法字符（支持表别名，如 "users u"）
+        // 只验证表名部分，忽略别名
+        $tableName = preg_replace('/\s+\w+$/', '', trim($table)); // 移除别名
+        $tableName = preg_replace('/^`/', '', $tableName); // 移除反引号
+        $tableName = preg_replace('/`$/', '', $tableName); // 移除反引号
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $tableName)) {
             throw new InvalidArgumentException("非法表名: {$table}");
         }
 
-        $sql = "SELECT COUNT(*) as count FROM `{$table}` WHERE {$where}";
+        $sql = "SELECT COUNT(*) as count FROM {$table} WHERE {$where}";
         return $this->fetch($sql, $params)['count'];
     }
 }
