@@ -2,6 +2,7 @@
 /**
  * 小程序数据追踪API
  * 用于记录用户使用数据
+ * 版本: v1.3.1
  */
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
@@ -17,6 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    // 版本检查接口（允许GET）
+    if (isset($_GET['action']) && $_GET['action'] === 'version') {
+        success(['version' => 'v1.3.1', 'php_version' => phpversion()]);
+    }
     error('请求方式错误');
 }
 
