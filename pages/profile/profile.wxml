@@ -231,8 +231,10 @@
       <!-- Logo和版本 -->
       <view class="about-logo-section">
         <image class="about-logo" src="/logo.png" mode="aspectFit"></image>
-        <text class="about-app-name">工具小栈</text>
-        <text class="about-version" wx:if="{{aboutData.version}}">{{aboutData.version}}</text>
+        <view class="about-name-version">
+          <text class="about-app-name">抹印小栈</text>
+          <text class="about-version" wx:if="{{aboutData.version}}">{{aboutData.version}}</text>
+        </view>
       </view>
 
       <!-- 关于内容 -->
