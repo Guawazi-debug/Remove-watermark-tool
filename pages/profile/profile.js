@@ -78,10 +78,23 @@ Page({
       app.onLoginSuccess()
     }
 
-    // 刷新未读通知数量（无论是否已登录都尝试刷新）
-    app.getUnreadCount((count) => {
+    // 刷新未读通知数量
+    if (this.data.hasUserInfo) {
+      app.getUnreadCount((count) => {
+        this.setData({ unreadCount: count })
+      })
+    }
+
+    // 注册未读数更新回调
+    app.globalData._unreadCountCallback = (count) => {
       this.setData({ unreadCount: count })
-    })
+    }
+  },
+
+  onUnload() {
+    // 清除未读数更新回调
+    const app = getApp()
+    app.globalData._unreadCountCallback = null
   },
 
   // 加载数据

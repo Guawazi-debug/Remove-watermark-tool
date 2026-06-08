@@ -15,6 +15,10 @@ Page({
     // 刷新未读数量
     app.getUnreadCount((count) => {
       app.globalData.unreadCount = count
+      // 通知其他页面更新未读数
+      if (app.globalData._unreadCountCallback) {
+        app.globalData._unreadCountCallback(count)
+      }
     })
   },
 
