@@ -78,7 +78,7 @@ Page({
       app.onLoginSuccess()
     }
 
-    // 强制刷新未读通知数量
+    // 刷新未读通知数量
     if (this.data.hasUserInfo) {
       app.getUnreadCount((count) => {
         this.setData({ unreadCount: count })

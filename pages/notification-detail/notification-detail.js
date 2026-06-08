@@ -43,8 +43,8 @@ Page({
 
         // 标记已读
         if (!notification.is_read) {
-          app.markNotificationRead(id, () => {
-            // 标记已读成功后，刷新未读数
+          app.markNotificationRead(parseInt(id), () => {
+            // 标记成功后刷新未读数量
             app.getUnreadCount((count) => {
               app.globalData.unreadCount = count
             })

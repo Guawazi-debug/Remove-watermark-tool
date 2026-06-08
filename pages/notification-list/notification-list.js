@@ -12,6 +12,10 @@ Page({
 
   onShow() {
     this.loadNotificationList()
+    // 刷新未读数量
+    app.getUnreadCount((count) => {
+      app.globalData.unreadCount = count
+    })
   },
 
   onPullDownRefresh() {
