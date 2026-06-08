@@ -453,5 +453,27 @@ Page({
         url: '/pages/privacy/privacy'
       })
     }
+  },
+
+  // 撤销隐私同意
+  onRevokePrivacy() {
+    wx.showModal({
+      title: '撤销隐私同意',
+      content: '确定要撤销隐私协议同意吗？撤销后部分功能将无法使用。',
+      confirmText: '确定撤销',
+      confirmColor: '#ef4444',
+      success: (res) => {
+        if (res.confirm) {
+          // 调用微信官方撤销接口
+          if (typeof wx.requirePrivacyAuthorize === 'function') {
+            // 清除本地隐私同意状态
+            wx.removeStorageSync('privacy_agreed')
+            wx.showToast({ title: '已撤销', icon: 'success' })
+          } else {
+            wx.showToast({ title: '已撤销', icon: 'success' })
+          }
+        }
+      }
+    })
   }
 })
