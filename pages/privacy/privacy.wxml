@@ -1,0 +1,7 @@
+<navigation-bar title="用户隐私保护指引" back="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root privacy-page" scroll-y enable-flex show-scrollbar="{{false}}">
+  <view class="privacy-content">
+    <text class="privacy-text">{{privacyContent}}</text>
+  </view>
+</scroll-view>

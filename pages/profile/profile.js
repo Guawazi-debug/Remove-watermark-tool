@@ -29,7 +29,8 @@ Page({
       content: '',
       version: '',
       update_log: ''
-    }
+    },
+    showPrivacyModal: false
   },
 
   onLoad(options) {
@@ -76,6 +77,11 @@ Page({
     const app = getApp()
     if (app.globalData._loginCallback && this.data.hasUserInfo) {
       app.onLoginSuccess()
+    }
+
+    // 检查隐私弹窗状态
+    if (app.globalData.showPrivacyModal) {
+      this.setData({ showPrivacyModal: true })
     }
   },
 
@@ -435,5 +441,26 @@ Page({
   // 关闭关于我们弹窗
   onCloseAbout() {
     this.setData({ showAbout: false })
+  },
+
+  // 同意隐私协议
+  onAgreePrivacy() {
+    const app = getApp()
+    app.agreePrivacy()
+    this.setData({ showPrivacyModal: false })
+  },
+
+  // 拒绝隐私协议
+  onRejectPrivacy() {
+    const app = getApp()
+    app.rejectPrivacy()
+    this.setData({ showPrivacyModal: false })
+  },
+
+  // 查看隐私协议
+  onViewPrivacy() {
+    wx.navigateTo({
+      url: '/pages/privacy/privacy'
+    })
   }
 })

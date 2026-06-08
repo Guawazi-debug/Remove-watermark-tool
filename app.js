@@ -5,7 +5,10 @@ App({
     userInfo: null,
     apiBaseUrl: 'https://moyin.awenz.cn/admin/api',
     apiReady: false,
-    _loginCallback: null  // 登录成功回调
+    _loginCallback: null,  // 登录成功回调
+    _privacyResolve: null,  // 隐私授权回调
+    showPrivacyModal: false,  // 是否显示隐私弹窗
+    privacySetting: null  // 隐私设置
   },
 
   onLaunch() {
@@ -18,10 +21,57 @@ App({
     // 生成或获取openid
     this._initOpenid()
 
+    // 隐私保护授权监听
+    this._initPrivacy()
+
     // 延迟执行API请求，避免阻塞界面加载
     setTimeout(() => {
       this._syncLogin()
     }, 1000)
+  },
+
+  // 初始化隐私保护
+  _initPrivacy() {
+    // 监听隐私授权事件
+    wx.onNeedPrivacyAuthorization((resolve) => {
+      this._privacyResolve = resolve
+      // 显示隐私弹窗
+      this.globalData.showPrivacyModal = true
+      // 通知页面显示隐私弹窗
+      const pages = getCurrentPages()
+      if (pages.length > 0) {
+        const currentPage = pages[pages.length - 1]
+        if (currentPage.setData) {
+          currentPage.setData({ showPrivacyModal: true })
+        }
+      }
+    })
+
+    // 获取隐私设置
+    wx.getPrivacySetting({
+      success: (res) => {
+        console.log('隐私设置:', res)
+        this.globalData.privacySetting = res
+      }
+    })
+  },
+
+  // 同意隐私协议
+  agreePrivacy() {
+    if (this._privacyResolve) {
+      this._privacyResolve({ event: 'agree' })
+      this._privacyResolve = null
+    }
+    this.globalData.showPrivacyModal = false
+  },
+
+  // 拒绝隐私协议
+  rejectPrivacy() {
+    if (this._privacyResolve) {
+      this._privacyResolve({ event: 'disagree' })
+      this._privacyResolve = null
+    }
+    this.globalData.showPrivacyModal = false
   },
 
   // 检查是否已登录

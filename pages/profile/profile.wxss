@@ -755,3 +755,84 @@
   font-size: 22rpx;
   color: #c4b5a8;
 }
+
+/* 隐私保护弹窗 */
+.privacy-modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.privacy-modal {
+  width: 85%;
+  max-width: 600rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.privacy-modal__header {
+  padding: 32rpx 32rpx 0;
+}
+
+.privacy-modal__title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #241b16;
+}
+
+.privacy-modal__body {
+  padding: 24rpx 32rpx 32rpx;
+}
+
+.privacy-modal__text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+.privacy-modal__link {
+  font-size: 28rpx;
+  color: #07c160;
+  text-decoration: underline;
+  display: inline;
+}
+
+.privacy-modal__footer {
+  display: flex;
+  border-top: 1rpx solid #f0ebe6;
+}
+
+.privacy-modal__btn {
+  flex: 1;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.privacy-modal__btn--reject {
+  border-right: 1rpx solid #f0ebe6;
+}
+
+.privacy-modal__btn--reject text {
+  font-size: 30rpx;
+  color: #666;
+}
+
+.privacy-modal__btn--agree {
+  background: #07c160;
+}
+
+.privacy-modal__btn--agree text {
+  font-size: 30rpx;
+  color: #ffffff;
+  font-weight: 500;
+}

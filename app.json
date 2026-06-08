@@ -7,6 +7,7 @@
     "pages/feedback-list/feedback-list",
     "pages/notification-list/notification-list",
     "pages/notification-detail/notification-detail",
+    "pages/privacy/privacy",
     "pages/video-parse/video-parse",
     "pages/json-parse/json-parse",
     "pages/json-generate/json-generate",

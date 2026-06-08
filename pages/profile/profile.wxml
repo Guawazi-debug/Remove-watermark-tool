@@ -252,3 +252,25 @@
     </scroll-view>
   </view>
 </view>
+
+<!-- 隐私保护弹窗 -->
+<view class="privacy-modal-mask" wx:if="{{showPrivacyModal}}" catchtouchmove="">
+  <view class="privacy-modal">
+    <view class="privacy-modal__header">
+      <text class="privacy-modal__title">用户隐私保护提示</text>
+    </view>
+    <view class="privacy-modal__body">
+      <text class="privacy-modal__text">在你使用 抹印小栈 服务之前，请仔细阅读</text>
+      <text class="privacy-modal__link" bindtap="onViewPrivacy">《抹印小栈用户隐私保护指引》</text>
+      <text class="privacy-modal__text">如你同意该指引，请点击"同意"开始使用本小程序。</text>
+    </view>
+    <view class="privacy-modal__footer">
+      <view class="privacy-modal__btn privacy-modal__btn--reject" bindtap="onRejectPrivacy">
+        <text>拒绝</text>
+      </view>
+      <view class="privacy-modal__btn privacy-modal__btn--agree" bindtap="onAgreePrivacy">
+        <text>同意</text>
+      </view>
+    </view>
+  </view>
+</view>
