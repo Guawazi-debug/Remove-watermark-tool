@@ -138,6 +138,12 @@ Page({
 
   // 一键登录 - 显示登录弹窗
   onQuickLogin() {
+    // 检查隐私同意状态
+    if (!this.data.privacyAgreed) {
+      this._pendingAction = 'showLogin'
+      this.setData({ showPrivacyModal: true })
+      return
+    }
     this.setData({
       showLoginModal: true,
       tempAvatarUrl: '',
@@ -150,50 +156,22 @@ Page({
     this.setData({ showLoginModal: false })
   },
 
-  // 头像点击事件
-  onAvatarTap() {
-    // 检查隐私同意状态
-    if (!this.data.privacyAgreed) {
-      this._pendingAction = 'chooseAvatar'
-      this.setData({ showPrivacyModal: true })
-      return
-    }
-    // 已同意，选择头像
-    this._chooseAvatar()
-  },
-
   // 选择头像
-  _chooseAvatar() {
-    wx.chooseMedia({
-      count: 1,
-      mediaType: ['image'],
-      sourceType: ['album', 'camera'],
-      success: (res) => {
-        this.setData({ tempAvatarUrl: res.tempFiles[0].tempFilePath })
-      }
-    })
+  onChooseAvatar(e) {
+    const avatarUrl = e.detail.avatarUrl
+    if (avatarUrl) {
+      this.setData({ tempAvatarUrl: avatarUrl })
+    }
   },
 
   // 输入昵称（手动输入）
   onTempNicknameInput(e) {
-    // 检查隐私同意状态
-    if (!this.data.privacyAgreed) {
-      this._pendingAction = 'nickname'
-      this.setData({ showPrivacyModal: true })
-      return
-    }
     console.log('输入昵称:', e.detail.value)
     this.setData({ tempNickName: e.detail.value })
   },
 
   // 昵称变化（选择微信昵称）
   onNicknameChange(e) {
-    // 检查隐私同意状态
-    if (!this.data.privacyAgreed) {
-      this._pendingAction = 'nickname'
-      this.setData({ showPrivacyModal: true })
-      return
-    }
     console.log('昵称变化:', e.detail.value)
     const nickName = e.detail.value
     if (nickName) {
@@ -487,11 +465,13 @@ Page({
     if (this._pendingAction) {
       const action = this._pendingAction
       this._pendingAction = null
-      if (action === 'chooseAvatar') {
-        // 同意后选择头像
-        this._chooseAvatar()
-      } else if (action === 'nickname') {
-        wx.showToast({ title: '请输入昵称', icon: 'none' })
+      if (action === 'showLogin') {
+        // 同意后显示登录弹窗
+        this.setData({
+          showLoginModal: true,
+          tempAvatarUrl: '',
+          tempNickName: ''
+        })
       }
     }
   },
