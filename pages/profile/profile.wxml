@@ -55,14 +55,14 @@
       <view class="login-modal__body">
         <!-- 头像选择 -->
         <view class="login-avatar-section">
-          <button class="avatar-select-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <view class="avatar-select-btn" bindtap="onTapAvatar">
             <view class="avatar-preview">
               <image class="avatar-preview__img" src="{{tempAvatarUrl}}" mode="aspectFill" wx:if="{{tempAvatarUrl}}"></image>
               <view class="avatar-preview__placeholder" wx:else>
                 <text class="avatar-preview__icon">+</text>
               </view>
             </view>
-          </button>
+          </view>
           <text class="login-avatar-hint" wx:if="{{!tempAvatarUrl}}">点击选择微信头像</text>
         </view>
 

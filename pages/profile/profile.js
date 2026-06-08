@@ -150,18 +150,28 @@ Page({
     this.setData({ showLoginModal: false })
   },
 
-  // 选择头像
-  onChooseAvatar(e) {
+  // 点击头像区域
+  onTapAvatar() {
     // 检查隐私同意状态
     if (!this.data.privacyAgreed) {
       this._pendingAction = 'chooseAvatar'
       this.setData({ showPrivacyModal: true })
       return
     }
-    const avatarUrl = e.detail.avatarUrl
-    if (avatarUrl) {
-      this.setData({ tempAvatarUrl: avatarUrl })
-    }
+    // 已同意，直接选择头像
+    this._chooseAvatar()
+  },
+
+  // 选择头像
+  _chooseAvatar() {
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        this.setData({ tempAvatarUrl: res.tempFiles[0].tempFilePath })
+      }
+    })
   },
 
   // 输入昵称（手动输入）
@@ -477,19 +487,9 @@ Page({
     if (this._pendingAction) {
       const action = this._pendingAction
       this._pendingAction = null
-      // 触发对应操作
       if (action === 'chooseAvatar') {
-        // 模拟点击头像按钮
-        wx.chooseMedia({
-          count: 1,
-          mediaType: ['image'],
-          sourceType: ['album', 'camera'],
-          success: (res) => {
-            this.setData({ tempAvatarUrl: res.tempFiles[0].tempFilePath })
-          }
-        })
+        this._chooseAvatar()
       } else if (action === 'nickname') {
-        // 昵称输入需要用户手动操作
         wx.showToast({ title: '请输入昵称', icon: 'none' })
       }
     }
