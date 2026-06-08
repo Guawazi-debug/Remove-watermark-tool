@@ -489,5 +489,20 @@ Page({
     wx.navigateTo({
       url: '/pages/privacy/privacy'
     })
+  },
+
+  // 撤销隐私同意
+  onRevokePrivacy() {
+    wx.showModal({
+      title: '撤销隐私同意',
+      content: '确定要撤销隐私协议同意吗？撤销后需要重新同意才能使用部分功能。',
+      success: (res) => {
+        if (res.confirm) {
+          wx.removeStorageSync('privacy_agreed')
+          this.setData({ privacyAgreed: false })
+          wx.showToast({ title: '已撤销', icon: 'success' })
+        }
+      }
+    })
   }
 })
