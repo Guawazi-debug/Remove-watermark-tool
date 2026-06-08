@@ -78,12 +78,10 @@ Page({
       app.onLoginSuccess()
     }
 
-    // 刷新未读通知数量
-    if (this.data.hasUserInfo) {
-      app.getUnreadCount((count) => {
-        this.setData({ unreadCount: count })
-      })
-    }
+    // 刷新未读通知数量（无论是否已登录都尝试刷新）
+    app.getUnreadCount((count) => {
+      this.setData({ unreadCount: count })
+    })
   },
 
   // 加载数据
