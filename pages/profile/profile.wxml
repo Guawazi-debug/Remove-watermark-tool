@@ -80,9 +80,9 @@
       </view>
 
       <view class="login-modal__footer">
-        <view class="login-modal__btn login-modal__btn--confirm" bindtap="onConfirmLogin">
+        <button class="login-modal__btn login-modal__btn--confirm" open-type="agreePrivacyAuthorization" bindagreeprivacyauthorization="onConfirmLogin">
           <text>完成登录</text>
-        </view>
+        </button>
       </view>
     </view>
   </view>
@@ -165,19 +165,6 @@
             <text>◈</text>
           </view>
           <text class="menu-list__text">隐私协议</text>
-        </view>
-        <view class="menu-list__right">
-          <text class="menu-list__status" wx:if="{{privacyAgreed}}" style="color: #34d399;">已同意</text>
-          <text class="menu-list__status" wx:else style="color: #fbbf24;">未同意</text>
-          <text class="menu-list__arrow">›</text>
-        </view>
-      </view>
-      <view class="menu-list__item" wx:if="{{privacyAgreed}}" bindtap="onRevokePrivacy">
-        <view class="menu-list__left">
-          <view class="menu-list__icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
-            <text>✕</text>
-          </view>
-          <text class="menu-list__text" style="color: #ef4444;">撤销隐私同意</text>
         </view>
         <text class="menu-list__arrow">›</text>
       </view>
@@ -272,27 +259,5 @@
         <text class="about-copyright">© 2026 抹印小栈</text>
       </view>
     </scroll-view>
-  </view>
-</view>
-
-<!-- 隐私保护弹窗 -->
-<view class="privacy-modal-mask" wx:if="{{showPrivacyModal}}" catchtouchmove="">
-  <view class="privacy-modal">
-    <view class="privacy-modal__header">
-      <text class="privacy-modal__title">用户隐私保护提示</text>
-    </view>
-    <view class="privacy-modal__body">
-      <text class="privacy-modal__text">在你使用 抹印小栈 服务之前，请仔细阅读</text>
-      <text class="privacy-modal__link" bindtap="onViewPrivacy">《抹印小栈用户隐私保护指引》</text>
-      <text class="privacy-modal__text">如你同意该指引，请点击"同意"开始使用本小程序。</text>
-    </view>
-    <view class="privacy-modal__footer">
-      <view class="privacy-modal__btn privacy-modal__btn--reject" bindtap="onRejectPrivacy">
-        <text>拒绝</text>
-      </view>
-      <view class="privacy-modal__btn privacy-modal__btn--agree" bindtap="onAgreePrivacy">
-        <text>同意</text>
-      </view>
-    </view>
   </view>
 </view>

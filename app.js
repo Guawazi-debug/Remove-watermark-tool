@@ -32,51 +32,19 @@ App({
 
   // 初始化隐私保护
   _initPrivacy() {
-    // 检查API是否存在
-    if (typeof wx.onNeedPrivacyAuthorization === 'function') {
-      // 监听隐私授权事件
-      wx.onNeedPrivacyAuthorization((resolve) => {
-        this._privacyResolve = resolve
-        // 显示隐私弹窗
-        this.globalData.showPrivacyModal = true
-        // 通知页面显示隐私弹窗
-        const pages = getCurrentPages()
-        if (pages.length > 0) {
-          const currentPage = pages[pages.length - 1]
-          if (currentPage.setData) {
-            currentPage.setData({ showPrivacyModal: true })
-          }
-        }
-      })
-    }
-
-    // 获取隐私设置
+    // 获取隐私设置，检查是否需要弹窗
     if (typeof wx.getPrivacySetting === 'function') {
       wx.getPrivacySetting({
         success: (res) => {
           console.log('隐私设置:', res)
           this.globalData.privacySetting = res
+          // 如果需要弹窗，通知页面
+          if (res.needUpdate) {
+            this.globalData.showPrivacyModal = true
+          }
         }
       })
     }
-  },
-
-  // 同意隐私协议
-  agreePrivacy() {
-    if (this._privacyResolve) {
-      this._privacyResolve({ event: 'agree' })
-      this._privacyResolve = null
-    }
-    this.globalData.showPrivacyModal = false
-  },
-
-  // 拒绝隐私协议
-  rejectPrivacy() {
-    if (this._privacyResolve) {
-      this._privacyResolve({ event: 'disagree' })
-      this._privacyResolve = null
-    }
-    this.globalData.showPrivacyModal = false
   },
 
   // 检查是否已登录
