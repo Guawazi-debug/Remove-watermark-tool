@@ -400,6 +400,9 @@ Page({
     let savedCount = 0
     let failCount = 0
 
+    // 图片也通过代理下载
+    const proxiedImages = images.map(url => this._proxyUrl(url))
+
     const onComplete = () => {
       this.setData({ isDownloading: false, downloadStatusText: '' })
       if (failCount > 0 && savedCount === 0) {
@@ -424,7 +427,7 @@ Page({
       }
     }
 
-    images.forEach((imageUrl) => {
+    proxiedImages.forEach((imageUrl, index) => {
       wx.downloadFile({
         url: imageUrl,
         success: (res) => {
