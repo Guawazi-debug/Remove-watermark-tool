@@ -439,11 +439,19 @@ Page({
 
   // 查看隐私协议
   onViewPrivacy() {
-    wx.openPrivacyContract({
-      success: () => {},
-      fail: () => {
-        wx.showToast({ title: '打开失败', icon: 'none' })
-      }
-    })
+    // 检查API是否可用
+    if (typeof wx.openPrivacyContract === 'function') {
+      wx.openPrivacyContract({
+        success: () => {},
+        fail: () => {
+          wx.showToast({ title: '打开失败', icon: 'none' })
+        }
+      })
+    } else {
+      // 降级方案：跳转到隐私协议页面
+      wx.navigateTo({
+        url: '/pages/privacy/privacy'
+      })
+    }
   }
 })
