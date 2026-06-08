@@ -158,12 +158,12 @@ Page({
       this.setData({ showPrivacyModal: true })
       return
     }
-    // 已同意，直接选择头像
-    this._chooseAvatar()
+    // 已同意，打开头像选择器
+    this._openAvatarPicker()
   },
 
-  // 选择头像
-  _chooseAvatar() {
+  // 打开头像选择器
+  _openAvatarPicker() {
     wx.chooseMedia({
       count: 1,
       mediaType: ['image'],
@@ -483,16 +483,8 @@ Page({
     wx.setStorageSync('privacy_agreed', true)
     this.setData({ showPrivacyModal: false, privacyAgreed: true })
 
-    // 执行待处理的操作
-    if (this._pendingAction) {
-      const action = this._pendingAction
-      this._pendingAction = null
-      if (action === 'chooseAvatar') {
-        this._chooseAvatar()
-      } else if (action === 'nickname') {
-        wx.showToast({ title: '请输入昵称', icon: 'none' })
-      }
-    }
+    // 提示用户可以继续操作
+    wx.showToast({ title: '已同意，请继续操作', icon: 'none' })
   },
 
   // 拒绝隐私协议
