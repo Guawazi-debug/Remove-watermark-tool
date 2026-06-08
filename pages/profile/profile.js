@@ -31,8 +31,7 @@ Page({
       update_log: ''
     },
     showPrivacyModal: false,
-    privacyAgreed: false,
-    showAvatarPicker: false
+    privacyAgreed: false
   },
 
   onLoad(options) {
@@ -151,56 +150,24 @@ Page({
     this.setData({ showLoginModal: false })
   },
 
-  // 点击头像区域
-  onTapAvatar() {
+  // 头像点击事件
+  onAvatarTap() {
     // 检查隐私同意状态
     if (!this.data.privacyAgreed) {
       this._pendingAction = 'chooseAvatar'
       this.setData({ showPrivacyModal: true })
       return
     }
-    // 已同意，显示头像选择弹窗
-    this.setData({ showAvatarPicker: true })
+    // 已同意，选择头像
+    this._chooseAvatar()
   },
 
-  // 关闭头像选择弹窗
-  onCloseAvatarPicker() {
-    this.setData({ showAvatarPicker: false })
-  },
-
-  // 选择微信头像
-  onGetWxAvatar() {
-    this.setData({ showAvatarPicker: false })
+  // 选择头像
+  _chooseAvatar() {
     wx.chooseMedia({
       count: 1,
       mediaType: ['image'],
       sourceType: ['album', 'camera'],
-      success: (res) => {
-        this.setData({ tempAvatarUrl: res.tempFiles[0].tempFilePath })
-      }
-    })
-  },
-
-  // 从相册选择
-  onChooseFromAlbum() {
-    this.setData({ showAvatarPicker: false })
-    wx.chooseMedia({
-      count: 1,
-      mediaType: ['image'],
-      sourceType: ['album'],
-      success: (res) => {
-        this.setData({ tempAvatarUrl: res.tempFiles[0].tempFilePath })
-      }
-    })
-  },
-
-  // 拍照
-  onTakePhoto() {
-    this.setData({ showAvatarPicker: false })
-    wx.chooseMedia({
-      count: 1,
-      mediaType: ['image'],
-      sourceType: ['camera'],
       success: (res) => {
         this.setData({ tempAvatarUrl: res.tempFiles[0].tempFilePath })
       }
@@ -516,8 +483,17 @@ Page({
     wx.setStorageSync('privacy_agreed', true)
     this.setData({ showPrivacyModal: false, privacyAgreed: true })
 
-    // 提示用户可以继续操作
-    wx.showToast({ title: '已同意，请继续操作', icon: 'none' })
+    // 执行待处理的操作
+    if (this._pendingAction) {
+      const action = this._pendingAction
+      this._pendingAction = null
+      if (action === 'chooseAvatar') {
+        // 同意后选择头像
+        this._chooseAvatar()
+      } else if (action === 'nickname') {
+        wx.showToast({ title: '请输入昵称', icon: 'none' })
+      }
+    }
   },
 
   // 拒绝隐私协议
