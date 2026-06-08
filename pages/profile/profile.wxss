@@ -846,3 +846,81 @@
   color: #ffffff;
   font-weight: 500;
 }
+
+/* 头像选择弹窗 */
+.avatar-picker-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1001;
+}
+
+.avatar-picker {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.avatar-picker__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0ebe6;
+}
+
+.avatar-picker__title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #241b16;
+}
+
+.avatar-picker__close {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-picker__close text {
+  font-size: 40rpx;
+  color: #8c7e72;
+}
+
+.avatar-picker__body {
+  padding: 16rpx 0;
+}
+
+.avatar-picker__item {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #f0ebe6;
+}
+
+.avatar-picker__item:last-child {
+  border-bottom: none;
+}
+
+.avatar-picker__icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+}
+
+.avatar-picker__text {
+  font-size: 30rpx;
+  color: #241b16;
+}

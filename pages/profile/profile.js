@@ -31,7 +31,8 @@ Page({
       update_log: ''
     },
     showPrivacyModal: false,
-    privacyAgreed: false
+    privacyAgreed: false,
+    showAvatarPicker: false
   },
 
   onLoad(options) {
@@ -158,16 +159,48 @@ Page({
       this.setData({ showPrivacyModal: true })
       return
     }
-    // 已同意，打开头像选择器
-    this._openAvatarPicker()
+    // 已同意，显示头像选择弹窗
+    this.setData({ showAvatarPicker: true })
   },
 
-  // 打开头像选择器
-  _openAvatarPicker() {
+  // 关闭头像选择弹窗
+  onCloseAvatarPicker() {
+    this.setData({ showAvatarPicker: false })
+  },
+
+  // 选择微信头像
+  onGetWxAvatar() {
+    this.setData({ showAvatarPicker: false })
     wx.chooseMedia({
       count: 1,
       mediaType: ['image'],
       sourceType: ['album', 'camera'],
+      success: (res) => {
+        this.setData({ tempAvatarUrl: res.tempFiles[0].tempFilePath })
+      }
+    })
+  },
+
+  // 从相册选择
+  onChooseFromAlbum() {
+    this.setData({ showAvatarPicker: false })
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album'],
+      success: (res) => {
+        this.setData({ tempAvatarUrl: res.tempFiles[0].tempFilePath })
+      }
+    })
+  },
+
+  // 拍照
+  onTakePhoto() {
+    this.setData({ showAvatarPicker: false })
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['camera'],
       success: (res) => {
         this.setData({ tempAvatarUrl: res.tempFiles[0].tempFilePath })
       }
