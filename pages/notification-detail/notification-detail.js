@@ -43,7 +43,12 @@ Page({
 
         // 标记已读
         if (!notification.is_read) {
-          app.markNotificationRead(id)
+          app.markNotificationRead(id, () => {
+            // 标记已读成功后，刷新未读数
+            app.getUnreadCount((count) => {
+              app.globalData.unreadCount = count
+            })
+          })
         }
       } else {
         this.setData({ loading: false })

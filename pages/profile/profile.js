@@ -29,8 +29,7 @@ Page({
       content: '',
       version: '',
       update_log: ''
-    },
-    privacyAgreed: false
+    }
   },
 
   onLoad(options) {
@@ -79,9 +78,12 @@ Page({
       app.onLoginSuccess()
     }
 
-    // 加载隐私同意状态
-    const privacyAgreed = wx.getStorageSync('privacy_agreed') || false
-    this.setData({ privacyAgreed })
+    // 强制刷新未读通知数量
+    if (this.data.hasUserInfo) {
+      app.getUnreadCount((count) => {
+        this.setData({ unreadCount: count })
+      })
+    }
   },
 
   // 加载数据
@@ -130,13 +132,8 @@ Page({
     }
   },
 
-  // 隐私同意后显示登录弹窗
-  onPrivacyAgreed() {
-    // 保存隐私同意状态
-    wx.setStorageSync('privacy_agreed', true)
-    this.setData({ privacyAgreed: true })
-
-    // 显示登录弹窗
+  // 一键登录 - 显示登录弹窗
+  onQuickLogin() {
     this.setData({
       showLoginModal: true,
       tempAvatarUrl: '',
@@ -383,12 +380,9 @@ Page({
         if (res.confirm) {
           // 清除用户信息
           wx.removeStorageSync('user-info')
-          // 清除隐私同意状态
-          wx.removeStorageSync('privacy_agreed')
           this.setData({
             userInfo: null,
-            hasUserInfo: false,
-            privacyAgreed: false
+            hasUserInfo: false
           })
 
           // 清除全局登录状态
@@ -466,23 +460,5 @@ Page({
         url: '/pages/privacy/privacy'
       })
     }
-  },
-
-  // 撤销隐私同意
-  onRevokePrivacy() {
-    wx.showModal({
-      title: '撤销隐私同意',
-      content: '确定要撤销隐私协议同意吗？撤销后部分功能将无法使用。',
-      confirmText: '确定撤销',
-      confirmColor: '#ef4444',
-      success: (res) => {
-        if (res.confirm) {
-          // 清除本地隐私同意状态
-          wx.removeStorageSync('privacy_agreed')
-          this.setData({ privacyAgreed: false })
-          wx.showToast({ title: '已撤销', icon: 'success' })
-        }
-      }
-    })
   }
 })
