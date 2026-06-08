@@ -29,7 +29,8 @@ Page({
       content: '',
       version: '',
       update_log: ''
-    }
+    },
+    privacyAgreed: false
   },
 
   onLoad(options) {
@@ -77,6 +78,10 @@ Page({
     if (app.globalData._loginCallback && this.data.hasUserInfo) {
       app.onLoginSuccess()
     }
+
+    // 加载隐私同意状态
+    const privacyAgreed = wx.getStorageSync('privacy_agreed') || false
+    this.setData({ privacyAgreed })
   },
 
   // 加载数据
@@ -162,8 +167,12 @@ Page({
     }
   },
 
-  // 确认登录
+  // 确认登录（隐私授权成功后调用）
   onConfirmLogin() {
+    // 保存隐私同意状态
+    wx.setStorageSync('privacy_agreed', true)
+    this.setData({ privacyAgreed: true })
+
     const { tempAvatarUrl, tempNickName } = this.data
     console.log('输入的昵称:', tempNickName)
     console.log('选择的头像:', tempAvatarUrl)
@@ -464,14 +473,10 @@ Page({
       confirmColor: '#ef4444',
       success: (res) => {
         if (res.confirm) {
-          // 调用微信官方撤销接口
-          if (typeof wx.requirePrivacyAuthorize === 'function') {
-            // 清除本地隐私同意状态
-            wx.removeStorageSync('privacy_agreed')
-            wx.showToast({ title: '已撤销', icon: 'success' })
-          } else {
-            wx.showToast({ title: '已撤销', icon: 'success' })
-          }
+          // 清除本地隐私同意状态
+          wx.removeStorageSync('privacy_agreed')
+          this.setData({ privacyAgreed: false })
+          wx.showToast({ title: '已撤销', icon: 'success' })
         }
       }
     })
