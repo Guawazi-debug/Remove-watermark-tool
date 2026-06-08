@@ -30,7 +30,8 @@ Page({
       version: '',
       update_log: ''
     },
-    showPrivacyModal: false
+    showPrivacyModal: false,
+    privacyAgreed: false
   },
 
   onLoad(options) {
@@ -83,6 +84,10 @@ Page({
     if (app.globalData.showPrivacyModal) {
       this.setData({ showPrivacyModal: true })
     }
+
+    // 检查隐私同意状态
+    const privacyAgreed = wx.getStorageSync('privacy_agreed') || false
+    this.setData({ privacyAgreed })
   },
 
   // 加载数据
@@ -147,6 +152,12 @@ Page({
 
   // 选择头像
   onChooseAvatar(e) {
+    // 检查隐私同意状态
+    if (!this.data.privacyAgreed) {
+      this._pendingAction = 'chooseAvatar'
+      this.setData({ showPrivacyModal: true })
+      return
+    }
     const avatarUrl = e.detail.avatarUrl
     if (avatarUrl) {
       this.setData({ tempAvatarUrl: avatarUrl })
@@ -155,12 +166,24 @@ Page({
 
   // 输入昵称（手动输入）
   onTempNicknameInput(e) {
+    // 检查隐私同意状态
+    if (!this.data.privacyAgreed) {
+      this._pendingAction = 'nickname'
+      this.setData({ showPrivacyModal: true })
+      return
+    }
     console.log('输入昵称:', e.detail.value)
     this.setData({ tempNickName: e.detail.value })
   },
 
   // 昵称变化（选择微信昵称）
   onNicknameChange(e) {
+    // 检查隐私同意状态
+    if (!this.data.privacyAgreed) {
+      this._pendingAction = 'nickname'
+      this.setData({ showPrivacyModal: true })
+      return
+    }
     console.log('昵称变化:', e.detail.value)
     const nickName = e.detail.value
     if (nickName) {
@@ -447,7 +470,29 @@ Page({
   onAgreePrivacy() {
     const app = getApp()
     app.agreePrivacy()
-    this.setData({ showPrivacyModal: false })
+    wx.setStorageSync('privacy_agreed', true)
+    this.setData({ showPrivacyModal: false, privacyAgreed: true })
+
+    // 执行待处理的操作
+    if (this._pendingAction) {
+      const action = this._pendingAction
+      this._pendingAction = null
+      // 触发对应操作
+      if (action === 'chooseAvatar') {
+        // 模拟点击头像按钮
+        wx.chooseMedia({
+          count: 1,
+          mediaType: ['image'],
+          sourceType: ['album', 'camera'],
+          success: (res) => {
+            this.setData({ tempAvatarUrl: res.tempFiles[0].tempFilePath })
+          }
+        })
+      } else if (action === 'nickname') {
+        // 昵称输入需要用户手动操作
+        wx.showToast({ title: '请输入昵称', icon: 'none' })
+      }
+    }
   },
 
   // 拒绝隐私协议
@@ -455,6 +500,7 @@ Page({
     const app = getApp()
     app.rejectPrivacy()
     this.setData({ showPrivacyModal: false })
+    this._pendingAction = null
   },
 
   // 查看隐私协议

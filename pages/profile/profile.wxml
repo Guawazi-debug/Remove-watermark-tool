@@ -159,6 +159,19 @@
   <view class="menu-section">
     <view class="menu-section__title">其他</view>
     <view class="menu-list">
+      <view class="menu-list__item" bindtap="onViewPrivacy">
+        <view class="menu-list__left">
+          <view class="menu-list__icon" style="background: rgba(96, 165, 250, 0.1); color: #60a5fa;">
+            <text>◈</text>
+          </view>
+          <text class="menu-list__text">隐私协议</text>
+        </view>
+        <view class="menu-list__right">
+          <text class="menu-list__status" wx:if="{{privacyAgreed}}" style="color: #34d399;">已同意</text>
+          <text class="menu-list__status" wx:else style="color: #fbbf24;">未同意</text>
+          <text class="menu-list__arrow">›</text>
+        </view>
+      </view>
       <view class="menu-list__item" bindtap="onClearCache">
         <view class="menu-list__left">
           <view class="menu-list__icon" style="background: rgba(251, 191, 36, 0.1); color: #fbbf24;">

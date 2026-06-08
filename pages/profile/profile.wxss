@@ -523,6 +523,16 @@
   color: #ef4444;
 }
 
+.menu-list__right {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.menu-list__status {
+  font-size: 22rpx;
+}
+
 .menu-list__arrow {
   font-size: 32rpx;
   color: #c4b5a8;
