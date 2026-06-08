@@ -132,6 +132,25 @@ Page({
 
   // 一键登录 - 显示登录弹窗
   onQuickLogin() {
+    // 检查隐私同意状态
+    const privacyAgreed = wx.getStorageSync('privacy_agreed') || false
+    if (!privacyAgreed) {
+      // 未同意隐私，提示用户先同意
+      wx.showModal({
+        title: '隐私协议',
+        content: '请先阅读并同意隐私协议后再登录',
+        confirmText: '去同意',
+        success: (res) => {
+          if (res.confirm) {
+            // 跳转到隐私协议页面或触发隐私同意
+            wx.navigateTo({
+              url: '/pages/privacy/privacy'
+            })
+          }
+        }
+      })
+      return
+    }
     this.setData({
       showLoginModal: true,
       tempAvatarUrl: '',
@@ -169,7 +188,9 @@ Page({
 
   // 确认登录（隐私授权成功后调用）
   onConfirmLogin() {
-    // 保存隐私同意状态
+    // 只有用户真正同意隐私时才保存状态
+    // 这个方法是由 open-type="agreePrivacyAuthorization" 触发的
+    // 所以只有用户点击同意后才会调用
     wx.setStorageSync('privacy_agreed', true)
     this.setData({ privacyAgreed: true })
 
@@ -382,9 +403,12 @@ Page({
         if (res.confirm) {
           // 清除用户信息
           wx.removeStorageSync('user-info')
+          // 清除隐私同意状态
+          wx.removeStorageSync('privacy_agreed')
           this.setData({
             userInfo: null,
-            hasUserInfo: false
+            hasUserInfo: false,
+            privacyAgreed: false
           })
 
           // 清除全局登录状态
