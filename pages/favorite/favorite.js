@@ -33,6 +33,17 @@ Page({
 
   // 加载数据
   _loadData() {
+    // 检查登录状态
+    if (!app.isLoggedIn()) {
+      // 未登录，清空数据
+      this.setData({
+        favoriteTools: [],
+        toolCombos: [],
+        availableTools: []
+      })
+      return
+    }
+
     const favoriteIds = wx.getStorageSync(FAVORITE_TOOLS_KEY) || []
     const favoriteTools = favoriteIds
       .map(id => toolIndex[id])

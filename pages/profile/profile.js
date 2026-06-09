@@ -110,35 +110,43 @@ Page({
         userInfo: userInfo,
         hasUserInfo: true
       })
-    } else {
-      this.setData({
-        userInfo: null,
-        hasUserInfo: false
-      })
-    }
 
-    // 加载会员状态
-    const isVip = wx.getStorageSync(VIP_KEY) || false
-    this.setData({ isVip })
+      // 已登录，加载本地数据
+      // 加载会员状态
+      const isVip = wx.getStorageSync(VIP_KEY) || false
+      this.setData({ isVip })
 
-    // 加载使用统计
-    const stats = wx.getStorageSync(USER_STATS_KEY) || {
-      totalUseCount: 0,
-      firstUseDate: new Date().toISOString().split('T')[0]
-    }
-    const favoriteIds = wx.getStorageSync(FAVORITE_TOOLS_KEY) || []
-    stats.favoriteCount = favoriteIds.length
-    this.setData({ stats })
+      // 加载使用统计
+      const stats = wx.getStorageSync(USER_STATS_KEY) || {
+        totalUseCount: 0,
+        firstUseDate: new Date().toISOString().split('T')[0]
+      }
+      const favoriteIds = wx.getStorageSync(FAVORITE_TOOLS_KEY) || []
+      stats.favoriteCount = favoriteIds.length
+      this.setData({ stats })
 
-    // 加载最近使用
-    const recentIds = wx.getStorageSync(RECENT_TOOLS_KEY) || []
-    const recentTools = recentIds.slice(0, 5).map(id => toolIndex[id]).filter(Boolean)
-    this.setData({ recentTools })
+      // 加载最近使用
+      const recentIds = wx.getStorageSync(RECENT_TOOLS_KEY) || []
+      const recentTools = recentIds.slice(0, 5).map(id => toolIndex[id]).filter(Boolean)
+      this.setData({ recentTools })
 
-    // 加载未读通知数量
-    if (this.data.hasUserInfo) {
+      // 加载未读通知数量
       app.getUnreadCount((count) => {
         this.setData({ unreadCount: count })
+      })
+    } else {
+      // 未登录，清空显示数据
+      this.setData({
+        userInfo: null,
+        hasUserInfo: false,
+        isVip: false,
+        unreadCount: 0,
+        stats: {
+          totalUseCount: 0,
+          firstUseDate: '',
+          favoriteCount: 0
+        },
+        recentTools: []
       })
     }
   },
@@ -396,29 +404,17 @@ Page({
         if (res.confirm) {
           // 清除用户信息
           wx.removeStorageSync('user-info')
-          // 清除本地缓存数据
-          wx.removeStorageSync(RECENT_TOOLS_KEY)
-          wx.removeStorageSync(FAVORITE_TOOLS_KEY)
-          wx.removeStorageSync(USER_STATS_KEY)
-          wx.removeStorageSync(VIP_KEY)
-          wx.removeStorageSync('tool-combinations')
-
-          // 重置页面数据
-          this.setData({
-            userInfo: null,
-            hasUserInfo: false,
-            unreadCount: 0,
-            stats: {
-              totalUseCount: 0,
-              firstUseDate: '',
-              favoriteCount: 0
-            },
-            recentTools: []
-          })
 
           // 清除全局登录状态
           const app = getApp()
           app.globalData.userInfo = null
+
+          // 重置页面显示
+          this.setData({
+            userInfo: null,
+            hasUserInfo: false,
+            unreadCount: 0
+          })
 
           wx.showToast({ title: '已退出', icon: 'success' })
         }
