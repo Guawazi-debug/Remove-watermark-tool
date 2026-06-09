@@ -132,6 +132,21 @@ Page({
 
   // 显示创建组合弹窗
   onShowComboModal() {
+    // 未登录提示去登录
+    if (!app.isLoggedIn()) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录后再创建工具组合',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({ url: '/pages/profile/profile' })
+          }
+        }
+      })
+      return
+    }
+
     // 给每个工具添加selected属性
     const availableTools = this.data.availableTools.map(tool => ({
       ...tool,
