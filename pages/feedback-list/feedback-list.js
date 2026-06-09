@@ -22,6 +22,16 @@ Page({
 
   // 加载反馈列表
   loadFeedbackList(callback) {
+    // 未登录不加载数据
+    if (!app.isLoggedIn()) {
+      this.setData({
+        feedbackList: [],
+        loading: false
+      })
+      callback && callback()
+      return
+    }
+
     this.setData({ loading: true })
     app.getMyFeedbackList((list) => {
       // 格式化状态
