@@ -224,10 +224,11 @@ Page({
 
     // 立即更新页面显示
     this.setData({
-      userInfo: userInfo,
-      hasUserInfo: true,
       showLoginModal: false
     })
+
+    // 刷新页面数据（加载本地缓存的统计、收藏、最近使用等）
+    this._loadData()
 
     wx.showToast({ title: '登录成功', icon: 'success' })
 
@@ -409,12 +410,8 @@ Page({
           const app = getApp()
           app.globalData.userInfo = null
 
-          // 重置页面显示
-          this.setData({
-            userInfo: null,
-            hasUserInfo: false,
-            unreadCount: 0
-          })
+          // 刷新页面数据
+          this._loadData()
 
           wx.showToast({ title: '已退出', icon: 'success' })
         }
