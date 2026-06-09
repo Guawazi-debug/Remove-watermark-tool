@@ -173,6 +173,8 @@ Page({
 
   // 获取收藏的工具ID列表
   _getFavoriteToolIds() {
+    // 未登录不显示收藏状态
+    if (!app.isLoggedIn()) return []
     return wx.getStorageSync(FAVORITE_TOOLS_KEY) || []
   },
 
@@ -180,6 +182,21 @@ Page({
   onFavoriteTool(e) {
     const toolId = e.detail.toolId
     if (!toolId) return
+
+    // 未登录提示去登录
+    if (!app.isLoggedIn()) {
+      wx.showModal({
+        title: '提示',
+        content: '请先登录后再收藏工具',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({ url: '/pages/profile/profile' })
+          }
+        }
+      })
+      return
+    }
 
     const current = wx.getStorageSync(FAVORITE_TOOLS_KEY) || []
     const index = current.indexOf(toolId)
