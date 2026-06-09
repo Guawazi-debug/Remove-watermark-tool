@@ -77,5 +77,12 @@ Page({
     if (hours < 24) return hours + '小时前'
     if (days < 7) return days + '天前'
     return dateStr.substring(0, 10)
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '工具小栈 - 实用小程序工具箱',
+      path: '/pages/index/index'
+    }
   }
 })

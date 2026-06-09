@@ -82,5 +82,12 @@ Page({
     wx.navigateTo({
       url: '/pages/notification-detail/notification-detail?id=' + item.id
     })
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '工具小栈 - 实用小程序工具箱',
+      path: '/pages/index/index'
+    }
   }
 })

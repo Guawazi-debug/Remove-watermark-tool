@@ -71,5 +71,12 @@ Page({
     const hours = String(date.getHours()).padStart(2, '0')
     const minutes = String(date.getMinutes()).padStart(2, '0')
     return `${year}-${month}-${day} ${hours}:${minutes}`
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '工具小栈 - 实用小程序工具箱',
+      path: '/pages/index/index'
+    }
   }
 })

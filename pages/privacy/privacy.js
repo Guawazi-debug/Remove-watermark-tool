@@ -105,5 +105,12 @@ Page({
 八、更新说明
 
 我们可能会不定期更新本隐私保护指引。更新后的指引将在小程序内公布。`
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '工具小栈 - 实用小程序工具箱',
+      path: '/pages/index/index'
+    }
   }
 })

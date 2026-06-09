@@ -340,5 +340,12 @@ Page({
   _getToolName(toolId) {
     const tool = toolIndex[toolId]
     return tool ? tool.name : toolId
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '工具小栈 - 实用小程序工具箱',
+      path: '/pages/index/index'
+    }
   }
 })
