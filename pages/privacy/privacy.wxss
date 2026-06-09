@@ -1,5 +1,4 @@
 .privacy-page {
-  min-height: 100vh;
   background: #F8F3EC;
   padding: 24rpx 32rpx;
   box-sizing: border-box;

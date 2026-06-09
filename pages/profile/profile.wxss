@@ -1,6 +1,5 @@
 .profile-page {
   background: #F8F3EC;
-  min-height: 100vh;
   padding-bottom: 120rpx;
 }
 
