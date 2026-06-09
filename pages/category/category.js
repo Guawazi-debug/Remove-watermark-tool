@@ -113,4 +113,10 @@ Page({
     }
   },
 
+  onShareTimeline() {
+    return {
+      title: '工具小栈 - 实用小程序工具箱'
+    }
+  },
+
 })

@@ -89,5 +89,11 @@ Page({
       title: '工具小栈 - 实用小程序工具箱',
       path: '/pages/index/index'
     }
+  },
+
+  onShareTimeline() {
+    return {
+      title: '工具小栈 - 实用小程序工具箱'
+    }
   }
 })
