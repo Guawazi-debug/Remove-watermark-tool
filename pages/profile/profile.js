@@ -186,14 +186,19 @@ Page({
     console.log('输入的昵称:', tempNickName)
     console.log('选择的头像:', tempAvatarUrl)
 
-    // 验证昵称
-    let nickName = tempNickName
-    if (!nickName || !nickName.trim()) {
-      // 如果没有输入昵称，尝试使用微信默认昵称
-      nickName = '微信用户'
-    } else {
-      nickName = tempNickName.trim()
+    // 验证头像
+    if (!tempAvatarUrl) {
+      wx.showToast({ title: '请选择头像', icon: 'none' })
+      return
     }
+
+    // 验证昵称
+    if (!tempNickName || !tempNickName.trim()) {
+      wx.showToast({ title: '请输入昵称', icon: 'none' })
+      return
+    }
+
+    let nickName = tempNickName.trim()
 
     // 获取当前已有的头像URL（如果有的话）
     const existingUserInfo = wx.getStorageSync('user-info') || {}
