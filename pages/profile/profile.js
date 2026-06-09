@@ -396,9 +396,24 @@ Page({
         if (res.confirm) {
           // 清除用户信息
           wx.removeStorageSync('user-info')
+          // 清除本地缓存数据
+          wx.removeStorageSync(RECENT_TOOLS_KEY)
+          wx.removeStorageSync(FAVORITE_TOOLS_KEY)
+          wx.removeStorageSync(USER_STATS_KEY)
+          wx.removeStorageSync(VIP_KEY)
+          wx.removeStorageSync('tool-combinations')
+
+          // 重置页面数据
           this.setData({
             userInfo: null,
-            hasUserInfo: false
+            hasUserInfo: false,
+            unreadCount: 0,
+            stats: {
+              totalUseCount: 0,
+              firstUseDate: '',
+              favoriteCount: 0
+            },
+            recentTools: []
           })
 
           // 清除全局登录状态
