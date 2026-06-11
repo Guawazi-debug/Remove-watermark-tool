@@ -1,0 +1,49 @@
+<navigation-bar title="生图历史" back="{{true}}" homeButton="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root history-page" scroll-y enable-flex show-scrollbar="{{false}}">
+  <!-- 空状态 -->
+  <view class="empty-box" wx:if="{{historyList.length === 0}}">
+    <text class="empty-icon">IMG</text>
+    <text class="empty-text">暂无生图记录</text>
+    <text class="empty-desc">使用 AI 生图后会在这里显示</text>
+  </view>
+
+  <!-- 历史列表 -->
+  <view class="history-list" wx:else>
+    <view
+      class="history-item"
+      wx:for="{{historyList}}"
+      wx:key="id"
+    >
+      <!-- 提示词行 -->
+      <view class="history-item__header" data-index="{{index}}" bindtap="onToggleItem">
+        <view class="history-item__prompt">
+          <text class="history-item__index">{{index + 1}}</text>
+          <text class="history-item__text">{{item.prompt}}</text>
+        </view>
+        <text class="history-item__arrow {{item.expanded ? 'history-item__arrow--open' : ''}}">›</text>
+      </view>
+
+      <!-- 展开内容 -->
+      <view class="history-item__body" wx:if="{{item.expanded}}">
+        <view class="history-item__image-wrapper">
+          <image
+            class="history-item__image"
+            src="{{item.imageUrl}}"
+            mode="widthFix"
+            bindtap="onPreviewImage"
+            data-url="{{item.imageUrl}}"
+            show-menu-by-longpress
+          ></image>
+        </view>
+        <view class="history-item__meta">
+          <text class="history-item__size">{{item.size}}</text>
+          <text class="history-item__time">{{item.time}}</text>
+        </view>
+        <view class="history-item__actions">
+          <button class="history-btn" bindtap="onSaveImage" data-url="{{item.imageUrl}}">保存图片</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>

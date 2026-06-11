@@ -370,6 +370,8 @@ Page({
         if (res.confirm) {
           // 清除最近使用记录
           wx.removeStorageSync(RECENT_TOOLS_KEY)
+          // 清除生图历史
+          wx.removeStorageSync('ai-image-history')
           // 重置使用统计
           wx.setStorageSync(USER_STATS_KEY, {
             totalUseCount: 0,
@@ -386,6 +388,13 @@ Page({
   onFeedbackList() {
     wx.navigateTo({
       url: '/pages/feedback-list/feedback-list'
+    })
+  },
+
+  // 跳转生图历史
+  onImageHistory() {
+    wx.navigateTo({
+      url: '/pages/image-history/image-history'
     })
   },
 

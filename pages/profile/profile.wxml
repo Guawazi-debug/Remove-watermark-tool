@@ -135,6 +135,12 @@
   <view class="menu-section">
     <view class="menu-section__title">服务与支持</view>
     <view class="menu-grid">
+      <view class="menu-grid__item" bindtap="onImageHistory" wx:if="{{hasUserInfo}}">
+        <view class="menu-grid__icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+          <text>IMG</text>
+        </view>
+        <text class="menu-grid__text">生图历史</text>
+      </view>
       <view class="menu-grid__item" bindtap="onShowFeedback">
         <view class="menu-grid__icon" style="background: rgba(194, 149, 106, 0.1); color: #c2956a;">
           <text>✎</text>

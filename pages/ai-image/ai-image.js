@@ -1,5 +1,7 @@
 const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
+const HISTORY_KEY = 'ai-image-history'
+
 Page({
   data: {
     prompt: '',
@@ -67,6 +69,9 @@ Page({
       const result = res.result
 
       if (result.success) {
+        // 保存生成历史
+        this._saveHistory(prompt.trim(), result.imageUrl, selectedSize)
+
         this.setData({
           imageUrl: result.imageUrl,
           loading: false
@@ -150,5 +155,26 @@ Page({
 
   onShareTimeline() {
     return getShareTimeline('AI 生图')
+  },
+
+  // 保存生成历史
+  _saveHistory(prompt, imageUrl, size) {
+    // 未登录不保存
+    if (!app.isLoggedIn()) return
+
+    const list = wx.getStorageSync(HISTORY_KEY) || []
+    const now = new Date()
+    const time = `${now.getMonth() + 1}-${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+
+    list.unshift({
+      id: Date.now(),
+      prompt,
+      imageUrl,
+      size,
+      time
+    })
+
+    // 最多保留50条
+    wx.setStorageSync(HISTORY_KEY, list.slice(0, 50))
   }
 })

@@ -9,6 +9,7 @@
     "pages/notification-detail/notification-detail",
     "pages/privacy/privacy",
     "pages/ai-image/ai-image",
+    "pages/image-history/image-history",
     "pages/video-parse/video-parse",
     "pages/json-parse/json-parse",
     "pages/json-generate/json-generate",
