@@ -196,29 +196,26 @@ Page({
     return getShareTimeline('AI 生图')
   },
 
-  // 调用GPT生图API
+  // 调用GPT生图API（通过代理）
   _callGptApi(prompt, size) {
     return new Promise((resolve, reject) => {
       wx.request({
-        url: 'https://api-hk2.futureapi.top/v1/images/generations',
+        url: app.globalData.apiBaseUrl + '/gpt_image.php',
         method: 'POST',
         header: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer sk-05f6c0e92d7d6eb705e3a1f8de594b76a341741b9319508d84cb99965a71f3c0'
+          'X-API-Key': 'moyin-api-key-v1.2.0'
         },
         data: {
-          model: 'gpt-image-2',
           prompt: prompt,
-          size: size,
-          response_format: 'url',
-          quality: 'medium'
+          size: size
         },
         timeout: 120000,
         success: (res) => {
-          if (res.data && res.data.data && res.data.data[0] && res.data.data[0].url) {
-            resolve(res.data.data[0].url)
+          if (res.data && res.data.code === 200 && res.data.url) {
+            resolve(res.data.url)
           } else {
-            reject(new Error('生成失败'))
+            reject(new Error(res.data.message || '生成失败'))
           }
         },
         fail: (err) => {
