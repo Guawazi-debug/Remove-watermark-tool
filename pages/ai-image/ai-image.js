@@ -102,6 +102,17 @@ Page({
     }
   },
 
+  onCopyUrl() {
+    const { imageUrl } = this.data
+    if (!imageUrl) return
+    wx.setClipboardData({
+      data: imageUrl,
+      success: () => {
+        wx.showToast({ title: '链接已复制', icon: 'success' })
+      }
+    })
+  },
+
   onSaveImage() {
     const { imageUrl } = this.data
     if (!imageUrl) return

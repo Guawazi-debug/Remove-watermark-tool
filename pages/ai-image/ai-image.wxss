@@ -170,6 +170,44 @@
   display: block;
 }
 
+.url-box {
+  margin-top: 16rpx;
+  padding: 16rpx;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 12rpx;
+  border: 2rpx solid rgba(93, 66, 50, 0.06);
+}
+
+.url-label {
+  display: block;
+  font-size: 22rpx;
+  color: #9a8f87;
+  margin-bottom: 8rpx;
+}
+
+.url-content {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.url-text {
+  flex: 1;
+  font-size: 20rpx;
+  color: #4a3f38;
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+.url-copy-btn {
+  padding: 8rpx 16rpx;
+  background: linear-gradient(135deg, #8f3d2e, #b45f3d);
+  color: #fff;
+  font-size: 22rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
 .result-actions {
   display: flex;
   gap: 16rpx;

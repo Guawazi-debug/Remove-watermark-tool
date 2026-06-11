@@ -3,6 +3,11 @@
 <scroll-view class="page-root ai-image-page" scroll-y enable-flex show-scrollbar="{{false}}">
   <tool-hero></tool-hero>
 
+  <!-- 使用须知 -->
+  <view class="notice-banner">
+    <text class="notice-banner__text">使用须知：请勿生成违规、侵权、色情、暴力等违法内容。生成的图片会在24小时后失效，请及时保存。图片可在此页面和生图历史中查看。</text>
+  </view>
+
   <!-- 输入区域 -->
   <view class="section">
     <view class="section-title">图片描述</view>
@@ -99,6 +104,14 @@
         bindtap="onPreviewImage"
         show-menu-by-longpress
       ></image>
+    </view>
+    <!-- 图片链接 -->
+    <view class="url-box">
+      <text class="url-label">图片链接（24小时内有效）</text>
+      <view class="url-content">
+        <text class="url-text" selectable>{{imageUrl}}</text>
+        <view class="url-copy-btn" bindtap="onCopyUrl">复制</view>
+      </view>
     </view>
     <view class="result-actions">
       <button class="btn btn--secondary result-btn" bindtap="onSaveImage">保存图片</button>
