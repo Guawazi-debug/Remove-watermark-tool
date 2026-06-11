@@ -7,6 +7,7 @@ Page({
   data: {
     prompt: '',
     showSettings: false,
+    selectedModel: 'hunyuan',
     selectedSize: '1024x1024',
     revise: true,
     footnote: '',
@@ -16,6 +17,11 @@ Page({
       { label: '4:3', value: '1024x768' },
       { label: '3:4', value: '768x1024' }
     ],
+    gptSizeOptions: [
+      { label: '1:1', value: '1024x1024' },
+      { label: '16:9', value: '3840x2160' },
+      { label: '9:16', value: '2160x3840' }
+    ],
     loading: false,
     imageUrl: '',
     errorMsg: ''
@@ -23,6 +29,14 @@ Page({
 
   onPromptInput(e) {
     this.setData({ prompt: e.detail.value })
+  },
+
+  onModelTap(e) {
+    const model = e.currentTarget.dataset.model
+    this.setData({
+      selectedModel: model,
+      selectedSize: model === 'gpt' ? '3840x2160' : '1024x1024'
+    })
   },
 
   onToggleSettings() {
@@ -46,7 +60,7 @@ Page({
   },
 
   async onGenerate() {
-    const { prompt, selectedSize, revise, footnote, seed } = this.data
+    const { prompt, selectedModel, selectedSize, revise, footnote, seed } = this.data
 
     if (!prompt.trim()) {
       wx.showToast({ title: '请输入图片描述', icon: 'none' })
@@ -56,25 +70,38 @@ Page({
     this.setData({ loading: true, errorMsg: '', imageUrl: '' })
 
     try {
-      const res = await wx.cloud.callFunction({
-        name: 'generateImage-AmUdTa',
-        data: {
-          prompt: prompt.trim(),
-          size: selectedSize,
-          revise: revise,
-          footnote: footnote || undefined,
-          seed: seed ? parseInt(seed) : undefined
+      let imageUrl = ''
+
+      if (selectedModel === 'hunyuan') {
+        // 混元生图（云函数）
+        const res = await wx.cloud.callFunction({
+          name: 'generateImage-AmUdTa',
+          data: {
+            prompt: prompt.trim(),
+            size: selectedSize,
+            revise: revise,
+            footnote: footnote || undefined,
+            seed: seed ? parseInt(seed) : undefined
+          }
+        })
+        const result = res.result
+        if (result.success) {
+          imageUrl = result.imageUrl
+        } else {
+          throw new Error(result.message || '生成失败')
         }
-      })
+      } else {
+        // GPT生图（直接调用API）
+        const res = await this._callGptApi(prompt.trim(), selectedSize)
+        imageUrl = res
+      }
 
-      const result = res.result
-
-      if (result.success) {
+      if (imageUrl) {
         // 保存生成历史
-        this._saveHistory(prompt.trim(), result.imageUrl, selectedSize)
+        this._saveHistory(prompt.trim(), imageUrl, selectedSize)
 
         this.setData({
-          imageUrl: result.imageUrl,
+          imageUrl: imageUrl,
           loading: false
         })
       } else {
@@ -167,6 +194,38 @@ Page({
 
   onShareTimeline() {
     return getShareTimeline('AI 生图')
+  },
+
+  // 调用GPT生图API
+  _callGptApi(prompt, size) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: 'https://api-hk2.futureapi.top/v1/images/generations',
+        method: 'POST',
+        header: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer sk-05f6c0e92d7d6eb705e3a1f8de594b76a341741b9319508d84cb99965a71f3c0'
+        },
+        data: {
+          model: 'gpt-image-2',
+          prompt: prompt,
+          size: size,
+          response_format: 'url',
+          quality: 'medium'
+        },
+        timeout: 120000,
+        success: (res) => {
+          if (res.data && res.data.data && res.data.data[0] && res.data.data[0].url) {
+            resolve(res.data.data[0].url)
+          } else {
+            reject(new Error('生成失败'))
+          }
+        },
+        fail: (err) => {
+          reject(new Error('网络错误'))
+        }
+      })
+    })
   },
 
   // 保存生成历史

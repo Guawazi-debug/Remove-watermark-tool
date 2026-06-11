@@ -24,6 +24,29 @@
     </view>
   </view>
 
+  <!-- 模型选择 -->
+  <view class="section">
+    <view class="section-title">选择模型</view>
+    <view class="model-options">
+      <view
+        class="model-option {{selectedModel === 'hunyuan' ? 'model-option--active' : ''}}"
+        bindtap="onModelTap"
+        data-model="hunyuan"
+      >
+        <text class="model-name">混元生图</text>
+        <text class="model-desc">腾讯云开发，免费</text>
+      </view>
+      <view
+        class="model-option {{selectedModel === 'gpt' ? 'model-option--active' : ''}}"
+        bindtap="onModelTap"
+        data-model="gpt"
+      >
+        <text class="model-name">GPT 生图</text>
+        <text class="model-desc">GPT-Image-2，高清</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 参数设置 -->
   <view class="section">
     <view class="settings-header" bindtap="onToggleSettings">
@@ -38,7 +61,7 @@
         <view class="size-options">
           <view
             class="size-option {{selectedSize === item.value ? 'size-option--active' : ''}}"
-            wx:for="{{sizeOptions}}"
+            wx:for="{{selectedModel === 'gpt' ? gptSizeOptions : sizeOptions}}"
             wx:key="value"
             data-value="{{item.value}}"
             bindtap="onSizeTap"

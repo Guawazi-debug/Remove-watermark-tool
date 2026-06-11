@@ -70,6 +70,45 @@
   transform: rotate(270deg);
 }
 
+.model-options {
+  display: flex;
+  gap: 16rpx;
+}
+
+.model-option {
+  flex: 1;
+  padding: 20rpx;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.88);
+  border: 2rpx solid rgba(93, 66, 50, 0.08);
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.model-option--active {
+  background: linear-gradient(135deg, #8f3d2e, #b45f3d);
+  border-color: #8f3d2e;
+}
+
+.model-option--active .model-name,
+.model-option--active .model-desc {
+  color: #fff;
+}
+
+.model-name {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #241b16;
+  margin-bottom: 6rpx;
+}
+
+.model-desc {
+  display: block;
+  font-size: 22rpx;
+  color: #9a8f87;
+}
+
 .settings-body {
   margin-top: 20rpx;
 }
