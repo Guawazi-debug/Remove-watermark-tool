@@ -1,5 +1,4 @@
 const app = getApp()
-const HISTORY_KEY = 'ai-image-history'
 
 Page({
   data: {
@@ -15,12 +14,45 @@ Page({
   },
 
   loadHistory() {
-    const list = wx.getStorageSync(HISTORY_KEY) || []
-    this.setData({
-      historyList: list.map(item => ({
-        ...item,
-        expanded: false
-      }))
+    // 未登录不加载
+    if (!app.isLoggedIn()) {
+      this.setData({ historyList: [] })
+      return
+    }
+
+    wx.request({
+      url: app.globalData.apiBaseUrl + '/image_history.php?action=list',
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'moyin-api-key-v1.2.0'
+      },
+      data: {
+        openid: app.globalData.openid
+      },
+      timeout: 10000,
+      success: (res) => {
+        if (res.data && res.data.code === 200) {
+          const list = res.data.data.list || []
+          this.setData({
+            historyList: list.map(item => ({
+              id: item.id,
+              prompt: item.prompt,
+              image_url: item.local_path
+                ? 'https://moyin.awenz.cn/admin/' + item.local_path
+                : item.image_url,
+              size: item.size,
+              created_at: item.created_at,
+              expanded: false
+            }))
+          })
+        } else {
+          this.setData({ historyList: [] })
+        }
+      },
+      fail: () => {
+        this.setData({ historyList: [] })
+      }
     })
   },
 

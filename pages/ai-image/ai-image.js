@@ -233,23 +233,7 @@ Page({
     // 未登录不保存
     if (!app.isLoggedIn()) return
 
-    // 保存到本地缓存
-    const list = wx.getStorageSync(HISTORY_KEY) || []
-    const now = new Date()
-    const time = `${now.getMonth() + 1}-${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-
-    list.unshift({
-      id: Date.now(),
-      prompt,
-      imageUrl,
-      size,
-      time
-    })
-
-    // 最多保留50条
-    wx.setStorageSync(HISTORY_KEY, list.slice(0, 50))
-
-    // 保存到服务器
+    // 保存到服务器（图片URL存在服务器，不存本地）
     wx.request({
       url: app.globalData.apiBaseUrl + '/image_history.php?action=save',
       method: 'POST',

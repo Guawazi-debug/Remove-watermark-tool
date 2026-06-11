@@ -29,19 +29,19 @@
         <view class="history-item__image-wrapper">
           <image
             class="history-item__image"
-            src="{{item.imageUrl}}"
+            src="{{item.image_url}}"
             mode="widthFix"
             bindtap="onPreviewImage"
-            data-url="{{item.imageUrl}}"
+            data-url="{{item.image_url}}"
             show-menu-by-longpress
           ></image>
         </view>
         <view class="history-item__meta">
           <text class="history-item__size">{{item.size}}</text>
-          <text class="history-item__time">{{item.time}}</text>
+          <text class="history-item__time">{{item.created_at}}</text>
         </view>
         <view class="history-item__actions">
-          <button class="history-btn" bindtap="onSaveImage" data-url="{{item.imageUrl}}">保存图片</button>
+          <button class="history-btn" bindtap="onSaveImage" data-url="{{item.image_url}}">保存图片</button>
         </view>
       </view>
     </view>
