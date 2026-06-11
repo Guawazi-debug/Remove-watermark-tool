@@ -58,7 +58,7 @@ App({
   // 检查是否已登录
   isLoggedIn() {
     const userInfo = wx.getStorageSync('user-info')
-    return userInfo && userInfo.nickName && userInfo.nickName !== '微信用户'
+    return userInfo && userInfo.avatarUrl
   },
 
   // 显示登录弹窗
