@@ -174,6 +174,7 @@ Page({
     // 未登录不保存
     if (!app.isLoggedIn()) return
 
+    // 保存到本地缓存
     const list = wx.getStorageSync(HISTORY_KEY) || []
     const now = new Date()
     const time = `${now.getMonth() + 1}-${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
@@ -188,5 +189,28 @@ Page({
 
     // 最多保留50条
     wx.setStorageSync(HISTORY_KEY, list.slice(0, 50))
+
+    // 保存到服务器
+    wx.request({
+      url: app.globalData.apiBaseUrl + '/image_history.php?action=save',
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'moyin-api-key-v1.2.0'
+      },
+      data: {
+        openid: app.globalData.openid,
+        prompt: prompt,
+        image_url: imageUrl,
+        size: size
+      },
+      timeout: 10000,
+      success: (res) => {
+        console.log('生图历史保存到服务器成功', res.data)
+      },
+      fail: (err) => {
+        console.error('生图历史保存到服务器失败', err)
+      }
+    })
   }
 })
