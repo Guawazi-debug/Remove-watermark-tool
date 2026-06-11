@@ -17,10 +17,10 @@
         placeholder="描述你想要生成的图片，例如：一只可爱的橘猫在阳光下打盹"
         value="{{prompt}}"
         bindinput="onPromptInput"
-        maxlength="500"
+        maxlength="1000"
         auto-height
       ></textarea>
-      <view class="char-count">{{prompt.length}}/500</view>
+      <view class="char-count">{{prompt.length}}/1000</view>
     </view>
   </view>
 
