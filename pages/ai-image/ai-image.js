@@ -35,7 +35,9 @@ Page({
     const model = e.currentTarget.dataset.model
     this.setData({
       selectedModel: model,
-      selectedSize: model === 'gpt' ? '3840x2160' : '1024x1024'
+      selectedSize: model === 'gpt' ? '3840x2160' : '1024x1024',
+      imageUrl: '',
+      errorMsg: ''
     })
   },
 
