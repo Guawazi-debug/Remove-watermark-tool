@@ -24,7 +24,10 @@ Page({
     ],
     loading: false,
     imageUrl: '',
-    errorMsg: ''
+    errorMsg: '',
+    // 各模型独立的生成结果
+    hunyuanResult: { imageUrl: '', errorMsg: '' },
+    gptResult: { imageUrl: '', errorMsg: '' }
   },
 
   onPromptInput(e) {
@@ -33,12 +36,25 @@ Page({
 
   onModelTap(e) {
     const model = e.currentTarget.dataset.model
-    this.setData({
-      selectedModel: model,
-      selectedSize: model === 'gpt' ? '3840x2160' : '1024x1024',
-      imageUrl: '',
-      errorMsg: ''
-    })
+    const { selectedModel, imageUrl, errorMsg, hunyuanResult, gptResult } = this.data
+
+    // 保存当前模型的结果
+    const currentResult = { imageUrl, errorMsg }
+    const updateData = {}
+    if (selectedModel === 'hunyuan') {
+      updateData.hunyuanResult = currentResult
+    } else {
+      updateData.gptResult = currentResult
+    }
+
+    // 显示目标模型的结果
+    const targetResult = model === 'hunyuan' ? hunyuanResult : gptResult
+    updateData.selectedModel = model
+    updateData.selectedSize = model === 'gpt' ? '3840x2160' : '1024x1024'
+    updateData.imageUrl = targetResult.imageUrl
+    updateData.errorMsg = targetResult.errorMsg
+
+    this.setData(updateData)
   },
 
   onToggleSettings() {
@@ -102,21 +118,29 @@ Page({
         // 保存生成历史
         this._saveHistory(prompt.trim(), imageUrl, selectedSize)
 
+        // 保存到当前模型的结果
+        const modelKey = selectedModel === 'hunyuan' ? 'hunyuanResult' : 'gptResult'
         this.setData({
           imageUrl: imageUrl,
-          loading: false
+          loading: false,
+          [`${modelKey}.imageUrl`]: imageUrl,
+          [`${modelKey}.errorMsg`]: ''
         })
       } else {
+        const modelKey = selectedModel === 'hunyuan' ? 'hunyuanResult' : 'gptResult'
         this.setData({
           errorMsg: result.message || '生成失败',
-          loading: false
+          loading: false,
+          [`${modelKey}.errorMsg`]: result.message || '生成失败'
         })
       }
     } catch (err) {
       console.error('调用失败:', err)
+      const modelKey = selectedModel === 'hunyuan' ? 'hunyuanResult' : 'gptResult'
       this.setData({
         errorMsg: '网络错误，请稍后重试',
-        loading: false
+        loading: false,
+        [`${modelKey}.errorMsg`]: '网络错误，请稍后重试'
       })
     }
   },
