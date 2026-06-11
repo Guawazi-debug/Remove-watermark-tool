@@ -47,7 +47,7 @@
       <view class="setting-item">
         <text class="setting-label">提示词改写</text>
         <text class="setting-desc">开启后模型会自动优化你的描述</text>
-        <switch checked="{{revise}}" bindchange="onReviseChange" color="#8b5cf6" />
+        <switch checked="{{revise}}" bindchange="onReviseChange" color="#8f3d2e" />
       </view>
 
       <!-- 水印 -->
