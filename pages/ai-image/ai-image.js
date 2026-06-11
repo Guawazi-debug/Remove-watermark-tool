@@ -1,5 +1,6 @@
 const { getShareAppMessage, getShareTimeline } = require('../../utils/share')
 
+const app = getApp()
 const HISTORY_KEY = 'ai-image-history'
 
 Page({
