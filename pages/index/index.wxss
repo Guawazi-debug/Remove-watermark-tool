@@ -260,3 +260,87 @@
   line-height: 1.7;
   color: #7a6c63;
 }
+
+/* 公告弹窗 */
+.announcement-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.announcement-modal {
+  width: 85%;
+  max-width: 600rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.3);
+}
+
+.announcement-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid rgba(93, 66, 50, 0.08);
+}
+
+.announcement-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #241b16;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.announcement-close {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #999;
+  cursor: pointer;
+}
+
+.announcement-body {
+  padding: 32rpx;
+  max-height: 400rpx;
+}
+
+.announcement-content {
+  font-size: 28rpx;
+  line-height: 1.8;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+.announcement-footer {
+  display: flex;
+  border-top: 1rpx solid rgba(93, 66, 50, 0.08);
+}
+
+.announcement-btn {
+  flex: 1;
+  padding: 28rpx;
+  text-align: center;
+  font-size: 28rpx;
+  cursor: pointer;
+}
+
+.announcement-btn--close {
+  color: #666;
+  border-right: 1rpx solid rgba(93, 66, 50, 0.08);
+}
+
+.announcement-btn--view {
+  color: #8f3d2e;
+  font-weight: 500;
+}

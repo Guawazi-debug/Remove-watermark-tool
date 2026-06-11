@@ -45,6 +45,18 @@
   gap: 20rpx;
 }
 
+/* 一键已读按钮 */
+.mark-all-read {
+  display: flex;
+  justify-content: center;
+  padding: 20rpx;
+  margin-bottom: 10rpx;
+  background: rgba(143, 61, 46, 0.08);
+  border-radius: 12rpx;
+  color: #8f3d2e;
+  font-size: 26rpx;
+}
+
 .notification-item {
   display: flex;
   gap: 24rpx;

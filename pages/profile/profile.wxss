@@ -266,8 +266,21 @@
   text-align: center;
 }
 
+.login-avatar-hint--success {
+  color: #10b981;
+}
+
 .login-nickname-section {
   margin-bottom: 16rpx;
+}
+
+.login-nickname-section--disabled {
+  opacity: 0.5;
+}
+
+.login-nickname-section--disabled .login-nickname-input {
+  background: #e8e3de;
+  color: #999;
 }
 
 .login-label {

@@ -16,6 +16,11 @@ Page({
     })
   },
 
+  onShow() {
+    // 加载工具状态
+    app.loadToolStatus()
+  },
+
   onCategoryTap(e) {
     const categoryId = e.currentTarget.dataset.id
     const category = toolCategories.find(c => c.id === categoryId)
@@ -66,43 +71,63 @@ Page({
     const page = e.currentTarget.dataset.page
     const toolId = e.currentTarget.dataset.toolId
 
-    // 检查登录状态
-    if (!app.isLoggedIn()) {
-      // 未登录，显示登录弹窗
-      app.showLoginModal(() => {
-        // 登录成功后执行原来的操作
-        this._isNavigating = true
-        if (toolId) {
-          recordRecentTool(toolId)
-          recordUseCount()
-          app.trackToolUse(toolId)
-        }
-        wx.navigateTo({
-          url: page,
-          complete: () => {
-            setTimeout(() => {
-              this._isNavigating = false
-            }, 300)
-          }
-        })
-      })
-      return
-    }
-
-    // 已登录，执行原来的操作
+    // 等待工具状态加载完成后检查
     this._isNavigating = true
-    if (toolId) {
-      recordRecentTool(toolId)
-      recordUseCount()
-      app.trackToolUse(toolId)
-    }
-    wx.navigateTo({
-      url: page,
-      complete: () => {
-        setTimeout(() => {
+    app.loadToolStatus(() => {
+      // 检查工具状态
+      if (toolId) {
+        const toolStatus = app.getToolStatus(toolId)
+        if (toolStatus.status === 'maintenance' || toolStatus.status === 'disabled') {
           this._isNavigating = false
-        }, 300)
+          const title = toolStatus.status === 'maintenance' ? '工具维护中' : '工具已停用'
+          const msg = toolStatus.status_message || (toolStatus.status === 'maintenance'
+            ? '该工具正在维护中，请稍后再试' : '该工具已停用')
+          wx.showModal({
+            title: title,
+            content: msg,
+            showCancel: false,
+            confirmText: '我知道了'
+          })
+          return
+        }
       }
+
+      // 检查登录状态
+      if (!app.isLoggedIn()) {
+        // 未登录，显示登录弹窗
+        app.showLoginModal(() => {
+          // 登录成功后执行原来的操作
+          if (toolId) {
+            recordRecentTool(toolId)
+            recordUseCount()
+            app.trackToolUse(toolId)
+          }
+          wx.navigateTo({
+            url: page,
+            complete: () => {
+              setTimeout(() => {
+                this._isNavigating = false
+              }, 300)
+            }
+          })
+        })
+        return
+      }
+
+      // 已登录，执行原来的操作
+      if (toolId) {
+        recordRecentTool(toolId)
+        recordUseCount()
+        app.trackToolUse(toolId)
+      }
+      wx.navigateTo({
+        url: page,
+        complete: () => {
+          setTimeout(() => {
+            this._isNavigating = false
+          }, 300)
+        }
+      })
     })
   },
 

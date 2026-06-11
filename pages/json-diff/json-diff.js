@@ -19,6 +19,15 @@ Page({
   },
   _diff(obj1, obj2, path) {
     const diff = []
+    // 数组按元素集合比较（忽略顺序），对象按 key 比较
+    if (Array.isArray(obj1) && Array.isArray(obj2)) {
+      const str1 = obj1.map(v => JSON.stringify(v)).sort()
+      const str2 = obj2.map(v => JSON.stringify(v)).sort()
+      if (JSON.stringify(str1) !== JSON.stringify(str2)) {
+        diff.push({ path: path || 'root', type: 'changed', value1: obj1, value2: obj2 })
+      }
+      return diff
+    }
     const keys = new Set([...Object.keys(obj1 || {}), ...Object.keys(obj2 || {})])
     keys.forEach(key => {
       const p = path ? path + '.' + key : key

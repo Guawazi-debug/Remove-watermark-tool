@@ -1,4 +1,4 @@
-const { toolIndex } = require('../../utils/tool-meta')
+const { toolIndex, toolCategories } = require('../../utils/tool-meta')
 const { recordUseCount } = require('../../utils/common')
 const app = getApp()
 
@@ -96,6 +96,8 @@ Page({
     // 清除未读数更新回调
     const app = getApp()
     app.globalData._unreadCountCallback = null
+    // 标记页面已卸载
+    this._isUnloaded = true
   },
 
   // 加载数据
@@ -105,8 +107,28 @@ Page({
     console.log('加载的用户信息:', userInfo)
 
     if (userInfo) {
-      // 有用户信息，检查是否有有效的昵称或头像
-      const hasValidInfo = (userInfo.nickName && userInfo.nickName !== '微信用户') || userInfo.avatarUrl
+      // 检查头像是否为服务器上的有效URL
+      const hasValidAvatar = userInfo.avatarUrl && userInfo.avatarUrl.indexOf('moyin.awenz.cn') > -1
+
+      // 如果没有有效头像，提示用户重新登录
+      if (!hasValidAvatar && app.globalData.openid) {
+        // 尝试从服务器获取头像
+        const serverAvatar = 'https://moyin.awenz.cn/admin/uploads/avatars/' + app.globalData.openid + '.jpg'
+        wx.request({
+          url: serverAvatar,
+          method: 'HEAD',
+          timeout: 5000,
+          success: (res) => {
+            if (res.statusCode === 200) {
+              // 服务器有头像，更新本地
+              userInfo.avatarUrl = serverAvatar
+              wx.setStorageSync('user-info', userInfo)
+              this.setData({ userInfo: userInfo })
+            }
+          }
+        })
+      }
+
       this.setData({
         userInfo: userInfo,
         hasUserInfo: true
@@ -117,17 +139,19 @@ Page({
       const isVip = wx.getStorageSync(VIP_KEY) || false
       this.setData({ isVip })
 
-      // 加载使用统计
-      const stats = wx.getStorageSync(USER_STATS_KEY) || {
+      // 加载收藏数量
+      const totalTools = toolCategories.reduce((sum, cat) => sum + cat.tools.length, 0)
+      const stats = {
         totalUseCount: 0,
-        firstUseDate: new Date().toISOString().split('T')[0]
+        firstUseDate: '',
+        favoriteCount: 0,
+        imageCount: 0,
+        totalTools: totalTools
       }
-      const favoriteIds = wx.getStorageSync(FAVORITE_TOOLS_KEY) || []
-      stats.favoriteCount = favoriteIds.length
       this.setData({ stats })
 
-      // 加载生图数量
-      this._loadImageCount()
+      // 从服务器加载使用统计
+      this._loadStats()
 
       // 加载最近使用
       const recentIds = wx.getStorageSync(RECENT_TOOLS_KEY) || []
@@ -140,6 +164,7 @@ Page({
       })
     } else {
       // 未登录，清空显示数据
+      const totalTools = toolCategories.reduce((sum, cat) => sum + cat.tools.length, 0)
       this.setData({
         userInfo: null,
         hasUserInfo: false,
@@ -148,23 +173,58 @@ Page({
         stats: {
           totalUseCount: 0,
           firstUseDate: '',
-          favoriteCount: 0
+          favoriteCount: 0,
+          totalTools: totalTools
         },
         recentTools: []
       })
     }
   },
 
-  // 加载生图数量
-  _loadImageCount() {
-    if (!app.globalData.openid) return
+  // 从服务器加载使用统计
+  _loadStats() {
+    if (!app.globalData.openid || this._isUnloaded) return
 
+    // 加载使用次数
+    wx.request({
+      url: app.globalData.apiBaseUrl + '/track.php?action=stats&openid=' + app.globalData.openid,
+      method: 'GET',
+      header: { 'X-API-Key': 'moyin-api-key-v1.2.0' },
+      timeout: 10000,
+      success: (res) => {
+        if (this._isUnloaded) return
+        if (res.data && res.data.code === 200) {
+          const data = res.data.data
+          this.setData({
+            'stats.totalUseCount': data.totalUseCount || 0,
+            'stats.firstUseDate': data.firstUseDate || ''
+          })
+        }
+      }
+    })
+
+    // 加载收藏数量
+    wx.request({
+      url: app.globalData.apiBaseUrl + '/favorites.php?action=count&openid=' + app.globalData.openid,
+      method: 'GET',
+      header: { 'X-API-Key': 'moyin-api-key-v1.2.0' },
+      timeout: 10000,
+      success: (res) => {
+        if (this._isUnloaded) return
+        if (res.data && res.data.code === 200) {
+          this.setData({ 'stats.favoriteCount': res.data.data.count || 0 })
+        }
+      }
+    })
+
+    // 加载生图数量
     wx.request({
       url: app.globalData.apiBaseUrl + '/image_history.php?action=list&openid=' + app.globalData.openid + '&page_size=1',
       method: 'GET',
       header: { 'X-API-Key': 'moyin-api-key-v1.2.0' },
       timeout: 10000,
       success: (res) => {
+        if (this._isUnloaded) return
         if (res.data && res.data.code === 200) {
           const total = res.data.data.total || 0
           this.setData({ 'stats.imageCount': total })
@@ -387,18 +447,11 @@ Page({
   onClearCache() {
     wx.showModal({
       title: '清除缓存',
-      content: '确定要清除缓存吗？这不会删除你的收藏和设置',
+      content: '确定要清除缓存吗？这不会删除你的收藏和使用记录',
       success: (res) => {
         if (res.confirm) {
-          // 清除最近使用记录
+          // 只清除最近使用记录
           wx.removeStorageSync(RECENT_TOOLS_KEY)
-          // 清除生图历史
-          wx.removeStorageSync('ai-image-history')
-          // 重置使用统计
-          wx.setStorageSync(USER_STATS_KEY, {
-            totalUseCount: 0,
-            firstUseDate: new Date().toISOString().split('T')[0]
-          })
           this._loadData()
           wx.showToast({ title: '已清除', icon: 'success' })
         }

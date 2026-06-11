@@ -2,7 +2,6 @@ const { toolIndex } = require('../../utils/tool-meta')
 const { recordUseCount } = require('../../utils/common')
 const app = getApp()
 
-const FAVORITE_TOOLS_KEY = 'favorite-tools'
 const TOOL_COMBOS_KEY = 'tool-combinations'
 
 Page({
@@ -44,24 +43,43 @@ Page({
       return
     }
 
-    const favoriteIds = wx.getStorageSync(FAVORITE_TOOLS_KEY) || []
-    const favoriteTools = favoriteIds
-      .map(id => toolIndex[id])
-      .filter(Boolean)
+    // 从服务器获取收藏列表
+    this._loadFavorites()
 
     const toolCombos = (wx.getStorageSync(TOOL_COMBOS_KEY) || []).map(combo => ({
       ...combo,
       toolNames: combo.tools.map(id => toolIndex[id] ? toolIndex[id].name : id)
     }))
 
-    // 准备可选工具列表（排除已收藏的）
-    const allTools = Object.values(toolIndex)
-    const availableTools = allTools.filter(tool => !favoriteIds.includes(tool.id))
+    this.setData({ toolCombos })
+  },
 
-    this.setData({
-      favoriteTools,
-      toolCombos,
-      availableTools
+  // 从服务器加载收藏列表
+  _loadFavorites() {
+    if (!app.globalData.openid) return
+
+    wx.request({
+      url: app.globalData.apiBaseUrl + '/favorites.php?action=list&openid=' + app.globalData.openid,
+      method: 'GET',
+      header: { 'X-API-Key': 'moyin-api-key-v1.2.0' },
+      timeout: 10000,
+      success: (res) => {
+        if (res.data && res.data.code === 200) {
+          const toolIds = res.data.data.tools || []
+          const favoriteTools = toolIds
+            .map(id => toolIndex[id])
+            .filter(Boolean)
+
+          // 准备可选工具列表（排除已收藏的）
+          const allTools = Object.values(toolIndex)
+          const availableTools = allTools.filter(tool => !toolIds.includes(tool.id))
+
+          this.setData({
+            favoriteTools,
+            availableTools
+          })
+        }
+      }
     })
   },
 
@@ -73,11 +91,24 @@ Page({
       content: '确定要取消收藏该工具吗？',
       success: (res) => {
         if (res.confirm) {
-          const current = wx.getStorageSync(FAVORITE_TOOLS_KEY) || []
-          const next = current.filter(id => id !== toolId)
-          wx.setStorageSync(FAVORITE_TOOLS_KEY, next)
-          this._loadData()
-          wx.showToast({ title: '已取消收藏', icon: 'success' })
+          // 从服务器删除收藏
+          wx.request({
+            url: app.globalData.apiBaseUrl + '/favorites.php?action=remove',
+            method: 'POST',
+            header: {
+              'Content-Type': 'application/json',
+              'X-API-Key': 'moyin-api-key-v1.2.0'
+            },
+            data: {
+              openid: app.globalData.openid,
+              tool_id: toolId
+            },
+            timeout: 10000,
+            success: () => {
+              this._loadFavorites()
+              wx.showToast({ title: '已取消收藏', icon: 'success' })
+            }
+          })
         }
       }
     })
@@ -91,41 +122,61 @@ Page({
     const page = e.currentTarget.dataset.page
     const toolId = e.currentTarget.dataset.toolId
 
-    // 检查登录状态
-    if (!app.isLoggedIn()) {
-      // 未登录，显示登录弹窗
-      app.showLoginModal(() => {
-        // 登录成功后执行原来的操作
-        this._isNavigating = true
-        recordUseCount()
-        if (toolId) {
-          app.trackToolUse(toolId)
-        }
-        wx.navigateTo({
-          url: page,
-          complete: () => {
-            setTimeout(() => {
-              this._isNavigating = false
-            }, 300)
-          }
-        })
-      })
-      return
-    }
-
-    // 已登录，执行原来的操作
+    // 等待工具状态加载完成后检查
     this._isNavigating = true
-    recordUseCount()
-    if (toolId) {
-      app.trackToolUse(toolId)
-    }
-    wx.navigateTo({
-      url: page,
-      complete: () => {
-        setTimeout(() => {
+    app.loadToolStatus(() => {
+      // 检查工具状态
+      if (toolId) {
+        const toolStatus = app.getToolStatus(toolId)
+        if (toolStatus.status === 'maintenance' || toolStatus.status === 'disabled') {
           this._isNavigating = false
-        }, 300)
+          const title = toolStatus.status === 'maintenance' ? '工具维护中' : '工具已停用'
+          const msg = toolStatus.status_message || (toolStatus.status === 'maintenance'
+            ? '该工具正在维护中，请稍后再试' : '该工具已停用')
+          wx.showModal({
+            title: title,
+            content: msg,
+            showCancel: false,
+            confirmText: '我知道了'
+          })
+          return
+        }
       }
+
+      // 检查登录状态
+      if (!app.isLoggedIn()) {
+        // 未登录，显示登录弹窗
+        app.showLoginModal(() => {
+          // 登录成功后执行原来的操作
+          recordUseCount()
+          if (toolId) {
+            app.trackToolUse(toolId)
+          }
+          wx.navigateTo({
+            url: page,
+            complete: () => {
+              setTimeout(() => {
+                this._isNavigating = false
+              }, 300)
+            }
+          })
+        })
+        return
+      }
+
+      // 已登录，执行原来的操作
+      recordUseCount()
+      if (toolId) {
+        app.trackToolUse(toolId)
+      }
+      wx.navigateTo({
+        url: page,
+        complete: () => {
+          setTimeout(() => {
+            this._isNavigating = false
+          }, 300)
+        }
+      })
     })
   },
 

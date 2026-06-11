@@ -64,17 +64,19 @@
             </view>
           </button>
           <text class="login-avatar-hint" wx:if="{{!tempAvatarUrl}}">点击选择微信头像</text>
+          <text class="login-avatar-hint login-avatar-hint--success" wx:else>头像已选择</text>
         </view>
 
         <!-- 昵称输入 -->
-        <view class="login-nickname-section">
+        <view class="login-nickname-section {{tempAvatarUrl ? '' : 'login-nickname-section--disabled'}}">
           <text class="login-label">昵称</text>
           <input
             class="login-nickname-input"
             type="nickname"
-            placeholder="点击获取微信昵称"
+            placeholder="{{tempAvatarUrl ? '点击获取微信昵称' : '请先选择头像'}}"
             value="{{tempNickName}}"
             bindchange="onNicknameChange"
+            disabled="{{!tempAvatarUrl}}"
           />
         </view>
       </view>
@@ -105,7 +107,7 @@
     </view>
     <view class="stats-divider"></view>
     <view class="stats-item">
-      <text class="stats-value">31</text>
+      <text class="stats-value">{{stats.totalTools}}</text>
       <text class="stats-label">全部工具</text>
     </view>
   </view>

@@ -536,7 +536,8 @@ Page({
     this.setData({ errorMsg: `视频播放错误: ${error.errMsg || '未知错误'}，已复制播放地址，请在浏览器中打开` })
     const result = this.data.result
     if (result) {
-      this.copyLink(result.playUrl || result.video || result.downloadUrl || '', {
+      const rawUrl = result.playUrl || result.video || result.downloadUrl || ''
+      this.copyLink(this._proxyUrl(rawUrl), {
         title: '播放地址已复制',
         modal: true
       })

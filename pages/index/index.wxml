@@ -131,3 +131,26 @@
     </view>
   </view>
 </scroll-view>
+
+<!-- 公告弹窗 -->
+<view class="announcement-mask" wx:if="{{showAnnouncement}}" catchtap="">
+  <view class="announcement-modal">
+    <view class="announcement-header">
+      <text class="announcement-title">{{announcementData.title}}</text>
+      <view class="announcement-close" bindtap="onCloseAnnouncement">
+        <text>×</text>
+      </view>
+    </view>
+    <scroll-view class="announcement-body" scroll-y>
+      <text class="announcement-content">{{announcementData.content}}</text>
+    </scroll-view>
+    <view class="announcement-footer">
+      <view class="announcement-btn announcement-btn--close" bindtap="onCloseAnnouncement">
+        <text>关闭</text>
+      </view>
+      <view class="announcement-btn announcement-btn--view" bindtap="onViewAnnouncement">
+        <text>查看详情</text>
+      </view>
+    </view>
+  </view>
+</view>

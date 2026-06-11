@@ -64,7 +64,11 @@ Page({
   formatTime(dateStr) {
     if (!dateStr) return ''
     // 将 "yyyy-MM-dd HH:mm:ss" 转为 "yyyy/MM/dd HH:mm:ss" 以兼容iOS
-    const compatibleStr = dateStr.replace(/-/g, '/')
+    // 如果没有时区信息，追加 'Z' 按 UTC 解析（服务器返回 UTC 时间）
+    let compatibleStr = dateStr.replace(/-/g, '/')
+    if (!compatibleStr.includes('Z') && !compatibleStr.includes('+')) {
+      compatibleStr += 'Z'
+    }
     const date = new Date(compatibleStr)
     const now = new Date()
     const diff = now - date

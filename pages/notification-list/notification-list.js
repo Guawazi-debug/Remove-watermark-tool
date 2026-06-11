@@ -3,7 +3,8 @@ const app = getApp()
 Page({
   data: {
     notificationList: [],
-    loading: true
+    loading: true,
+    unreadCount: 0
   },
 
   onLoad() {
@@ -50,18 +51,46 @@ Page({
           time: this.formatTime(item.published_at || item.created_at)
         }
       })
+
+      // 计算未读数量
+      const unreadCount = formattedList.filter(item => !item.is_read).length
+
       this.setData({
         notificationList: formattedList,
+        unreadCount: unreadCount,
         loading: false
       })
       callback && callback()
     })
   },
 
+  // 一键已读
+  onMarkAllRead() {
+    wx.showModal({
+      title: '一键已读',
+      content: '确定要将所有通知标记为已读吗？',
+      success: (res) => {
+        if (res.confirm) {
+          app.markAllNotificationsRead((success, count) => {
+            if (success) {
+              wx.showToast({ title: `已标记${count}条为已读`, icon: 'success' })
+              this.loadNotificationList()
+            } else {
+              wx.showToast({ title: '操作失败', icon: 'none' })
+            }
+          })
+        }
+      }
+    })
+  },
+
   // 格式化时间
   formatTime(dateStr) {
     if (!dateStr) return ''
-    const compatibleStr = dateStr.replace(/-/g, '/')
+    let compatibleStr = dateStr.replace(/-/g, '/')
+    if (!compatibleStr.includes('Z') && !compatibleStr.includes('+')) {
+      compatibleStr += 'Z'
+    }
     const date = new Date(compatibleStr)
     const now = new Date()
     const diff = now - date

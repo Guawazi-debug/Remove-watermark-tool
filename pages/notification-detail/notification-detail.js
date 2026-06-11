@@ -20,7 +20,10 @@ Page({
       const notification = list.find(item => item.id == id)
       if (notification) {
         // 格式化时间
-        const compatibleStr = (notification.published_at || notification.created_at).replace(/-/g, '/')
+        let compatibleStr = (notification.published_at || notification.created_at).replace(/-/g, '/')
+        if (!compatibleStr.includes('Z') && !compatibleStr.includes('+')) {
+          compatibleStr += 'Z'
+        }
         const date = new Date(compatibleStr)
         notification.time = this.formatFullTime(date)
 

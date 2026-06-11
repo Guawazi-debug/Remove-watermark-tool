@@ -196,10 +196,10 @@ Page({
       } else {
         const modelKey = selectedModel === 'hunyuan' ? 'hunyuanResult' : 'gptResult'
         this.setData({
-          errorMsg: result.message || '生成失败',
+          errorMsg: '生成失败，请重试',
           loading: false,
           countdown: 0,
-          [`${modelKey}.errorMsg`]: result.message || '生成失败'
+          [`${modelKey}.errorMsg`]: '生成失败，请重试'
         })
       }
     } catch (err) {

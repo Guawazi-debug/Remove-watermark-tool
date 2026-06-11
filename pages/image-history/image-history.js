@@ -51,6 +51,17 @@ Page({
           const total = res.data.data.total || 0
           const newList = page === 1 ? list : [...this.data.historyList, ...list]
 
+          // 格式化时间显示
+          newList.forEach(item => {
+            if (item.created_at) {
+              let compatibleStr = item.created_at.replace(/-/g, '/')
+              if (!compatibleStr.includes('Z') && !compatibleStr.includes('+')) {
+                compatibleStr += 'Z'
+              }
+              item.created_at = new Date(compatibleStr).toLocaleString('zh-CN')
+            }
+          })
+
           this.setData({
             historyList: newList,
             total: total,

@@ -9,7 +9,10 @@ App({
     _privacyResolve: null,  // 隐私授权回调
     showPrivacyModal: false,  // 是否显示隐私弹窗
     privacySetting: null,  // 隐私设置
-    aiImageGenerating: null  // AI生图生成状态
+    aiImageGenerating: null,  // AI生图生成状态
+    toolStatusMap: {},  // 工具状态缓存 { toolId: { status, status_message } }
+    toolStatusExpire: 0,  // 缓存过期时间戳
+    toolStatusLoaded: false  // 是否已加载过工具状态
   },
 
   onLaunch() {
@@ -93,17 +96,15 @@ App({
     console.log('[登录] 开始初始化 openid')
     let openid = wx.getStorageSync('openid')
 
-    // 检查是否是临时生成的 openid（以 wx_ 开头）
-    if (openid && openid.startsWith('wx_')) {
-      console.log('[登录] 检测到临时 openid，清除并重新登录')
-      wx.removeStorageSync('openid')
-      openid = null
-    }
-
     if (openid) {
-      // 已有真实 openid，直接使用
+      // 已有 openid，直接使用（包括临时 openid）
       console.log('[登录] 使用已有 openid:', openid)
       this.globalData.openid = openid
+      // 尝试用真实 openid 替换临时 openid
+      if (openid.startsWith('wx_')) {
+        console.log('[登录] 检测到临时 openid，尝试重新登录')
+        this._refreshOpenid()
+      }
       return
     }
 
@@ -148,6 +149,36 @@ App({
       fail: (err) => {
         console.error('[登录] wx.login 调用失败:', err)
         this._generateLocalOpenid()
+      }
+    })
+  },
+
+  // 后台刷新 openid（替换临时 openid）
+  _refreshOpenid() {
+    wx.login({
+      success: (res) => {
+        if (res.code) {
+          wx.request({
+            url: this.globalData.apiBaseUrl + '/wechat_login.php',
+            method: 'POST',
+            header: {
+              'Content-Type': 'application/json',
+              'X-API-Key': 'moyin-api-key-v1.2.0'
+            },
+            data: { code: res.code },
+            timeout: 10000,
+            success: (response) => {
+              if (response.data && response.data.code === 200) {
+                const openid = response.data.data.openid
+                if (openid && !openid.startsWith('wx_')) {
+                  wx.setStorageSync('openid', openid)
+                  this.globalData.openid = openid
+                  console.log('[登录] 后台刷新 openid 成功:', openid)
+                }
+              }
+            }
+          })
+        }
       }
     })
   },
@@ -199,13 +230,19 @@ App({
                 this._uploadLogin(userInfo, base64)
               } catch (e) {
                 console.log('头像读取失败', e)
+                userInfo.avatarUrl = ''
+                wx.setStorageSync('user-info', userInfo)
                 this._uploadLogin(userInfo, '')
               }
             } else {
+              userInfo.avatarUrl = ''
+              wx.setStorageSync('user-info', userInfo)
               this._uploadLogin(userInfo, '')
             }
           },
           fail: () => {
+            userInfo.avatarUrl = ''
+            wx.setStorageSync('user-info', userInfo)
             this._uploadLogin(userInfo, '')
           }
         })
@@ -418,5 +455,114 @@ App({
         callback && callback(false)
       }
     })
+  },
+
+  // 一键已读所有通知
+  markAllNotificationsRead(callback) {
+    wx.request({
+      url: this.globalData.apiBaseUrl + '/notification.php?action=mark_all_read',
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'moyin-api-key-v1.2.0'
+      },
+      data: {
+        openid: this.globalData.openid
+      },
+      timeout: 5000,
+      success: (res) => {
+        if (res.data && res.data.code === 200) {
+          // 刷新未读数
+          this.getUnreadCount((count) => {
+            this.globalData.unreadCount = count
+            if (this.globalData._unreadCountCallback) {
+              this.globalData._unreadCountCallback(count)
+            }
+          })
+          callback && callback(true, res.data.data.count)
+        } else {
+          callback && callback(false, 0)
+        }
+      },
+      fail: () => {
+        callback && callback(false, 0)
+      }
+    })
+  },
+
+  // 获取最新公告（用于弹窗）
+  getLatestAnnouncement(callback) {
+    if (!this.globalData.openid) {
+      callback && callback(null)
+      return
+    }
+
+    wx.request({
+      url: this.globalData.apiBaseUrl + '/notification.php?action=latest&openid=' + this.globalData.openid,
+      method: 'GET',
+      header: {
+        'X-API-Key': 'moyin-api-key-v1.2.0'
+      },
+      timeout: 5000,
+      success: (res) => {
+        if (res.data && res.data.code === 200 && res.data.data) {
+          callback && callback(res.data.data)
+        } else {
+          callback && callback(null)
+        }
+      },
+      fail: () => {
+        callback && callback(null)
+      }
+    })
+  },
+
+  // ========== 工具状态管理 ==========
+
+  // 加载所有工具状态（缓存5分钟）
+  loadToolStatus(callback) {
+    const now = Date.now()
+    // 缓存未过期，直接返回
+    if (this.globalData.toolStatusExpire > now && this.globalData.toolStatusLoaded) {
+      callback && callback(this.globalData.toolStatusMap)
+      return
+    }
+
+    // 如果正在加载中，等待加载完成
+    if (this._toolStatusLoading) {
+      this._toolStatusCallbacks = this._toolStatusCallbacks || []
+      this._toolStatusCallbacks.push(callback)
+      return
+    }
+
+    this._toolStatusLoading = true
+    this._toolStatusCallbacks = callback ? [callback] : []
+
+    wx.request({
+      url: this.globalData.apiBaseUrl + '/tool_status.php?action=status',
+      method: 'GET',
+      header: { 'X-API-Key': 'moyin-api-key-v1.2.0' },
+      timeout: 8000,
+      success: (res) => {
+        if (res.data && res.data.code === 200 && res.data.data) {
+          this.globalData.toolStatusMap = res.data.data
+          this.globalData.toolStatusExpire = now + 5 * 60 * 1000
+          this.globalData.toolStatusLoaded = true
+        }
+      },
+      complete: () => {
+        this._toolStatusLoading = false
+        const cbs = this._toolStatusCallbacks || []
+        this._toolStatusCallbacks = []
+        cbs.forEach(cb => cb && cb(this.globalData.toolStatusMap))
+      }
+    })
+  },
+
+  // 获取单个工具状态
+  getToolStatus(toolId) {
+    const status = this.globalData.toolStatusMap[toolId]
+    if (!status) return { status: 'active', status_message: '' }
+    return status
   }
 })

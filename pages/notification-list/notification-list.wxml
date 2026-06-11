@@ -15,6 +15,11 @@
 
   <!-- 通知列表 -->
   <view class="notification-list" wx:else>
+    <!-- 一键已读按钮 -->
+    <view class="mark-all-read" wx:if="{{unreadCount > 0}}" bindtap="onMarkAllRead">
+      <text>一键已读 ({{unreadCount}}条未读)</text>
+    </view>
+
     <view class="notification-item {{item.is_read ? '' : 'unread'}}" wx:for="{{notificationList}}" wx:key="id" data-item="{{item}}" bindtap="onNotificationTap">
       <view class="notification-item__icon" style="background: {{item.typeColor}}20; color: {{item.typeColor}};">
         <text>📢</text>
