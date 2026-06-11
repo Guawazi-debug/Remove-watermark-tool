@@ -2,10 +2,15 @@
 
 <scroll-view class="page-root history-page" scroll-y enable-flex show-scrollbar="{{false}}">
   <!-- 空状态 -->
-  <view class="empty-box" wx:if="{{historyList.length === 0}}">
+  <view class="empty-box" wx:if="{{historyList.length === 0 && !loading}}">
     <text class="empty-icon">IMG</text>
     <text class="empty-text">暂无生图记录</text>
     <text class="empty-desc">使用 AI 生图后会在这里显示</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-box" wx:if="{{loading && historyList.length === 0}}">
+    <text class="loading-text">加载中...</text>
   </view>
 
   <!-- 历史列表 -->
@@ -15,34 +20,30 @@
       wx:for="{{historyList}}"
       wx:key="id"
     >
-      <!-- 提示词行 -->
-      <view class="history-item__header" data-index="{{index}}" bindtap="onToggleItem">
+      <!-- 序号和提示词 -->
+      <view class="history-item__header">
         <view class="history-item__prompt">
           <text class="history-item__index">{{index + 1}}</text>
           <text class="history-item__text">{{item.prompt}}</text>
         </view>
-        <text class="history-item__arrow {{item.expanded ? 'history-item__arrow--open' : ''}}">›</text>
       </view>
 
-      <!-- 展开内容 -->
-      <view class="history-item__body" wx:if="{{item.expanded}}">
-        <view class="history-item__image-wrapper">
-          <image
-            class="history-item__image"
-            src="{{item.image_url}}"
-            mode="widthFix"
-            bindtap="onPreviewImage"
-            data-url="{{item.image_url}}"
-            show-menu-by-longpress
-          ></image>
+      <!-- 信息区 -->
+      <view class="history-item__info">
+        <view class="history-item__row">
+          <text class="history-item__label">尺寸：</text>
+          <text class="history-item__value">{{item.size}}</text>
         </view>
-        <view class="history-item__meta">
-          <text class="history-item__size">{{item.size}}</text>
-          <text class="history-item__time">{{item.created_at}}</text>
+        <view class="history-item__row">
+          <text class="history-item__label">时间：</text>
+          <text class="history-item__value">{{item.created_at}}</text>
         </view>
-        <view class="history-item__actions">
-          <button class="history-btn" bindtap="onSaveImage" data-url="{{item.image_url}}">保存图片</button>
-        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="history-item__actions">
+        <button class="history-btn history-btn--copy" bindtap="onCopyUrl" data-url="{{item.image_url}}">复制链接</button>
+        <button class="history-btn history-btn--prompt" bindtap="onCopyPrompt" data-prompt="{{item.prompt}}">复制提示词</button>
       </view>
     </view>
   </view>

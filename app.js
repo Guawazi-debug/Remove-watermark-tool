@@ -8,7 +8,8 @@ App({
     _loginCallback: null,  // 登录成功回调
     _privacyResolve: null,  // 隐私授权回调
     showPrivacyModal: false,  // 是否显示隐私弹窗
-    privacySetting: null  // 隐私设置
+    privacySetting: null,  // 隐私设置
+    aiImageGenerating: null  // AI生图生成状态
   },
 
   onLaunch() {

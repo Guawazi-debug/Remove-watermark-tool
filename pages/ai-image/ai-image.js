@@ -18,16 +18,64 @@ Page({
       { label: '3:4', value: '768x1024' }
     ],
     gptSizeOptions: [
-      { label: '1:1', value: '1024x1024' },
-      { label: '16:9', value: '3840x2160' },
-      { label: '9:16', value: '2160x3840' }
+      { label: '横屏', value: '3840x2160' },
+      { label: '竖屏', value: '2160x3840' }
     ],
     loading: false,
+    countdown: 0,
     imageUrl: '',
     errorMsg: '',
     // 各模型独立的生成结果
     hunyuanResult: { imageUrl: '', errorMsg: '' },
     gptResult: { imageUrl: '', errorMsg: '' }
+  },
+
+  _countdownTimer: null,
+
+  onLoad() {
+    // 检查是否有正在进行的生成任务
+    this._checkGeneratingState()
+  },
+
+  onShow() {
+    // 检查是否有正在进行的生成任务
+    this._checkGeneratingState()
+  },
+
+  onUnload() {
+    // 页面卸载时清除定时器
+    this._clearCountdown()
+  },
+
+  onHide() {
+    // 页面隐藏时不清除定时器，让生成继续
+  },
+
+  // 检查生成状态
+  _checkGeneratingState() {
+    const generating = app.globalData.aiImageGenerating
+    if (generating && generating.isGenerating) {
+      // 恢复生成状态
+      this.setData({
+        loading: true,
+        selectedModel: generating.model,
+        prompt: generating.prompt,
+        selectedSize: generating.size
+      })
+      // 恢复倒计时
+      const elapsed = Math.floor((Date.now() - generating.startTime) / 1000)
+      const remaining = Math.max(0, generating.totalTime - elapsed)
+      if (remaining > 0) {
+        this._startCountdown(remaining)
+      } else {
+        // 超时了，显示错误
+        this.setData({
+          loading: false,
+          errorMsg: '生成超时，请重试'
+        })
+        app.globalData.aiImageGenerating = null
+      }
+    }
   },
 
   onPromptInput(e) {
@@ -78,14 +126,32 @@ Page({
   },
 
   async onGenerate() {
-    const { prompt, selectedModel, selectedSize, revise, footnote, seed } = this.data
+    const { prompt, selectedModel, selectedSize, revise, footnote, seed, loading } = this.data
+
+    // 如果正在生成中，不重复请求
+    if (loading) {
+      wx.showToast({ title: '正在生成中...', icon: 'none' })
+      return
+    }
 
     if (!prompt.trim()) {
       wx.showToast({ title: '请输入图片描述', icon: 'none' })
       return
     }
 
+    // 设置生成状态到全局
+    const totalTime = selectedModel === 'gpt' ? 180 : 60
+    app.globalData.aiImageGenerating = {
+      isGenerating: true,
+      model: selectedModel,
+      prompt: prompt.trim(),
+      size: selectedSize,
+      startTime: Date.now(),
+      totalTime: totalTime
+    }
+
     this.setData({ loading: true, errorMsg: '', imageUrl: '' })
+    this._startCountdown(totalTime)
 
     try {
       let imageUrl = ''
@@ -123,6 +189,7 @@ Page({
         this.setData({
           imageUrl: imageUrl,
           loading: false,
+          countdown: 0,
           [`${modelKey}.imageUrl`]: imageUrl,
           [`${modelKey}.errorMsg`]: ''
         })
@@ -131,6 +198,7 @@ Page({
         this.setData({
           errorMsg: result.message || '生成失败',
           loading: false,
+          countdown: 0,
           [`${modelKey}.errorMsg`]: result.message || '生成失败'
         })
       }
@@ -138,10 +206,39 @@ Page({
       console.error('调用失败:', err)
       const modelKey = selectedModel === 'hunyuan' ? 'hunyuanResult' : 'gptResult'
       this.setData({
-        errorMsg: '网络错误，请稍后重试',
+        errorMsg: err.message || '网络错误，请稍后重试',
         loading: false,
-        [`${modelKey}.errorMsg`]: '网络错误，请稍后重试'
+        countdown: 0,
+        [`${modelKey}.errorMsg`]: err.message || '网络错误，请稍后重试'
       })
+    } finally {
+      // 清除生成状态
+      this._clearCountdown()
+      app.globalData.aiImageGenerating = null
+    }
+  },
+
+  // 开始倒计时
+  _startCountdown(totalSeconds) {
+    this._clearCountdown()
+    this.setData({ countdown: totalSeconds })
+
+    this._countdownTimer = setInterval(() => {
+      const { countdown } = this.data
+      if (countdown <= 1) {
+        this._clearCountdown()
+        this.setData({ countdown: 0 })
+      } else {
+        this.setData({ countdown: countdown - 1 })
+      }
+    }, 1000)
+  },
+
+  // 清除倒计时
+  _clearCountdown() {
+    if (this._countdownTimer) {
+      clearInterval(this._countdownTimer)
+      this._countdownTimer = null
     }
   },
 
@@ -214,14 +311,6 @@ Page({
     })
   },
 
-  onShareAppMessage() {
-    return getShareAppMessage('AI 生图', '/pages/ai-image/ai-image')
-  },
-
-  onShareTimeline() {
-    return getShareTimeline('AI 生图')
-  },
-
   // 调用GPT生图API（通过代理）
   _callGptApi(prompt, size) {
     return new Promise((resolve, reject) => {
@@ -236,16 +325,22 @@ Page({
           prompt: prompt,
           size: size
         },
-        timeout: 120000,
+        timeout: 240000,
         success: (res) => {
+          console.log('[GPT生图] API返回:', res.data)
           if (res.data && res.data.code === 200 && res.data.url) {
             resolve(res.data.url)
           } else {
-            reject(new Error(res.data.message || '生成失败'))
+            reject(new Error(res.data.message || '生成失败，请稍后再试'))
           }
         },
         fail: (err) => {
-          reject(new Error('网络错误'))
+          console.error('[GPT生图] 请求失败:', err)
+          if (err.errMsg && err.errMsg.includes('timeout')) {
+            reject(new Error('生图服务响应超时，请稍后再试'))
+          } else {
+            reject(new Error('网络错误，请检查网络连接'))
+          }
         }
       })
     })
@@ -254,7 +349,12 @@ Page({
   // 保存生成历史
   _saveHistory(prompt, imageUrl, size) {
     // 未登录不保存
-    if (!app.isLoggedIn()) return
+    if (!app.isLoggedIn()) {
+      console.log('[生图保存] 未登录，不保存')
+      return
+    }
+
+    console.log('[生图保存] 开始保存, openid:', app.globalData.openid, 'prompt:', prompt)
 
     // 保存到服务器（图片URL存在服务器，不存本地）
     wx.request({
@@ -272,11 +372,19 @@ Page({
       },
       timeout: 10000,
       success: (res) => {
-        console.log('生图历史保存到服务器成功', res.data)
+        console.log('[生图保存] 保存成功:', res.data)
       },
       fail: (err) => {
-        console.error('生图历史保存到服务器失败', err)
+        console.error('[生图保存] 保存失败:', err)
       }
     })
+  },
+
+  onShareAppMessage() {
+    return getShareAppMessage('AI 生图')
+  },
+
+  onShareTimeline() {
+    return getShareTimeline('AI 生图')
   }
 })

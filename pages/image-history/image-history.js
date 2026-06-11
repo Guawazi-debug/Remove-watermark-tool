@@ -2,11 +2,8 @@ const app = getApp()
 
 Page({
   data: {
-    historyList: []
-  },
-
-  onLoad() {
-    this.loadHistory()
+    historyList: [],
+    loading: false
   },
 
   onShow() {
@@ -16,104 +13,84 @@ Page({
   loadHistory() {
     // 未登录不加载
     if (!app.isLoggedIn()) {
+      console.log('[生图历史] 未登录，不加载')
       this.setData({ historyList: [] })
       return
     }
 
+    const openid = app.globalData.openid
+    console.log('[生图历史] 开始加载, openid:', openid)
+
+    this.setData({ loading: true })
+
+    const url = `${app.globalData.apiBaseUrl}/image_history.php?action=list&openid=${openid}`
+    console.log('[生图历史] 请求URL:', url)
+
     wx.request({
-      url: app.globalData.apiBaseUrl + '/image_history.php?action=list',
-      method: 'POST',
+      url: url,
+      method: 'GET',
       header: {
-        'Content-Type': 'application/json',
         'X-API-Key': 'moyin-api-key-v1.2.0'
       },
-      data: {
-        openid: app.globalData.openid
-      },
-      timeout: 10000,
+      timeout: 30000,
       success: (res) => {
+        console.log('[生图历史] 服务器返回:', res.data)
         if (res.data && res.data.code === 200) {
           const list = res.data.data.list || []
+          console.log('[生图历史] 记录数:', list.length)
           this.setData({
-            historyList: list.map(item => ({
-              id: item.id,
-              prompt: item.prompt,
-              image_url: item.local_path
-                ? 'https://moyin.awenz.cn/admin/' + item.local_path
-                : item.image_url,
-              size: item.size,
-              created_at: item.created_at,
-              expanded: false
-            }))
+            historyList: list,
+            loading: false
           })
         } else {
-          this.setData({ historyList: [] })
+          this.setData({ historyList: [], loading: false })
         }
       },
-      fail: () => {
-        this.setData({ historyList: [] })
+      fail: (err) => {
+        console.error('[生图历史] 请求失败:', err)
+        this.setData({ historyList: [], loading: false })
       }
     })
   },
 
-  onToggleItem(e) {
-    const index = e.currentTarget.dataset.index
-    const key = `historyList[${index}].expanded`
-    this.setData({
-      [key]: !this.data.historyList[index].expanded
-    })
-  },
-
-  onPreviewImage(e) {
+  // 复制图片链接
+  onCopyUrl(e) {
     const url = e.currentTarget.dataset.url
-    wx.previewImage({
-      urls: [url],
-      current: url
-    })
-  },
+    console.log('[生图历史] 复制链接:', url)
+    if (!url) {
+      wx.showToast({ title: '链接为空', icon: 'none' })
+      return
+    }
 
-  onSaveImage(e) {
-    const url = e.currentTarget.dataset.url
-    if (!url) return
-
-    wx.showLoading({ title: '保存中...' })
-
-    wx.downloadFile({
-      url: url,
-      success: (res) => {
-        if (res.statusCode === 200) {
-          wx.saveImageToPhotosAlbum({
-            filePath: res.tempFilePath,
-            success: () => {
-              wx.hideLoading()
-              wx.showToast({ title: '已保存到相册', icon: 'success' })
-            },
-            fail: (err) => {
-              wx.hideLoading()
-              if (err.errMsg.includes('auth deny') || err.errMsg.includes('authorize')) {
-                wx.showModal({
-                  title: '提示',
-                  content: '需要授权保存图片到相册',
-                  confirmText: '去授权',
-                  success: (res) => {
-                    if (res.confirm) {
-                      wx.openSetting()
-                    }
-                  }
-                })
-              } else {
-                wx.showToast({ title: '保存失败', icon: 'none' })
-              }
-            }
-          })
-        } else {
-          wx.hideLoading()
-          wx.showToast({ title: '下载失败', icon: 'none' })
-        }
+    wx.setClipboardData({
+      data: url,
+      success: () => {
+        wx.showToast({ title: '链接已复制', icon: 'success' })
       },
-      fail: () => {
-        wx.hideLoading()
-        wx.showToast({ title: '下载失败', icon: 'none' })
+      fail: (err) => {
+        console.error('[生图历史] 复制失败:', err)
+        wx.showToast({ title: '复制失败', icon: 'none' })
+      }
+    })
+  },
+
+  // 复制提示词
+  onCopyPrompt(e) {
+    const prompt = e.currentTarget.dataset.prompt
+    console.log('[生图历史] 复制提示词:', prompt)
+    if (!prompt) {
+      wx.showToast({ title: '提示词为空', icon: 'none' })
+      return
+    }
+
+    wx.setClipboardData({
+      data: prompt,
+      success: () => {
+        wx.showToast({ title: '提示词已复制', icon: 'success' })
+      },
+      fail: (err) => {
+        console.error('[生图历史] 复制失败:', err)
+        wx.showToast({ title: '复制失败', icon: 'none' })
       }
     })
   },
