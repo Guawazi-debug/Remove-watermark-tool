@@ -54,7 +54,7 @@ Page({
 
     try {
       const res = await wx.cloud.callFunction({
-        name: 'ai-image',
+        name: 'generateImage-AmUdTa',
         data: {
           prompt: prompt.trim(),
           size: selectedSize,
