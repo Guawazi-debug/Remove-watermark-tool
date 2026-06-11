@@ -66,7 +66,8 @@
             data-value="{{item.value}}"
             bindtap="onSizeTap"
           >
-            <text>{{item.label}}</text>
+            <text class="size-option__label">{{item.label}}</text>
+            <text class="size-option__value">{{item.value}}</text>
           </view>
         </view>
       </view>
@@ -133,7 +134,7 @@
     <view class="url-box">
       <text class="url-label">图片链接</text>
       <view class="url-content">
-        <text class="url-text" selectable>{{imageUrl}}</text>
+        <text class="url-text" user-select>{{imageUrl}}</text>
         <view class="url-copy-btn" bindtap="onCopyUrl">复制</view>
       </view>
     </view>

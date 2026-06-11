@@ -1,6 +1,45 @@
 <navigation-bar title="生图历史" back="{{true}}" homeButton="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
 
 <scroll-view class="page-root history-page" scroll-y enable-flex show-scrollbar="{{false}}">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">搜索</text>
+      <input
+        class="search-input"
+        placeholder="搜索提示词..."
+        value="{{keyword}}"
+        bindinput="onKeywordInput"
+        bindconfirm="onSearch"
+        confirm-type="search"
+      />
+      <text class="search-clear" wx:if="{{keyword}}" bindtap="onClearKeyword">X</text>
+    </view>
+    <view class="filter-btn {{showFilter ? 'filter-btn--active' : ''}}" bindtap="onToggleFilter">
+      <text>筛选</text>
+    </view>
+  </view>
+
+  <!-- 筛选面板 -->
+  <view class="filter-panel" wx:if="{{showFilter}}">
+    <view class="filter-item">
+      <text class="filter-label">开始日期</text>
+      <picker mode="date" value="{{dateStart}}" bindchange="onDateStartChange">
+        <text class="filter-value">{{dateStart || '请选择'}}</text>
+      </picker>
+    </view>
+    <view class="filter-item">
+      <text class="filter-label">结束日期</text>
+      <picker mode="date" value="{{dateEnd}}" bindchange="onDateEndChange">
+        <text class="filter-value">{{dateEnd || '请选择'}}</text>
+      </picker>
+    </view>
+    <view class="filter-actions">
+      <button class="filter-btn-reset" bindtap="onResetFilter">重置</button>
+      <button class="filter-btn-apply" bindtap="onApplyFilter">应用</button>
+    </view>
+  </view>
+
   <!-- 空状态 -->
   <view class="empty-box" wx:if="{{historyList.length === 0 && !loading}}">
     <text class="empty-icon">IMG</text>
@@ -15,6 +54,11 @@
 
   <!-- 历史列表 -->
   <view class="history-list" wx:else>
+    <!-- 总数 -->
+    <view class="history-total" wx:if="{{total > 0}}">
+      <text>共 {{total}} 条记录</text>
+    </view>
+
     <view
       class="history-item"
       wx:for="{{historyList}}"
@@ -44,6 +88,17 @@
       <view class="history-item__actions">
         <button class="history-btn history-btn--copy" bindtap="onCopyUrl" data-url="{{item.image_url}}">复制链接</button>
         <button class="history-btn history-btn--prompt" bindtap="onCopyPrompt" data-prompt="{{item.prompt}}">复制提示词</button>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{historyList.length > 0}}">
+      <view class="load-more__btn" wx:if="{{hasMore}}" bindtap="onLoadMore">
+        <text wx:if="{{loadingMore}}">加载中...</text>
+        <text wx:else>加载更多</text>
+      </view>
+      <view class="load-more__text" wx:else>
+        <text>没有更多了</text>
       </view>
     </view>
   </view>

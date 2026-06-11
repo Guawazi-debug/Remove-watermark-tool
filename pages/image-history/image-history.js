@@ -3,108 +3,145 @@ const app = getApp()
 Page({
   data: {
     historyList: [],
-    loading: false
+    loading: false,
+    loadingMore: false,
+    page: 1,
+    hasMore: true,
+    total: 0,
+    // 搜索和筛选
+    keyword: '',
+    dateStart: '',
+    dateEnd: '',
+    showFilter: false
   },
 
   onShow() {
+    this.resetAndLoad()
+  },
+
+  resetAndLoad() {
+    this.setData({ page: 1, hasMore: true, historyList: [] })
     this.loadHistory()
   },
 
   loadHistory() {
-    // 未登录不加载
     if (!app.isLoggedIn()) {
-      console.log('[生图历史] 未登录，不加载')
       this.setData({ historyList: [] })
       return
     }
 
     const openid = app.globalData.openid
-    console.log('[生图历史] 开始加载, openid:', openid)
+    const { page, keyword, dateStart, dateEnd } = this.data
 
     this.setData({ loading: true })
 
-    const url = `${app.globalData.apiBaseUrl}/image_history.php?action=list&openid=${openid}`
-    console.log('[生图历史] 请求URL:', url)
+    let url = `${app.globalData.apiBaseUrl}/image_history.php?action=list&openid=${openid}&page=${page}&page_size=20`
+    if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`
+    if (dateStart) url += `&date_start=${dateStart}`
+    if (dateEnd) url += `&date_end=${dateEnd}`
 
     wx.request({
       url: url,
       method: 'GET',
-      header: {
-        'X-API-Key': 'moyin-api-key-v1.2.0'
-      },
+      header: { 'X-API-Key': 'moyin-api-key-v1.2.0' },
       timeout: 30000,
       success: (res) => {
-        console.log('[生图历史] 服务器返回:', res.data)
         if (res.data && res.data.code === 200) {
           const list = res.data.data.list || []
-          console.log('[生图历史] 记录数:', list.length)
+          const total = res.data.data.total || 0
+          const newList = page === 1 ? list : [...this.data.historyList, ...list]
+
           this.setData({
-            historyList: list,
-            loading: false
+            historyList: newList,
+            total: total,
+            hasMore: newList.length < total,
+            loading: false,
+            loadingMore: false
           })
         } else {
-          this.setData({ historyList: [], loading: false })
+          this.setData({ historyList: [], loading: false, loadingMore: false })
         }
       },
-      fail: (err) => {
-        console.error('[生图历史] 请求失败:', err)
-        this.setData({ historyList: [], loading: false })
+      fail: () => {
+        this.setData({ loading: false, loadingMore: false })
       }
     })
+  },
+
+  // 搜索关键词输入
+  onKeywordInput(e) {
+    this.setData({ keyword: e.detail.value })
+  },
+
+  // 搜索
+  onSearch() {
+    this.resetAndLoad()
+  },
+
+  // 清空搜索
+  onClearKeyword() {
+    this.setData({ keyword: '' })
+    this.resetAndLoad()
+  },
+
+  // 切换筛选面板
+  onToggleFilter() {
+    this.setData({ showFilter: !this.data.showFilter })
+  },
+
+  // 日期选择
+  onDateStartChange(e) {
+    this.setData({ dateStart: e.detail.value })
+  },
+
+  onDateEndChange(e) {
+    this.setData({ dateEnd: e.detail.value })
+  },
+
+  // 应用筛选
+  onApplyFilter() {
+    this.setData({ showFilter: false })
+    this.resetAndLoad()
+  },
+
+  // 重置筛选
+  onResetFilter() {
+    this.setData({ dateStart: '', dateEnd: '', showFilter: false })
+    this.resetAndLoad()
+  },
+
+  // 加载更多
+  onLoadMore() {
+    if (this.data.loadingMore || !this.data.hasMore) return
+    this.setData({ page: this.data.page + 1, loadingMore: true })
+    this.loadHistory()
   },
 
   // 复制图片链接
   onCopyUrl(e) {
     const url = e.currentTarget.dataset.url
-    console.log('[生图历史] 复制链接:', url)
-    if (!url) {
-      wx.showToast({ title: '链接为空', icon: 'none' })
-      return
-    }
-
+    if (!url) return
     wx.setClipboardData({
       data: url,
-      success: () => {
-        wx.showToast({ title: '链接已复制', icon: 'success' })
-      },
-      fail: (err) => {
-        console.error('[生图历史] 复制失败:', err)
-        wx.showToast({ title: '复制失败', icon: 'none' })
-      }
+      success: () => wx.showToast({ title: '链接已复制', icon: 'success' })
     })
   },
 
   // 复制提示词
   onCopyPrompt(e) {
     const prompt = e.currentTarget.dataset.prompt
-    console.log('[生图历史] 复制提示词:', prompt)
-    if (!prompt) {
-      wx.showToast({ title: '提示词为空', icon: 'none' })
-      return
-    }
-
+    if (!prompt) return
     wx.setClipboardData({
       data: prompt,
-      success: () => {
-        wx.showToast({ title: '提示词已复制', icon: 'success' })
-      },
-      fail: (err) => {
-        console.error('[生图历史] 复制失败:', err)
-        wx.showToast({ title: '复制失败', icon: 'none' })
-      }
+      success: () => wx.showToast({ title: '提示词已复制', icon: 'success' })
     })
   },
 
   onShareAppMessage() {
-    return {
-      title: '工具小栈 - AI 生图历史',
-      path: '/pages/index/index'
-    }
+    return { title: '工具小栈 - AI 生图历史', path: '/pages/index/index' }
   },
 
   onShareTimeline() {
-    return {
-      title: '工具小栈 - AI 生图历史'
-    }
+    return { title: '工具小栈 - AI 生图历史' }
   }
 })

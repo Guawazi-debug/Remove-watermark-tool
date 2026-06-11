@@ -140,7 +140,7 @@ Page({
     }
 
     // 设置生成状态到全局
-    const totalTime = selectedModel === 'gpt' ? 180 : 60
+    const totalTime = selectedModel === 'gpt' ? 300 : 60
     app.globalData.aiImageGenerating = {
       isGenerating: true,
       model: selectedModel,
@@ -325,7 +325,7 @@ Page({
           prompt: prompt,
           size: size
         },
-        timeout: 240000,
+        timeout: 300000,
         success: (res) => {
           console.log('[GPT生图] API返回:', res.data)
           if (res.data && res.data.code === 200 && res.data.url) {
@@ -349,14 +349,9 @@ Page({
   // 保存生成历史
   _saveHistory(prompt, imageUrl, size) {
     // 未登录不保存
-    if (!app.isLoggedIn()) {
-      console.log('[生图保存] 未登录，不保存')
-      return
-    }
+    if (!app.isLoggedIn()) return
 
-    console.log('[生图保存] 开始保存, openid:', app.globalData.openid, 'prompt:', prompt)
-
-    // 保存到服务器（图片URL存在服务器，不存本地）
+    // 保存到服务器（PHP会自动下载图片到服务器）
     wx.request({
       url: app.globalData.apiBaseUrl + '/image_history.php?action=save',
       method: 'POST',
@@ -370,12 +365,18 @@ Page({
         image_url: imageUrl,
         size: size
       },
-      timeout: 10000,
+      timeout: 30000,
       success: (res) => {
-        console.log('[生图保存] 保存成功:', res.data)
-      },
-      fail: (err) => {
-        console.error('[生图保存] 保存失败:', err)
+        // 如果服务器返回了本地路径，更新页面显示的URL
+        if (res.data && res.data.code === 200 && res.data.data && res.data.data.local_path) {
+          const serverUrl = 'https://moyin.awenz.cn/admin/' + res.data.data.local_path
+          // 更新当前显示的图片URL为服务器URL
+          const modelKey = this.data.selectedModel === 'hunyuan' ? 'hunyuanResult' : 'gptResult'
+          this.setData({
+            imageUrl: serverUrl,
+            [`${modelKey}.imageUrl`]: serverUrl
+          })
+        }
       }
     })
   },

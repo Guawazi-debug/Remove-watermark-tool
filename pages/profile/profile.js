@@ -16,7 +16,8 @@ Page({
     stats: {
       totalUseCount: 0,
       firstUseDate: '',
-      favoriteCount: 0
+      favoriteCount: 0,
+      imageCount: 0
     },
     recentTools: [],
     showFeedback: false,
@@ -125,6 +126,9 @@ Page({
       stats.favoriteCount = favoriteIds.length
       this.setData({ stats })
 
+      // 加载生图数量
+      this._loadImageCount()
+
       // 加载最近使用
       const recentIds = wx.getStorageSync(RECENT_TOOLS_KEY) || []
       const recentTools = recentIds.slice(0, 5).map(id => toolIndex[id]).filter(Boolean)
@@ -149,6 +153,24 @@ Page({
         recentTools: []
       })
     }
+  },
+
+  // 加载生图数量
+  _loadImageCount() {
+    if (!app.globalData.openid) return
+
+    wx.request({
+      url: app.globalData.apiBaseUrl + '/image_history.php?action=list&openid=' + app.globalData.openid + '&page_size=1',
+      method: 'GET',
+      header: { 'X-API-Key': 'moyin-api-key-v1.2.0' },
+      timeout: 10000,
+      success: (res) => {
+        if (res.data && res.data.code === 200) {
+          const total = res.data.data.total || 0
+          this.setData({ 'stats.imageCount': total })
+        }
+      }
+    })
   },
 
   // 一键登录 - 显示登录弹窗
@@ -465,7 +487,7 @@ Page({
     this.setData({
       aboutData: {
         content: '一个实用的微信小程序工具箱，提供30+款开发和生活工具。',
-        version: 'v1.3.0',
+        version: 'v1.4.0',
         update_log: ''
       },
       showAbout: true

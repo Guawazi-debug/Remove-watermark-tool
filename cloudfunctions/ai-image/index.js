@@ -16,17 +16,27 @@ exports.main = async (event, context) => {
   try {
     const ai = cloud.extend.AI
 
-    // 构建参数
+    // 构建参数 - 只传必填参数
     const params = {
       model: 'hunyuan-image',
       prompt: prompt.trim()
     }
 
-    // 可选参数
-    if (size) params.size = size
-    if (revise !== undefined) params.revise = revise
-    if (footnote) params.footnote = footnote
-    if (seed) params.seed = seed
+    // 只在有值时添加可选参数
+    if (size && size !== '1024x1024') {
+      params.size = size
+    }
+    if (revise === true) {
+      params.revise = 'true'
+    }
+    if (footnote) {
+      params.footnote = footnote
+    }
+    if (seed && !isNaN(seed)) {
+      params.seed = parseInt(seed)
+    }
+
+    console.log('调用参数:', JSON.stringify(params))
 
     // 调用生图模型
     const result = await ai.createImage(params)

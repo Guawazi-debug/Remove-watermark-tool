@@ -94,6 +94,11 @@
       <text class="stats-label">使用次数</text>
     </view>
     <view class="stats-divider"></view>
+    <view class="stats-item" bindtap="onImageHistory" wx:if="{{hasUserInfo}}">
+      <text class="stats-value">{{stats.imageCount}}</text>
+      <text class="stats-label">生图数量</text>
+    </view>
+    <view class="stats-divider" wx:if="{{hasUserInfo}}"></view>
     <view class="stats-item">
       <text class="stats-value">{{stats.favoriteCount}}</text>
       <text class="stats-label">收藏工具</text>
