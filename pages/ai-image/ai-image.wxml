@@ -34,7 +34,7 @@
         data-model="hunyuan"
       >
         <text class="model-name">混元生图</text>
-        <text class="model-desc">腾讯云开发，免费</text>
+        <text class="model-desc">腾讯云开发</text>
       </view>
       <view
         class="model-option {{selectedModel === 'gpt' ? 'model-option--active' : ''}}"
@@ -42,7 +42,7 @@
         data-model="gpt"
       >
         <text class="model-name">GPT 生图</text>
-        <text class="model-desc">GPT-Image-2，高清</text>
+        <text class="model-desc">GPT-Image-2，4K超清</text>
       </view>
     </view>
   </view>
