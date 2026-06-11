@@ -90,13 +90,66 @@ App({
   },
 
   _initOpenid() {
+    console.log('[登录] 开始初始化 openid')
     let openid = wx.getStorageSync('openid')
-    if (!openid) {
-      // 生成临时openid
-      openid = 'wx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-      wx.setStorageSync('openid', openid)
+    if (openid) {
+      // 已有 openid，直接使用
+      console.log('[登录] 使用已有 openid:', openid)
+      this.globalData.openid = openid
+      return
     }
+
+    console.log('[登录] 没有 openid，开始微信登录')
+    // 没有 openid，通过微信登录获取
+    wx.login({
+      success: (res) => {
+        console.log('[登录] wx.login 成功，code:', res.code)
+        if (res.code) {
+          // 调用后端接口换取 openid
+          wx.request({
+            url: this.globalData.apiBaseUrl + '/wechat_login.php',
+            method: 'POST',
+            header: {
+              'Content-Type': 'application/json',
+              'X-API-Key': 'moyin-api-key-v1.2.0'
+            },
+            data: { code: res.code },
+            timeout: 10000,
+            success: (response) => {
+              console.log('[登录] 服务器返回:', response.data)
+              if (response.data && response.data.code === 200) {
+                const openid = response.data.data.openid
+                wx.setStorageSync('openid', openid)
+                this.globalData.openid = openid
+                console.log('[登录] 微信登录成功，openid:', openid)
+              } else {
+                console.error('[登录] 微信登录失败:', response.data)
+                this._generateLocalOpenid()
+              }
+            },
+            fail: (err) => {
+              console.error('[登录] 请求登录接口失败:', err)
+              this._generateLocalOpenid()
+            }
+          })
+        } else {
+          console.error('[登录] wx.login 失败:', res)
+          this._generateLocalOpenid()
+        }
+      },
+      fail: (err) => {
+        console.error('[登录] wx.login 调用失败:', err)
+        this._generateLocalOpenid()
+      }
+    })
+  },
+
+  // 生成本地 openid（降级方案）
+  _generateLocalOpenid() {
+    const openid = 'wx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+    wx.setStorageSync('openid', openid)
     this.globalData.openid = openid
+    console.log('使用本地 openid:', openid)
   },
 
   _syncLogin() {
