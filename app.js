@@ -58,7 +58,7 @@ App({
   // 检查是否已登录
   isLoggedIn() {
     const userInfo = wx.getStorageSync('user-info')
-    return userInfo && userInfo.avatarUrl
+    return !!userInfo
   },
 
   // 显示登录弹窗
