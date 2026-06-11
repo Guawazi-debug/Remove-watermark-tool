@@ -92,8 +92,16 @@ App({
   _initOpenid() {
     console.log('[登录] 开始初始化 openid')
     let openid = wx.getStorageSync('openid')
+
+    // 检查是否是临时生成的 openid（以 wx_ 开头）
+    if (openid && openid.startsWith('wx_')) {
+      console.log('[登录] 检测到临时 openid，清除并重新登录')
+      wx.removeStorageSync('openid')
+      openid = null
+    }
+
     if (openid) {
-      // 已有 openid，直接使用
+      // 已有真实 openid，直接使用
       console.log('[登录] 使用已有 openid:', openid)
       this.globalData.openid = openid
       return
