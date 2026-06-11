@@ -48,7 +48,7 @@
   </view>
 
   <!-- 参数设置 -->
-  <view class="section">
+  <view class="section" wx:if="{{selectedModel === 'hunyuan'}}">
     <view class="settings-header" bindtap="onToggleSettings">
       <text class="section-title">参数设置</text>
       <text class="settings-arrow {{showSettings ? 'settings-arrow--open' : ''}}">›</text>
@@ -71,39 +71,36 @@
         </view>
       </view>
 
-      <!-- 混元模型专属设置 -->
-      <block wx:if="{{selectedModel === 'hunyuan'}}">
-        <!-- 提示词改写 -->
-        <view class="setting-item">
-          <text class="setting-label">提示词改写</text>
-          <text class="setting-desc">开启后模型会自动优化你的描述</text>
-          <switch checked="{{revise}}" bindchange="onReviseChange" color="#8f3d2e" />
-        </view>
+      <!-- 提示词改写 -->
+      <view class="setting-item">
+        <text class="setting-label">提示词改写</text>
+        <text class="setting-desc">开启后模型会自动优化你的描述</text>
+        <switch checked="{{revise}}" bindchange="onReviseChange" color="#8f3d2e" />
+      </view>
 
-        <!-- 水印 -->
-        <view class="setting-item">
-          <text class="setting-label">水印文字</text>
-          <input
-            class="setting-input"
-            placeholder="可选，最多16字"
-            value="{{footnote}}"
-            bindinput="onFootnoteInput"
-            maxlength="16"
-          />
-        </view>
+      <!-- 水印 -->
+      <view class="setting-item">
+        <text class="setting-label">水印文字</text>
+        <input
+          class="setting-input"
+          placeholder="可选，最多16字"
+          value="{{footnote}}"
+          bindinput="onFootnoteInput"
+          maxlength="16"
+        />
+      </view>
 
-        <!-- 种子 -->
-        <view class="setting-item">
-          <text class="setting-label">随机种子</text>
-          <input
-            class="setting-input"
-            type="number"
-            placeholder="可选，1-4294967295"
-            value="{{seed}}"
-            bindinput="onSeedInput"
-          />
-        </view>
-      </block>
+      <!-- 种子 -->
+      <view class="setting-item">
+        <text class="setting-label">随机种子</text>
+        <input
+          class="setting-input"
+          type="number"
+          placeholder="可选，1-4294967295"
+          value="{{seed}}"
+          bindinput="onSeedInput"
+        />
+      </view>
     </view>
   </view>
 
