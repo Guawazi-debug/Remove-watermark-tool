@@ -195,8 +195,10 @@
   flex: 1;
   font-size: 20rpx;
   color: #4a3f38;
-  word-break: break-all;
   line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .url-copy-btn {
