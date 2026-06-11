@@ -1,0 +1,113 @@
+<navigation-bar title="AI 生图" back="{{true}}" homeButton="{{true}}" color="#241b16" background="#F8F3EC"></navigation-bar>
+
+<scroll-view class="page-root ai-image-page" scroll-y enable-flex show-scrollbar="{{false}}">
+  <tool-hero></tool-hero>
+
+  <!-- 输入区域 -->
+  <view class="section">
+    <view class="section-title">图片描述</view>
+    <view class="textarea-wrapper">
+      <textarea
+        class="input-textarea"
+        placeholder="描述你想要生成的图片，例如：一只可爱的橘猫在阳光下打盹"
+        value="{{prompt}}"
+        bindinput="onPromptInput"
+        maxlength="500"
+        auto-height
+      ></textarea>
+      <view class="char-count">{{prompt.length}}/500</view>
+    </view>
+  </view>
+
+  <!-- 参数设置 -->
+  <view class="section">
+    <view class="settings-header" bindtap="onToggleSettings">
+      <text class="section-title">参数设置</text>
+      <text class="settings-arrow {{showSettings ? 'settings-arrow--open' : ''}}">›</text>
+    </view>
+
+    <view class="settings-body" wx:if="{{showSettings}}">
+      <!-- 图片尺寸 -->
+      <view class="setting-item">
+        <text class="setting-label">图片尺寸</text>
+        <view class="size-options">
+          <view
+            class="size-option {{selectedSize === item.value ? 'size-option--active' : ''}}"
+            wx:for="{{sizeOptions}}"
+            wx:key="value"
+            data-value="{{item.value}}"
+            bindtap="onSizeTap"
+          >
+            <text>{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 提示词改写 -->
+      <view class="setting-item">
+        <text class="setting-label">提示词改写</text>
+        <text class="setting-desc">开启后模型会自动优化你的描述</text>
+        <switch checked="{{revise}}" bindchange="onReviseChange" color="#8b5cf6" />
+      </view>
+
+      <!-- 水印 -->
+      <view class="setting-item">
+        <text class="setting-label">水印文字</text>
+        <input
+          class="setting-input"
+          placeholder="可选，最多16字"
+          value="{{footnote}}"
+          bindinput="onFootnoteInput"
+          maxlength="16"
+        />
+      </view>
+
+      <!-- 种子 -->
+      <view class="setting-item">
+        <text class="setting-label">随机种子</text>
+        <input
+          class="setting-input"
+          type="number"
+          placeholder="可选，1-4294967295"
+          value="{{seed}}"
+          bindinput="onSeedInput"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 生成按钮 -->
+  <view class="section">
+    <button
+      class="btn btn--primary generate-btn"
+      disabled="{{loading || !prompt}}"
+      bindtap="onGenerate"
+    >
+      <text wx:if="{{loading}}">生成中...</text>
+      <text wx:else>开始生成</text>
+    </button>
+  </view>
+
+  <!-- 生成结果 -->
+  <view class="section result-section" wx:if="{{imageUrl}}">
+    <view class="section-title">生成结果</view>
+    <view class="result-image-wrapper">
+      <image
+        class="result-image"
+        src="{{imageUrl}}"
+        mode="widthFix"
+        bindtap="onPreviewImage"
+        show-menu-by-longpress
+      ></image>
+    </view>
+    <view class="result-actions">
+      <button class="btn btn--secondary result-btn" bindtap="onSaveImage">保存图片</button>
+      <button class="btn btn--secondary result-btn" open-type="share">分享图片</button>
+    </view>
+  </view>
+
+  <!-- 错误提示 -->
+  <view class="error-msg" wx:if="{{errorMsg}}">
+    <text>{{errorMsg}}</text>
+  </view>
+</scroll-view>

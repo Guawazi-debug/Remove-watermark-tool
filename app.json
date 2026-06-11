@@ -8,6 +8,7 @@
     "pages/notification-list/notification-list",
     "pages/notification-detail/notification-detail",
     "pages/privacy/privacy",
+    "pages/ai-image/ai-image",
     "pages/video-parse/video-parse",
     "pages/json-parse/json-parse",
     "pages/json-generate/json-generate",

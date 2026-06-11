@@ -12,6 +12,14 @@ App({
   },
 
   onLaunch() {
+    // 初始化云开发
+    if (wx.cloud) {
+      wx.cloud.init({
+        env: "xiaozhan-d3gf24jlb2bb48af1",
+        traceUser: true
+      })
+    }
+
     // 获取用户信息
     const userInfo = wx.getStorageSync('user-info')
     if (userInfo) {

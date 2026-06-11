@@ -5,7 +5,8 @@ const toolCategories = [
     accent: '#d36b4c',
     description: '处理视频解析与分享链接',
     tools: [
-      { id: 'video-parse', name: '视频解析', desc: '短视频去水印与下载辅助', icon: 'VID', color: '#d36b4c', page: '/pages/video-parse/video-parse', keywords: ['视频', '解析', '下载', '去水印'], badge: '热门' }
+      { id: 'video-parse', name: '视频解析', desc: '短视频去水印与下载辅助', icon: 'VID', color: '#d36b4c', page: '/pages/video-parse/video-parse', keywords: ['视频', '解析', '下载', '去水印'], badge: '热门' },
+      { id: 'ai-image', name: 'AI 生图', desc: '输入文字描述，AI 生成图片', icon: 'IMG', color: '#8b5cf6', page: '/pages/ai-image/ai-image', keywords: ['AI', '生图', '文生图', '图片', '生成'], badge: 'AI' }
     ]
   },
   {
